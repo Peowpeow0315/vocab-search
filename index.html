@@ -121,6 +121,45 @@ tbody td{padding:5px 8px;border-bottom:1px solid #f2f2f0;vertical-align:middle}
   .zy-key{width:30px;height:30px;font-size:13px}
   .norm-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+/* POS Analysis styles */
+.wu-tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:.85rem}
+.wu-tab{padding:5px 13px;border-radius:99px;cursor:pointer;font-size:12px;border:1.5px solid #ddd;background:#fff;color:#555;transition:all .15s;user-select:none}
+.wu-tab.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a;font-weight:500}
+.pos-norm-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.pos-norm-table th{padding:6px 8px;font-size:10px;font-weight:600;color:#999;letter-spacing:.04em;border-bottom:2px solid #eee;text-align:left}
+.pos-norm-table td{padding:5px 8px;border-bottom:1px solid #f2f2f0;vertical-align:middle}
+.pos-norm-table tr:hover{background:#fafafa}
+.pos-badge{font-size:11px;padding:2px 7px;border-radius:99px;display:inline-block}
+.highlight-row{background:#fff8e1 !important}
+.age-toggle{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.age-toggle-btn{padding:3px 10px;border-radius:99px;font-size:11px;border:1.5px solid #ddd;background:#fff;color:#666;cursor:pointer}
+.age-toggle-btn.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.client-input-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+@media(max-width:600px){.client-input-grid{grid-template-columns:repeat(2,1fr)}}
+.pos-input-card{background:#f8f8f6;border-radius:8px;padding:8px 10px}
+.pos-input-card label{font-size:10px;color:#888;display:block;margin-bottom:3px}
+.pos-input-card input{width:100%;border:1px solid #ddd;border-radius:5px;padding:4px 6px;font-size:13px;text-align:center;background:#fff;outline:none}
+.pos-input-card input:focus{border-color:#888}
+.result-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f2f2f0}
+.result-label{font-size:12px;min-width:90px}
+.result-bar-wrap{flex:1;height:18px;background:#f0f0ee;border-radius:3px;overflow:hidden;position:relative}
+.result-bar{height:100%;border-radius:3px;transition:width .3s}
+.result-ref{position:absolute;top:0;bottom:0;width:2px;background:rgba(0,0,0,.25)}
+.result-val{font-size:11px;min-width:35px;text-align:right}
+.result-status{font-size:10px;padding:1px 6px;border-radius:99px;min-width:40px;text-align:center}
+.status-ok{background:#dff0d6;color:#1e4a0a}
+.status-low{background:#faebd6;color:#5a2e00}
+.status-vlow{background:#fce0e0;color:#6a1515}
+.status-high{background:#deeef9;color:#0a4070}
+.interv-card{background:#f8f8f6;border-radius:8px;padding:10px 12px;margin-top:8px}
+.interv-card h4{font-size:12px;font-weight:600;margin-bottom:6px;color:#1a1a1a}
+.interv-item{font-size:12px;padding:4px 0;border-bottom:1px solid #eee;line-height:1.6}
+.interv-item:last-child{border-bottom:none}
+.tag-p{background:#ddeafc;color:#0e3570;padding:1px 6px;border-radius:99px;font-size:10px;margin-right:4px}
+.tag-c{background:#fce0e0;color:#6a1515;padding:1px 6px;border-radius:99px;font-size:10px;margin-right:4px}
+.tag-i{background:#f5f5f3;color:#888;padding:1px 6px;border-radius:99px;font-size:10px;margin-right:4px}
+
 </style>
 </head>
 <body>
@@ -134,6 +173,7 @@ tbody td{padding:5px 8px;border-bottom:1px solid #f2f2f0;vertical-align:middle}
   <div class="main-tabs">
     <button class="main-tab on" id="tab-mcdi" onclick="switchMain('mcdi')">嬰幼兒期　16–36 個月</button>
     <button class="main-tab" id="tab-wu" onclick="switchMain('wu')">學齡前期　3–6 歲</button>
+    <button class="main-tab" id="tab-pos" onclick="switchMain('pos')">詞類句長分析　3–6 歲</button>
   </div>
 
   <!-- ══ MCDI SECTION ══════════════════════════════════════════════ -->
@@ -215,6 +255,13 @@ tbody td{padding:5px 8px;border-bottom:1px solid #f2f2f0;vertical-align:middle}
 
   <!-- ══ WU ET AL. SECTION ═════════════════════════════════════════ -->
   <div id="sec-wu" style="display:none">
+  <div class="wu-tabs">
+    <button class="wu-tab on" onclick="switchWu('vocab')">詞彙檢索</button>
+    <button class="wu-tab" onclick="switchWu('pos')">句長詞類分析</button>
+  </div>
+
+  <!-- Vocab section (existing) -->
+  <div id="wu-vocab">
     <div class="panel">
       <div class="slabel">年齡組（可複選）</div>
       <div class="age-group" id="age-group"></div>
@@ -249,8 +296,109 @@ tbody td{padding:5px 8px;border-bottom:1px solid #f2f2f0;vertical-align:middle}
       <p class="note">排名為各年齡組內頻率排名。複選年齡時顯示聯集。聲調：ˊ二聲、ˇ三聲、ˋ四聲、˙輕聲，一聲不標。</p>
     </div>
   </div>
+
+  <!-- POS Analysis section (new) -->
+  <div id="wu-pos" style="display:none">
+
+    <!-- Sub-tab 1: Norm table -->
+    <div class="panel">
+      <div class="slabel">詞類頻率常模對照表　<span style="font-weight:400;font-size:10px;color:#aaa">每句話平均詞類出現次數・Wu &amp; Lin (2024)</span></div>
+      <div class="age-toggle" style="margin-bottom:8px">
+        <button class="age-toggle-btn on" onclick="selectNormAge(3,this)">3 歲</button>
+        <button class="age-toggle-btn" onclick="selectNormAge(4,this)">4 歲</button>
+        <button class="age-toggle-btn" onclick="selectNormAge(5,this)">5 歲</button>
+        <button class="age-toggle-btn" onclick="selectNormAge(6,this)">6 歲</button>
+      </div>
+      <div id="norm-table-wrap"></div>
+      <p class="note" style="margin-top:8px">
+        資料來源：Wu &amp; Lin (2024). <em>SAGE Open</em>. DOI: 10.1177/21582440241290066<br>
+        ✦ 介詞（P）和連接詞（C）為句長<b>正向</b>預測因子；感嘆詞（I）為<b>負向</b>預測因子（所有年齡組均顯著）。
+      </p>
+    </div>
+
+    <!-- Sub-tab 2: Client analysis -->
+    <div class="panel">
+      <div class="slabel">個案詞類分析　<span style="font-weight:400;font-size:10px;color:#aaa">輸入語言樣本數據，對照同齡常模</span></div>
+
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+        <div>
+          <span style="font-size:11px;color:#666">個案年齡：</span>
+          <select id="client-age" onchange="calcClient()" style="font-size:12px;border:1px solid #ddd;border-radius:6px;padding:4px 8px">
+            <option value="3">3 歲</option>
+            <option value="4">4 歲</option>
+            <option value="5">5 歲</option>
+            <option value="6">6 歲</option>
+          </select>
+        </div>
+        <div>
+          <span style="font-size:11px;color:#666">語言樣本句數：</span>
+          <input type="number" id="client-utts" value="100" min="1" max="500"
+            onchange="calcClient()"
+            style="width:70px;font-size:12px;border:1px solid #ddd;border-radius:6px;padding:4px 8px">
+        </div>
+        <span style="font-size:11px;color:#aaa">（建議取 100 句有效語句）</span>
+      </div>
+
+      <div style="font-size:11px;color:#888;margin-bottom:6px">輸入各詞類在語言樣本中出現的<b>總次數</b>：</div>
+      <div class="client-input-grid" id="pos-input-grid"></div>
+
+      <div style="margin-top:12px" id="client-results"></div>
+    </div>
+  </div>
+</div>
+
+  <!-- ══ POS ANALYSIS SECTION ══════════════════════════════════════════ -->
+  <div id="sec-pos" style="display:none">
+
+    <div class="panel">
+      <div class="slabel">設定</div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:#666">年齡組</span>
+          <select id="pos-age" onchange="renderPOSTable()" style="font-size:12px;border:1px solid #ddd;border-radius:6px;padding:5px 10px">
+            <option value="3">3 歲</option>
+            <option value="4">4 歲</option>
+            <option value="5">5 歲</option>
+            <option value="6">6 歲</option>
+          </select>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:12px;color:#666">語言樣本句數</span>
+          <input type="number" id="pos-utt" value="100" min="1" max="500" oninput="renderPOSTable()"
+            style="width:72px;font-size:12px;border:1px solid #ddd;border-radius:6px;padding:5px 8px">
+          <span style="font-size:11px;color:#aaa">句</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="pos-norm-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div class="slabel" style="margin-bottom:0">常模參考表</div>
+        <label style="font-size:11px;color:#666;display:flex;align-items:center;gap:5px;cursor:pointer">
+          <input type="checkbox" id="pos-show-client" onchange="toggleClientInputs()">
+          <span>輸入個案資料比較</span>
+        </label>
+      </div>
+      <div id="pos-norm-table"></div>
+      <p class="note" style="margin-top:10px">
+        資料來源：Wu, S.-Y. &amp; Lin, H.-C. (2024). <em>SAGE Open</em>. DOI: 10.1177/21582440241290066 · 常模為各詞類每句平均詞頻（N=209，台灣 3–6 歲正常發展兒童）。<br>
+        <b>★</b> 介詞（P）、連接詞（C）＝句長正向預測因子　<b>▼</b> 感嘆詞（I）＝句長負向預測因子（迴歸分析 Table 12）
+      </p>
+    </div>
+
+    <div class="panel" id="pos-client-panel" style="display:none">
+      <div class="slabel">個案比較</div>
+      <p style="font-size:11px;color:#aaa;margin-top:3px;margin-bottom:10px">輸入個案語言樣本中各詞類的總詞數（未分析的留空）</p>
+      <div id="pos-client-inputs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:7px;margin-bottom:14px"></div>
+      <div id="pos-client-result"></div>
+      <div id="pos-interp" style="margin-top:10px"></div>
+    </div>
+
+  </div>
+
 </div>
 <script>
+
 const WORDS_MCDI=[["小狗（汪汪）", 16, "動物"], ["魚", 17, "動物"], ["小貓（喵喵）", 18, "動物"], ["小鳥", 19, "動物"], ["鴨子（呱呱）", 20, "動物"], ["小熊（泰迪熊）", 21, "動物"], ["雞（咕咕咕）", 21, "動物"], ["豬", 21, "動物"], ["馬", 22, "動物"], ["牛（哞）", 22, "動物"], ["小羊（咩咩）", 22, "動物"], ["蟲蟲", 22, "動物"], ["兔子", 23, "動物"], ["大象", 23, "動物"], ["螞蟻", 23, "動物"], ["蝴蝶", 23, "動物"], ["青蛙", 23, "動物"], ["企鵝", 24, "動物"], ["猴子", 24, "動物"], ["老虎", 24, "動物"], ["蚊子", 24, "動物"], ["老鼠", 24, "動物"], ["小雞", 24, "動物"], ["獅子", 25, "動物"], ["烏龜", 25, "動物"], ["長頸鹿", 25, "動物"], ["蝦子", 25, "動物"], ["蜜蜂（嗡嗡）", 27, "動物"], ["螃蟹", 27, "動物"], ["斑馬", 28, "動物"], ["鹿", 28, "動物"], ["蟑螂", 28, "動物"], ["鱷魚", 28, "動物"], ["毛毛蟲", 28, "動物"], ["公雞", 28, "動物"], ["河馬", 28, "動物"], ["蛇", 28, "動物"], ["蝸牛", 28, "動物"], ["狼（大野狼）", 28, "動物"], ["綿羊", 28, "動物"], ["海豚", 28, "動物"], ["蜘蛛", 28, "動物"], ["蛤蠣（貝殼）", 29, "動物"], ["動物", 30, "動物"], ["松鼠", 30, "動物"], ["蒼蠅", 31, "動物"], ["鵝", 31, "動物"], ["母雞", 31, "動物"], ["貓頭鷹", 32, "動物"], ["鯊魚", 32, "動物"], ["鴿子", 33, "動物"], ["老鷹", 34, "動物"], ["孔雀", 37, "動物"], ["鸚鵡", 37, "動物"], ["蚯蚓", 37, "動物"], ["手", 18, "身體部位"], ["眼睛", 19, "身體部位"], ["耳朵", 19, "身體部位"], ["嘴巴", 19, "身體部位"], ["腳", 19, "身體部位"], ["鼻子", 19, "身體部位"], ["屁股", 19, "身體部位"], ["胸部（ㄋㄟㄋㄟ）", 19, "身體部位"], ["肚子", 22, "身體部位"], ["頭", 22, "身體部位"], ["頭髮", 22, "身體部位"], ["小ㄐㄐ/小鳥（生殖器）", 22, "身體部位"], ["臉", 22, "身體部位"], ["肚臍", 23, "身體部位"], ["牙齒", 23, "身體部位"], ["手指（手指頭）", 24, "身體部位"], ["脖子", 25, "身體部位"], ["眉毛", 26, "身體部位"], ["舌頭", 26, "身體部位"], ["指甲", 28, "身體部位"], ["背", 28, "身體部位"], ["腳趾頭", 30, "身體部位"], ["嘴唇", 30, "身體部位"], ["下巴", 30, "身體部位"], ["膝蓋", 30, "身體部位"], ["肩膀", 30, "身體部位"], ["大腿", 33, "身體部位"], ["小腿", 34, "身體部位"], ["手臂", 37, "身體部位"], ["汽車（車車、ㄅㄨㄅㄨ）", 17, "交通工具"], ["飛機", 20, "交通工具"], ["火車", 23, "交通工具"], ["腳踏車", 23, "交通工具"], ["垃圾車", 24, "交通工具"], ["機車（摩托車）", 24, "交通工具"], ["公車（巴士）", 24, "交通工具"], ["船", 25, "交通工具"], ["娃娃車（手推車）", 26, "交通工具"], ["怪手（挖土機）", 26, "交通工具"], ["計程車", 28, "交通工具"], ["救護車", 28, "交通工具"], ["消防車", 28, "交通工具"], ["卡車", 28, "交通工具"], ["直昇機", 30, "交通工具"], ["吊車", 31, "交通工具"], ["三輪車", 33, "交通工具"], ["牛奶（ㄋㄟㄋㄟ）", 16, "食物飲料"], ["水（茶茶）", 17, "食物飲料"], ["麵", 19, "食物飲料"], ["飯", 19, "食物飲料"], ["餅乾", 21, "食物飲料"], ["香蕉", 21, "食物飲料"], ["蛋", 21, "食物飲料"], ["麵包", 21, "食物飲料"], ["糖果", 21, "食物飲料"], ["湯", 21, "食物飲料"], ["肉", 22, "食物飲料"], ["蘋果", 22, "食物飲料"], ["蔬菜", 22, "食物飲料"], ["草莓", 22, "食物飲料"], ["布丁", 22, "食物飲料"], ["葡萄", 23, "食物飲料"], ["蛋糕", 23, "食物飲料"], ["養樂多", 23, "食物飲料"], ["玉米", 23, "食物飲料"], ["紅（白）蘿蔔", 24, "食物飲料"], ["西瓜", 24, "食物飲料"], ["冰淇淋", 25, "食物飲料"], ["柳丁", 25, "食物飲料"], ["巧克力", 25, "食物飲料"], ["薯條", 25, "食物飲料"], ["橘子", 25, "食物飲料"], ["芭樂", 26, "食物飲料"], ["水果", 26, "食物飲料"], ["果汁", 26, "食物飲料"], ["糖", 26, "食物飲料"], ["茶", 26, "食物飲料"], ["稀飯", 27, "食物飲料"], ["葡萄乾", 27, "食物飲料"], ["棒棒糖", 27, "食物飲料"], ["水餃", 27, "食物飲料"], ["果凍", 27, "食物飲料"], ["蕃茄", 28, "食物飲料"], ["櫻桃", 28, "食物飲料"], ["豆漿", 28, "食物飲料"], ["汽水", 28, "食物飲料"], ["飲料", 28, "食物飲料"], ["饅頭", 28, "食物飲料"], ["土司", 28, "食物飲料"], ["花生", 28, "食物飲料"], ["包子", 28, "食物飲料"], ["雞肉", 28, "食物飲料"], ["木瓜", 29, "食物飲料"], ["甜甜圈", 29, "食物飲料"], ["漢堡", 29, "食物飲料"], ["披薩", 29, "食物飲料"], ["香腸", 30, "食物飲料"], ["三明治", 30, "食物飲料"], ["蛋餅", 30, "食物飲料"], ["咖啡", 31, "食物飲料"], ["爆米花", 31, "食物飲料"], ["雞塊", 31, "食物飲料"], ["奶茶", 31, "食物飲料"], ["可樂", 31, "食物飲料"], ["蕃茄醬", 31, "食物飲料"], ["豆子", 31, "食物飲料"], ["醬油", 31, "食物飲料"], ["冰棒", 31, "食物飲料"], ["口香糖", 32, "食物飲料"], ["梨子", 33, "食物飲料"], ["食物", 33, "食物飲料"], ["點心", 33, "食物飲料"], ["檸檬", 33, "食物飲料"], ["馬鈴薯", 33, "食物飲料"], ["奇異果", 33, "食物飲料"], ["洋芋片", 33, "食物飲料"], ["起司（乳酪）", 33, "食物飲料"], ["果醬", 33, "食物飲料"], ["菠菜", 33, "食物飲料"], ["南瓜", 33, "食物飲料"], ["火腿", 33, "食物飲料"], ["香瓜（哈密瓜）", 35, "食物飲料"], ["餛飩", 37, "食物飲料"], ["鞋子", 17, "衣物"], ["尿布", 18, "衣物"], ["褲子", 19, "衣物"], ["襪子", 20, "衣物"], ["帽子", 20, "衣物"], ["夾克（外套）", 24, "衣物"], ["扣子", 24, "衣物"], ["拖鞋", 24, "衣物"], ["衣物", 25, "衣物"], ["圍兜（兜）", 26, "衣物"], ["背心", 26, "衣物"], ["手套", 27, "衣物"], ["拉鍊", 28, "衣物"], ["裙子", 28, "衣物"], ["安全帽", 28, "衣物"], ["內褲（三角褲）", 28, "衣物"], ["口罩", 28, "衣物"], ["涼鞋", 28, "衣物"], ["布鞋（運動鞋）", 28, "衣物"], ["長褲", 30, "衣物"], ["短褲", 30, "衣物"], ["雨衣", 30, "衣物"], ["項鍊", 31, "衣物"], ["珠珠", 31, "衣物"], ["圍巾", 33, "衣物"], ["皮帶", 33, "衣物"], ["皮鞋", 33, "衣物"], ["毛衣", 33, "衣物"], ["睡衣（褲）", 33, "衣物"], ["泳衣", 34, "衣物"], ["球", 17, "玩具"], ["氣球", 21, "玩具"], ["筆", 21, "玩具"], ["書", 21, "玩具"], ["娃娃（洋娃娃）", 22, "玩具"], ["泡泡", 22, "玩具"], ["玩具", 23, "玩具"], ["貼紙", 24, "玩具"], ["積木", 25, "玩具"], ["鉛筆", 28, "玩具"], ["彩色筆", 28, "玩具"], ["拼圖", 28, "玩具"], ["機器人", 29, "玩具"], ["蠟筆", 29, "玩具"], ["禮物", 30, "玩具"], ["鼓", 30, "玩具"], ["球棒", 31, "玩具"], ["黏土", 33, "玩具"], ["膠水", 33, "玩具"], ["手槍", 33, "玩具"], ["電話", 19, "生活用品"], ["藥", 20, "生活用品"], ["杯子", 21, "生活用品"], ["錢", 21, "生活用品"], ["牙刷", 22, "生活用品"], ["電視", 22, "生活用品"], ["湯匙", 22, "生活用品"], ["鑰匙", 22, "生活用品"], ["毯子（被子）", 23, "生活用品"], ["碗", 23, "生活用品"], ["吸管", 23, "生活用品"], ["枕頭", 23, "生活用品"], ["眼鏡", 23, "生活用品"], ["手機", 23, "生活用品"], ["垃圾桶", 24, "生活用品"], ["筷子", 24, "生活用品"], ["梳子", 24, "生活用品"], ["電燈", 24, "生活用品"], ["衛生紙（面紙）", 24, "生活用品"], ["鏡子", 25, "生活用品"], ["紙", 25, "生活用品"], ["剪刀", 25, "生活用品"], ["電風扇", 25, "生活用品"], ["垃圾", 26, "生活用品"], ["毛巾", 26, "生活用品"], ["掃把", 26, "生活用品"], ["皮包", 26, "生活用品"], ["冰箱", 26, "生活用品"], ["牙膏", 26, "生活用品"], ["遙控器", 26, "生活用品"], ["照片", 26, "生活用品"], ["肥皂", 27, "生活用品"], ["相機", 27, "生活用品"], ["書包", 27, "生活用品"], ["袋子", 27, "生活用品"], ["盤子", 28, "生活用品"], ["時鐘（鬧鐘）", 28, "生活用品"], ["銅板（零錢）", 28, "生活用品"], ["吹風機", 28, "生活用品"], ["冷氣", 28, "生活用品"], ["刀子", 28, "生活用品"], ["叉子", 28, "生活用品"], ["拖把", 28, "生活用品"], ["光碟（CD或DVD）", 28, "生活用品"], ["水壺", 28, "生活用品"], ["瓶子", 30, "生活用品"], ["盒子", 30, "生活用品"], ["籃子", 30, "生活用品"], ["刷子", 30, "生活用品"], ["水桶", 30, "生活用品"], ["收音機/音響", 31, "生活用品"], ["鍋子", 31, "生活用品"], ["插頭", 32, "生活用品"], ["電鍋", 33, "生活用品"], ["圖片", 33, "生活用品"], ["玻璃（玻璃杯）", 33, "生活用品"], ["罐子", 34, "生活用品"], ["釘子", 37, "生活用品"], ["椅子", 20, "傢俱室內"], ["門", 22, "傢俱室內"], ["桌子", 23, "傢俱室內"], ["床", 23, "傢俱室內"], ["廁所", 24, "傢俱室內"], ["樓梯", 24, "傢俱室內"], ["電腦", 24, "傢俱室內"], ["馬桶", 25, "傢俱室內"], ["房間", 26, "傢俱室內"], ["窗戶", 27, "傢俱室內"], ["客廳", 28, "傢俱室內"], ["廚房", 28, "傢俱室內"], ["抽屜", 28, "傢俱室內"], ["電梯", 28, "傢俱室內"], ["洗衣機", 28, "傢俱室內"], ["地板", 28, "傢俱室內"], ["沙發", 30, "傢俱室內"], ["櫃子", 30, "傢俱室內"], ["臥（房）室", 31, "傢俱室內"], ["水槽（洗手檯）", 31, "傢俱室內"], ["浴室", 33, "傢俱室內"], ["嬰兒床", 33, "傢俱室內"], ["浴缸", 33, "傢俱室內"], ["衣櫥", 33, "傢俱室內"], ["餐桌", 33, "傢俱室內"], ["陽台", 33, "傢俱室內"], ["微波爐", 35, "傢俱室內"], ["花", 18, "戶外自然"], ["下雨", 20, "戶外自然"], ["溜滑梯", 22, "戶外自然"], ["樹", 23, "戶外自然"], ["雨傘", 23, "戶外自然"], ["月亮", 23, "戶外自然"], ["石頭", 24, "戶外自然"], ["太陽", 24, "戶外自然"], ["星星", 24, "戶外自然"], ["葉子", 25, "戶外自然"], ["鞦韆", 27, "戶外自然"], ["翹翹板", 27, "戶外自然"], ["紅綠燈", 28, "戶外自然"], ["草", 28, "戶外自然"], ["風", 28, "戶外自然"], ["馬路", 28, "戶外自然"], ["風箏", 30, "戶外自然"], ["雲", 31, "戶外自然"], ["土/泥土", 31, "戶外自然"], ["打雷", 31, "戶外自然"], ["天空", 31, "戶外自然"], ["沙子", 31, "戶外自然"], ["棍子", 31, "戶外自然"], ["花園", 33, "戶外自然"], ["彩虹", 33, "戶外自然"], ["斑馬線", 33, "戶外自然"], ["水管", 33, "戶外自然"], ["旗子", 33, "戶外自然"], ["梯子", 33, "戶外自然"], ["鏟子", 37, "戶外自然"], ["家", 24, "戶外場所"], ["7-11（任何便利商店）", 26, "戶外場所"], ["XX的家", 26, "戶外場所"], ["公園", 26, "戶外場所"], ["學校/幼稚園", 27, "戶外場所"], ["菜市場", 28, "戶外場所"], ["醫院（或診所）", 28, "戶外場所"], ["加油站", 28, "戶外場所"], ["房子", 28, "戶外場所"], ["動物園", 29, "戶外場所"], ["火車站（車站）", 31, "戶外場所"], ["商店/百貨公司", 31, "戶外場所"], ["停車場", 31, "戶外場所"], ["海", 32, "戶外場所"], ["XX園（某遊戲樂園名稱）", 33, "戶外場所"], ["餐廳", 33, "戶外場所"], ["教堂/廟", 33, "戶外場所"], ["游泳池", 34, "戶外場所"], ["郵局", 34, "戶外場所"], ["運動場/操場", 35, "戶外場所"], ["河", 35, "戶外場所"], ["山上", 35, "戶外場所"], ["圖書館", 37, "戶外場所"], ["遊樂園", 37, "戶外場所"], ["大樓", 37, "戶外場所"], ["再見（byebye）", 16, "遊戲日常"], ["謝謝", 17, "遊戲日常"], ["睡覺", 19, "遊戲日常"], ["洗澡", 19, "遊戲日常"], ["哈囉（嗨）", 19, "遊戲日常"], ["噓/噓噓（安靜）", 19, "遊戲日常"], ["拍拍手", 19, "遊戲日常"], ["吃飯", 20, "遊戲日常"], ["上廁所（尿尿、便便）", 20, "遊戲日常"], ["晚安", 21, "遊戲日常"], ["刷牙", 22, "遊戲日常"], ["讀書（看書）", 22, "遊戲日常"], ["換尿布", 22, "遊戲日常"], ["跳舞", 23, "遊戲日常"], ["唱歌", 23, "遊戲日常"], ["看電視", 23, "遊戲日常"], ["對不起", 23, "遊戲日常"], ["打電話", 23, "遊戲日常"], ["轉圈圈", 25, "遊戲日常"], ["躲貓貓", 26, "遊戲日常"], ["逛街/買東西", 26, "遊戲日常"], ["玩遊戲", 27, "遊戲日常"], ["開車", 27, "遊戲日常"], ["聽音樂", 27, "遊戲日常"], ["游泳", 28, "遊戲日常"], ["堆積木", 28, "遊戲日常"], ["請", 29, "遊戲日常"], ["早餐", 30, "遊戲日常"], ["晚餐", 33, "遊戲日常"], ["午餐", 34, "遊戲日常"], ["爸爸/爹地", 16, "人物代名詞"], ["媽媽/媽咪", 16, "人物代名詞"], ["姊姊", 17, "人物代名詞"], ["奶奶", 17, "人物代名詞"], ["哥哥", 18, "人物代名詞"], ["阿姨（姨媽）", 18, "人物代名詞"], ["妹妹", 18, "人物代名詞"], ["爺爺", 19, "人物代名詞"], ["姑姑", 19, "人物代名詞"], ["小寶寶（小貝比）", 19, "人物代名詞"], ["弟弟", 19, "人物代名詞"], ["舅舅", 20, "人物代名詞"], ["伯伯", 20, "人物代名詞"], ["自己的名字", 20, "人物代名詞"], ["叔叔", 21, "人物代名詞"], ["外婆", 21, "人物代名詞"], ["外公", 22, "人物代名詞"], ["家人的名字", 23, "人物代名詞"], ["我", 24, "人物代名詞"], ["我的", 24, "人物代名詞"], ["你", 25, "人物代名詞"], ["____人的", 25, "人物代名詞"], ["醫生", 26, "人物代名詞"], ["小朋友", 26, "人物代名詞"], ["你的", 26, "人物代名詞"], ["寵物的名字", 27, "人物代名詞"], ["老師", 28, "人物代名詞"], ["舅媽", 28, "人物代名詞"], ["警察", 28, "人物代名詞"], ["姑丈", 28, "人物代名詞"], ["他", 29, "人物代名詞"], ["他的", 29, "人物代名詞"], ["老闆", 29, "人物代名詞"], ["我們", 29, "人物代名詞"], ["大家", 30, "人物代名詞"], ["男生", 30, "人物代名詞"], ["女生", 30, "人物代名詞"], ["別人", 30, "人物代名詞"], ["我們的", 31, "人物代名詞"], ["朋友", 33, "人物代名詞"], ["護士", 33, "人物代名詞"], ["你們", 33, "人物代名詞"], ["小姐", 33, "人物代名詞"], ["司機", 33, "人物代名詞"], ["你們的", 33, "人物代名詞"], ["他們", 33, "人物代名詞"], ["郵差", 33, "人物代名詞"], ["嬸嬸", 34, "人物代名詞"], ["他們的", 35, "人物代名詞"], ["褓母（奶媽）", 37, "人物代名詞"], ["先生", 37, "人物代名詞"], ["等一下", 25, "時間語詞"], ["完了（結束的意思）", 26, "時間語詞"], ["開始", 28, "時間語詞"], ["晚上", 28, "時間語詞"], ["早上", 29, "時間語詞"], ["先", 30, "時間語詞"], ["今天", 30, "時間語詞"], ["白天", 31, "時間語詞"], ["已經", 31, "時間語詞"], ["明天", 31, "時間語詞"], ["現在", 33, "時間語詞"], ["中午", 33, "時間語詞"], ["昨天", 33, "時間語詞"], ["上次", 33, "時間語詞"], ["下次", 33, "時間語詞"], ["這次", 35, "時間語詞"], ["早（一點）", 35, "時間語詞"], ["晚（一點）", 35, "時間語詞"], ["星期…", 36, "時間語詞"], ["時間", 36, "時間語詞"], ["以前", 36, "時間語詞"], ["以後", 36, "時間語詞"], ["在這裡", 22, "介係詞位置"], ["走開", 23, "介係詞位置"], ["過來", 23, "介係詞位置"], ["在那裡", 24, "介係詞位置"], ["後面", 26, "介係詞位置"], ["上面", 27, "介係詞位置"], ["前面", 28, "介係詞位置"], ["外面", 28, "介係詞位置"], ["裡面", 28, "介係詞位置"], ["下面", 28, "介係詞位置"], ["到…某個地方", 28, "介係詞位置"], ["在…裡面", 28, "介係詞位置"], ["旁邊", 30, "介係詞位置"], ["在…前面", 31, "介係詞位置"], ["在…外面", 31, "介係詞位置"], ["在…上面", 31, "介係詞位置"], ["在…下面", 31, "介係詞位置"], ["…的…", 31, "介係詞位置"], ["在…後面", 33, "介係詞位置"], ["在…旁邊", 33, "介係詞位置"], ["到…裡", 33, "介係詞位置"], ["向（往）上", 35, "介係詞位置"], ["向（往）下", 35, "介係詞位置"], ["在…中間", 37, "介係詞位置"], ["抱（抱）", 16, "動作語詞"], ["是/對/好", 17, "動作語詞"], ["吃", 18, "動作語詞"], ["不要", 18, "動作語詞"], ["要", 19, "動作語詞"], ["打", 19, "動作語詞"], ["走/散步", 19, "動作語詞"], ["坐", 19, "動作語詞"], ["洗", 21, "動作語詞"], ["喝", 21, "動作語詞"], ["拍（手）", 21, "動作語詞"], ["拿", 21, "動作語詞"], ["打開", 21, "動作語詞"], ["哭", 22, "動作語詞"], ["看", 23, "動作語詞"], ["穿", 23, "動作語詞"], ["玩", 23, "動作語詞"], ["去", 23, "動作語詞"], ["來", 23, "動作語詞"], ["丟", 23, "動作語詞"], ["親", 23, "動作語詞"], ["不是/不對/不好", 23, "動作語詞"], ["脫", 23, "動作語詞"], ["跌倒", 23, "動作語詞"], ["好了", 23, "動作語詞"], ["不可以/不行", 23, "動作語詞"], ["關", 24, "動作語詞"], ["跳", 24, "動作語詞"], ["吹", 24, "動作語詞"], ["擦", 24, "動作語詞"], ["給", 24, "動作語詞"], ["跑", 24, "動作語詞"], ["壓", 24, "動作語詞"], ["畫畫", 24, "動作語詞"], ["牽（手）", 24, "動作語詞"], ["切", 24, "動作語詞"], ["快點/快一點", 25, "動作語詞"], ["流（鼻涕）", 25, "動作語詞"], ["咬", 26, "動作語詞"], ["騎", 26, "動作語詞"], ["掉", 26, "動作語詞"], ["笑", 26, "動作語詞"], ["撿", 26, "動作語詞"], ["爬", 26, "動作語詞"], ["握手", 26, "動作語詞"], ["餵", 26, "動作語詞"], ["敲", 26, "動作語詞"], ["搖", 26, "動作語詞"], ["拉", 26, "動作語詞"], ["工作/上班", 26, "動作語詞"], ["煮", 26, "動作語詞"], ["喜歡", 26, "動作語詞"], ["摸", 27, "動作語詞"], ["說話", 27, "動作語詞"], ["寫", 27, "動作語詞"], ["幫忙", 27, "動作語詞"], ["排（東西）", 27, "動作語詞"], ["聽", 28, "動作語詞"], ["放", 28, "動作語詞"], ["碰/撞", 28, "動作語詞"], ["抓", 28, "動作語詞"], ["叫", 28, "動作語詞"], ["停", 28, "動作語詞"], ["按", 28, "動作語詞"], ["搔癢", 28, "動作語詞"], ["掃（地）", 28, "動作語詞"], ["站", 28, "動作語詞"], ["打破", 28, "動作語詞"], ["罵", 28, "動作語詞"], ["倒", 28, "動作語詞"], ["捏", 28, "動作語詞"], ["推", 29, "動作語詞"], ["想", 29, "動作語詞"], ["討厭", 29, "動作語詞"], ["踢", 30, "動作語詞"], ["帶", 30, "動作語詞"], ["忘記", 30, "動作語詞"], ["綁", 30, "動作語詞"], ["蹲", 30, "動作語詞"], ["教（我）", 30, "動作語詞"], ["撕", 30, "動作語詞"], ["滑", 30, "動作語詞"], ["裝", 30, "動作語詞"], ["藏", 30, "動作語詞"], ["告訴", 30, "動作語詞"], ["夾", 30, "動作語詞"], ["吞", 30, "動作語詞"], ["聞", 30, "動作語詞"], ["拔", 31, "動作語詞"], ["數數", 33, "動作語詞"], ["投", 33, "動作語詞"], ["曬", 33, "動作語詞"], ["拆", 33, "動作語詞"], ["假裝", 33, "動作語詞"], ["記", 36, "動作語詞"], ["以為", 36, "動作語詞"], ["和", 29, "連接詞"], ["因為", 31, "連接詞"], ["可是", 33, "連接詞"], ["…就…", 33, "連接詞"], ["先…然後…", 33, "連接詞"], ["後來", 33, "連接詞"], ["如果", 36, "連接詞"], ["所以", 36, "連接詞"], ["好臭/臭臭的", 19, "形容修飾"], ["好燙/燙燙的", 20, "形容修飾"], ["好痛/痛痛的", 20, "形容修飾"], ["好棒", 22, "形容修飾"], ["害怕的（好恐怖）", 22, "形容修飾"], ["濕濕的", 22, "形容修飾"], ["好熱/熱熱的", 23, "形容修飾"], ["暗暗的", 23, "形容修飾"], ["冰冰的", 23, "形容修飾"], ["髒髒的/骯髒的", 24, "形容修飾"], ["亮亮的", 24, "形容修飾"], ["很好吃/好吃的", 24, "形容修飾"], ["破了/破掉了", 25, "形容修飾"], ["想睡覺", 25, "形容修飾"], ["好漂亮/漂亮的", 25, "形容修飾"], ["不乖", 25, "形容修飾"], ["好香/香香的", 25, "形容修飾"], ["好辣/辣辣的", 25, "形容修飾"], ["餓了/好餓", 26, "形容修飾"], ["飽了/好飽", 26, "形容修飾"], ["大的", 26, "形容修飾"], ["小的", 26, "形容修飾"], ["好可愛/可愛的", 27, "形容修飾"], ["好冷/冷冷的", 27, "形容修飾"], ["睡著了", 27, "形容修飾"], ["好重/重重的", 27, "形容修飾"], ["快一點", 27, "形容修飾"], ["好高/高高的", 27, "形容修飾"], ["口渴了/好渴", 28, "形容修飾"], ["小心", 28, "形容修飾"], ["圓的/圓形的", 28, "形容修飾"], ["壞的", 28, "形容修飾"], ["紅紅的/紅色的", 28, "形容修飾"], ["甜甜的", 28, "形容修飾"], ["生氣的", 28, "形容修飾"], ["生病了", 28, "形容修飾"], ["大聲", 29, "形容修飾"], ["黑色的/黑黑的", 29, "形容修飾"], ["快樂的/高興的", 30, "形容修飾"], ["乾淨的", 30, "形容修飾"], ["好硬/硬硬的", 30, "形容修飾"], ["一樣的", 30, "形容修飾"], ["好酸/酸酸的", 30, "形容修飾"], ["黃色的", 30, "形容修飾"], ["好快/快的", 30, "形容修飾"], ["好累/累了", 30, "形容修飾"], ["綠色的", 30, "形容修飾"], ["藍藍的/藍色的", 30, "形容修飾"], ["白色的", 30, "形容修飾"], ["長長的", 30, "形容修飾"], ["好的", 30, "形容修飾"], ["醒了/醒著", 30, "形容修飾"], ["黏黏的", 30, "形容修飾"], ["好吵/吵鬧的", 30, "形容修飾"], ["太多了", 30, "形容修飾"], ["三角形的", 31, "形容修飾"], ["新的", 31, "形容修飾"], ["好軟/軟軟的", 31, "形容修飾"], ["第一/第一名", 31, "形容修飾"], ["好苦/苦苦的", 31, "形容修飾"], ["空空的", 33, "形容修飾"], ["好慢/慢慢的", 33, "形容修飾"], ["討厭的", 33, "形容修飾"], ["長方形的", 33, "形容修飾"], ["乾乾的", 33, "形容修飾"], ["夠了", 35, "形容修飾"], ["可憐的", 37, "形容修飾"], ["傷心的/難過的", 37, "形容修飾"], ["安靜的", 37, "形容修飾"], ["滿滿的", 37, "形容修飾"], ["這個", 22, "指示數量"], ["一個（二、三個…）", 22, "指示數量"], ["好多", 24, "指示數量"], ["那個", 24, "指示數量"], ["沒半個/沒有", 25, "指示數量"], ["還有", 25, "指示數量"], ["很多", 28, "指示數量"], ["全部（通通）", 30, "指示數量"], ["一半（半個）", 33, "指示數量"], ["這些", 33, "指示數量"], ["那些", 33, "指示數量"], ["更多", 37, "指示數量"], ["什麼？", 26, "疑問語詞"], ["哪裡？", 26, "疑問語詞"], ["咦？", 26, "疑問語詞"], ["誰？", 28, "疑問語詞"], ["好不好？", 28, "疑問語詞"], ["怎麼（辦）？", 29, "疑問語詞"], ["（還有）呢？", 29, "疑問語詞"], ["嗎（對嗎/好嗎/是嗎）", 29, "疑問語詞"], ["為什麼？", 29, "疑問語詞"], ["哪一個？", 30, "疑問語詞"], ["幾個？", 30, "疑問語詞"], ["幾點？", 33, "疑問語詞"], ["多少？", 33, "疑問語詞"]];
 const NORMS=[[16, 80, 30.1, 35.1, 4.0, 75.3], [17, 87, 60.5, 64.4, 4.8, 160.0], [18, 84, 73.1, 68.7, 4.0, 184.0], [19, 84, 121.0, 107.3, 11.5, 306.0], [20, 84, 123.9, 103.2, 14.0, 290.0], [21, 88, 149.2, 116.8, 17.9, 310.3], [22, 96, 192.2, 155.8, 27.1, 457.6], [23, 105, 232.9, 153.7, 52.6, 454.4], [24, 124, 265.7, 160.6, 79.5, 490.0], [25, 110, 283.6, 161.6, 72.1, 521.6], [26, 87, 324.7, 171.0, 113.2, 567.2], [27, 92, 334.6, 182.0, 66.3, 595.1], [28, 100, 406.7, 166.6, 181.0, 633.9], [29, 88, 409.5, 149.5, 182.4, 621.1], [30, 94, 444.7, 169.8, 193.0, 647.0], [31, 88, 476.1, 162.0, 203.7, 651.2], [32, 82, 459.8, 177.0, 192.3, 670.9], [33, 85, 541.1, 135.2, 336.8, 685.0], [34, 77, 504.8, 181.0, 257.6, 689.2], [35, 81, 556.0, 113.9, 383.2, 686.6], [36, 81, 540.8, 117.0, 356.0, 687.8]];
 const COMP=[["<50", 35, 20, 3], ["51–100", 45, 25, 5], ["101–200", 50, 27, 7], ["201–300", 52, 28, 10], ["301–400", 52, 28, 12], ["401–500", 50, 27, 14], ["501–600", 48, 27, 15], [">600", 46, 27, 17]];
@@ -1643,8 +1791,10 @@ render();
 function switchMain(tab) {
   document.getElementById('sec-mcdi').style.display = tab==='mcdi'?'':'none';
   document.getElementById('sec-wu').style.display = tab==='wu'?'':'none';
+  document.getElementById('sec-pos').style.display = tab==='pos'?'':'none';
   document.getElementById('tab-mcdi').classList.toggle('on', tab==='mcdi');
   document.getElementById('tab-wu').classList.toggle('on', tab==='wu');
+  document.getElementById('tab-pos').classList.toggle('on', tab==='pos');
 }
 
 // ── MCDI sub-tabs ─────────────────────────────────────────────────────────
@@ -1794,9 +1944,390 @@ function renderComp() {
 // WU ET AL. 3-6yr section (existing logic, already in page)
 // ════════════════════════════════════════════════════════════════════════
 
-// Init Wu section on first load (keep existing functions)
+// Init Wu section on first load
 buildZyKeyboard();
 render();
+
+// ── Wu section sub-tabs ─────────────────────────────────────────────────────
+function switchWu(tab) {
+  document.getElementById('wu-vocab').style.display = tab==='vocab'?'':'none';
+  document.getElementById('wu-pos').style.display   = tab==='pos'?'':'none';
+  document.querySelectorAll('.wu-tab').forEach((b,i)=>{
+    b.classList.toggle('on', ['vocab','pos'][i]===tab);
+  });
+  if(tab==='pos') { renderNormTable(3); buildPosInputs(); }
+}
+
+// ── Norm table ───────────────────────────────────────────────────────────────
+let normAge = 3;
+function selectNormAge(age, btn) {
+  normAge = age;
+  document.querySelectorAll('.age-toggle-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderNormTable(age);
+}
+
+function renderNormTable(age) {
+  const norms = POS_NORMS[age];
+  const rows = POS_ORDER.map(p => {
+    const m = POS_META[p];
+    const val = norms[p];
+    const isKey = (p==='P'||p==='C'||p==='I');
+    return `<tr class="${isKey?'highlight-row':''}">
+      <td><span class="pos-badge" style="background:${m.color};color:${m.text}">${m.label}</span></td>
+      <td style="font-size:13px;font-weight:${isKey?600:400};color:${isKey?m.text:'#333'}">${val.toFixed(2)}</td>
+      <td style="font-size:11px;color:#888">${m.note}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('norm-table-wrap').innerHTML = `
+    <table class="pos-norm-table">
+      <thead><tr><th>詞類</th><th>平均每句頻率</th><th>說明</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── Client POS analysis ──────────────────────────────────────────────────────
+function buildPosInputs() {
+  const grid = document.getElementById('pos-input-grid');
+  if(grid.children.length > 0) return; // already built
+  grid.innerHTML = POS_ORDER.map(p => {
+    const m = POS_META[p];
+    return `<div class="pos-input-card">
+      <label style="background:${m.color};color:${m.text};padding:2px 6px;border-radius:4px;display:inline-block;margin-bottom:4px">
+        ${m.label}
+      </label>
+      <input type="number" id="ci-${p}" value="" min="0" placeholder="次數"
+        onchange="calcClient()" oninput="calcClient()">
+    </div>`;
+  }).join('');
+}
+
+function calcClient() {
+  const age = +document.getElementById('client-age').value;
+  const utts = +document.getElementById('client-utts').value || 100;
+  const norms = POS_NORMS[age];
+  const results = document.getElementById('client-results');
+
+  // collect inputs
+  const clientVals = {};
+  let anyInput = false;
+  POS_ORDER.forEach(p => {
+    const el = document.getElementById('ci-'+p);
+    const v = el ? +el.value : 0;
+    clientVals[p] = v;
+    if(v > 0) anyInput = true;
+  });
+
+  if(!anyInput) { results.innerHTML=''; return; }
+
+  const clientFreq = {};
+  POS_ORDER.forEach(p => { clientFreq[p] = clientVals[p] / utts; });
+
+  // render comparison bars
+  let html = '<div style="margin-bottom:8px;font-size:11px;color:#888">個案 vs 常模（黑線＝常模值）：</div>';
+  POS_ORDER.forEach(p => {
+    const m = POS_META[p];
+    const norm = norms[p];
+    const client = clientFreq[p];
+    const maxVal = Math.max(norm * 2, client * 1.1, 0.1);
+    const clientPct = Math.min((client/maxVal)*100, 100);
+    const normPct = Math.min((norm/maxVal)*100, 100);
+    const ratio = norm > 0 ? client/norm : 1;
+
+    let statusClass, statusLabel;
+    if(p==='I') {
+      // For interjection: high is bad
+      if(client <= norm * 1.3) { statusClass='status-ok'; statusLabel='正常'; }
+      else if(client <= norm * 2) { statusClass='status-low'; statusLabel='偏高'; }
+      else { statusClass='status-vlow'; statusLabel='過高'; }
+    } else {
+      if(ratio >= 0.8) { statusClass='status-ok'; statusLabel='正常'; }
+      else if(ratio >= 0.5) { statusClass='status-low'; statusLabel='偏低'; }
+      else { statusClass='status-vlow'; statusLabel='不足'; }
+    }
+
+    html += `<div class="result-row">
+      <div class="result-label"><span class="pos-badge" style="background:${m.color};color:${m.text};font-size:10px">${m.label}</span></div>
+      <div class="result-bar-wrap">
+        <div class="result-bar" style="width:${clientPct}%;background:${m.color};border:1px solid ${m.text}44"></div>
+        <div class="result-ref" style="left:${normPct}%"></div>
+      </div>
+      <div class="result-val" style="color:${m.text}">${client.toFixed(2)}</div>
+      <div class="result-status ${statusClass}">${statusLabel}</div>
+    </div>`;
+  });
+
+  // Intervention suggestions
+  const lowC = clientFreq['C'] < norms['C'] * 0.6;
+  const lowP = clientFreq['P'] < norms['P'] * 0.6;
+  const highI = clientFreq['I'] > norms['I'] * 2;
+  const lowD = clientFreq['D'] < norms['D'] * 0.6;
+  const lowT = clientFreq['T'] < norms['T'] * 0.6;
+
+  let suggestions = [];
+  if(lowC) suggestions.push({
+    tag:'C',color:'#fce0e0',textc:'#6a1515',
+    title:'優先目標：連接詞',
+    body:`個案連接詞使用頻率偏低（${clientFreq['C'].toFixed(2)} vs 常模 ${norms['C'].toFixed(2)}）。連接詞是擴增句長最有效的詞類之一。介入方向：然後、可是、因為、所以、還有。`
+  });
+  if(lowP) suggestions.push({
+    tag:'P',color:'#ddeafc',textc:'#0e3570',
+    title:'優先目標：介詞',
+    body:`個案介詞使用頻率偏低（${clientFreq['P'].toFixed(2)} vs 常模 ${norms['P'].toFixed(2)}）。介詞是句長正向預測因子。介入方向：跟、在、從、給、用。`
+  });
+  if(highI) suggestions.push({
+    tag:'I',color:'#f5f5f3',textc:'#888',
+    title:'注意：感嘆詞比例過高',
+    body:`感嘆詞（啊/喔/嗯/耶）在語言樣本中比例偏高（${clientFreq['I'].toFixed(2)} vs 常模 ${norms['I'].toFixed(2)}）。感嘆詞為句長負向預測因子，不代表語法能力，建議減少在語言樣本評估時的社交性填詞比重。`
+  });
+  if(lowD && !lowC && !lowP) suggestions.push({
+    tag:'D',color:'#faebd6',textc:'#5a2e00',
+    title:'可觀察：副詞',
+    body:`副詞使用偏少（${clientFreq['D'].toFixed(2)} vs 常模 ${norms['D'].toFixed(2)}）。副詞如「也、都、還、很、不、再」可豐富表達。`
+  });
+  if(lowT) suggestions.push({
+    tag:'T',color:'#ebebea',textc:'#3a3a38',
+    title:'可觀察：助詞',
+    body:`助詞（了、著、過、的）使用偏少（${clientFreq['T'].toFixed(2)} vs 常模 ${norms['T'].toFixed(2)}），可能反映時態/體貌標記發展不足。`
+  });
+  if(suggestions.length === 0) {
+    suggestions.push({tag:'',color:'#dff0d6',textc:'#1e4a0a',
+      title:'整體詞類使用符合同齡常模',
+      body:'各主要詞類頻率均在正常範圍內，如需進一步評估句法複雜度，可參考 MAPS-R（Cheung et al., 2024）。'
+    });
+  }
+
+  html += '<div class="interv-card"><h4>📋 臨床建議</h4>';
+  suggestions.forEach(s => {
+    html += `<div class="interv-item">
+      ${s.tag ? `<span style="background:${s.color};color:${s.textc};padding:1px 7px;border-radius:99px;font-size:10px;margin-right:5px;font-weight:600">${POS_META[s.tag]?.label||s.tag}</span>` : ''}
+      <b>${s.title}</b><br>
+      <span style="color:#555">${s.body}</span>
+    </div>`;
+  });
+  html += `<div style="font-size:10px;color:#aaa;margin-top:6px">依據：Wu &amp; Lin (2024). SAGE Open. 介詞與連接詞為跨 3–6 歲全年齡句長正向預測因子（p &lt; .001）。</div></div>`;
+
+  results.innerHTML = html;
+}
+
+// Init norm table when page loads (not shown until tab selected)
+
+
+// ── POS Analysis (Wu & Lin, 2024) ────────────────────────────────────────
+const POS_NORMS = {
+  '3': {V:1.20,N:1.01,T:0.26,P:0.04,Nh:0.57,Nf:0.13,Neu:0.05,I:0.10,D:0.31,C:0.16,A:0.13},
+  '4': {V:1.43,N:1.13,T:0.31,P:0.07,Nh:0.70,Nf:0.19,Neu:0.11,I:0.09,D:0.54,C:0.27,A:0.19},
+  '5': {V:1.63,N:1.29,T:0.34,P:0.08,Nh:0.74,Nf:0.22,Neu:0.14,I:0.08,D:0.66,C:0.37,A:0.20},
+  '6': {V:1.75,N:1.33,T:0.38,P:0.10,Nh:0.86,Nf:0.25,Neu:0.15,I:0.12,D:0.78,C:0.42,A:0.22}
+};
+
+const POS_INFO = [
+  {key:'V',  label:'動詞',   hint:'run、eat、play',    color:'#deeef9',fg:'#0a4070',role:'neutral'},
+  {key:'N',  label:'名詞',   hint:'人、事、物的名稱',  color:'#dff0d6',fg:'#1e4a0a',role:'neutral'},
+  {key:'Nh', label:'代名詞', hint:'我、你、他、這、那',color:'#e8e6fc',fg:'#2e2075',role:'neutral'},
+  {key:'D',  label:'副詞',   hint:'很、都、已經、才',  color:'#faebd6',fg:'#5a2e00',role:'neutral'},
+  {key:'T',  label:'助詞',   hint:'了、著、過、的',    color:'#ebebea',fg:'#3a3a38',role:'positive'},
+  {key:'C',  label:'連接詞', hint:'然後、可是、因為',  color:'#fae0d6',fg:'#6a2200',role:'key_positive'},
+  {key:'P',  label:'介詞',   hint:'跟、在、從、把、被',color:'#ddeafc',fg:'#0e3570',role:'key_positive'},
+  {key:'Nf', label:'量詞',   hint:'個、隻、本、杯',    color:'#d8f0e8',fg:'#05402e',role:'neutral'},
+  {key:'A',  label:'形容詞', hint:'大、小、好、漂亮',  color:'#fce0e0',fg:'#6a1515',role:'neutral'},
+  {key:'Neu',label:'數詞',   hint:'一、二、三、四',    color:'#f9e4ef',fg:'#5a1535',role:'neutral'},
+  {key:'I',  label:'感嘆詞', hint:'啊、喔、嗯、耶',   color:'#fff0dd',fg:'#6a3800',role:'key_negative'},
+];
+
+function renderPOSTable() {
+  const age = document.getElementById('pos-age').value;
+  const utt = +document.getElementById('pos-utt').value || 100;
+  const norm = POS_NORMS[age];
+  const div = document.getElementById('pos-norm-table');
+  if(!div) return;
+
+  // Calculate total norm words for percentage
+  const totalNorm = Object.values(norm).reduce((a,b)=>a+b,0);
+
+  let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12px">';
+  html += '<thead><tr style="background:#fafaf8">';
+  html += '<th style="text-align:left;padding:7px 10px;font-size:10px;font-weight:600;color:#999;border-bottom:2px solid #eee">詞類</th>';
+  html += '<th style="text-align:left;padding:7px 10px;font-size:10px;font-weight:600;color:#999;border-bottom:2px solid #eee">說明 / 範例</th>';
+  html += '<th style="text-align:center;padding:7px 10px;font-size:10px;font-weight:600;color:#999;border-bottom:2px solid #eee">每句平均</th>';
+  html += '<th style="text-align:center;padding:7px 10px;font-size:10px;font-weight:600;color:#999;border-bottom:2px solid #eee">'+utt+'句預期總詞數</th>';
+  html += '<th style="text-align:center;padding:7px 10px;font-size:10px;font-weight:600;color:#999;border-bottom:2px solid #eee">占所有詞類 %</th>';
+  html += '</tr></thead><tbody>';
+
+  POS_INFO.forEach(({key,label,hint,color,fg,role}) => {
+    const avg = norm[key];
+    const total = Math.round(avg * utt);
+    const pct = ((avg/totalNorm)*100).toFixed(1);
+    let roleTag = '';
+    if(role==='key_positive') roleTag='<span style="font-size:9px;padding:1px 5px;border-radius:99px;background:#dff0d6;color:#1e4a0a;margin-left:4px">★ 句長↑</span>';
+    if(role==='key_negative') roleTag='<span style="font-size:9px;padding:1px 5px;border-radius:99px;background:#fce0e0;color:#6a1515;margin-left:4px">▼ 句長↓</span>';
+    const rowBg = role==='key_positive'?'#fffdf5': role==='key_negative'?'#fff8f8':'';
+
+    html += `<tr style="border-bottom:1px solid #f2f2f0;background:${rowBg}">
+      <td style="padding:7px 10px;vertical-align:middle">
+        <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;background:${color};color:${fg}">${label}</span>${roleTag}
+      </td>
+      <td style="padding:7px 10px;font-size:11px;color:#888;vertical-align:middle">${hint}</td>
+      <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600;color:#1a1a1a;vertical-align:middle">${avg.toFixed(2)}</td>
+      <td style="padding:7px 10px;text-align:center;vertical-align:middle">
+        <span style="font-size:13px;font-weight:600;color:#1a1a1a">${total}</span>
+        <span style="font-size:10px;color:#aaa"> 詞</span>
+      </td>
+      <td style="padding:7px 10px;text-align:center;vertical-align:middle">
+        <div style="display:flex;align-items:center;gap:6px;justify-content:center">
+          <div style="width:50px;height:8px;background:#f0f0ee;border-radius:4px;overflow:hidden">
+            <div style="height:100%;width:${Math.min(+pct*2,100)}%;background:${color};border:1px solid ${fg}33;border-radius:4px"></div>
+          </div>
+          <span style="font-size:11px;font-weight:500;color:#444">${pct}%</span>
+        </div>
+      </td>
+    </tr>`;
+  });
+
+  // Total row
+  const totalExpected = Math.round(totalNorm * utt);
+  html += `<tr style="background:#f8f8f6;border-top:2px solid #eee">
+    <td style="padding:7px 10px;font-size:11px;font-weight:600;color:#555" colspan="2">合計</td>
+    <td style="padding:7px 10px;text-align:center;font-size:12px;font-weight:600;color:#555">${totalNorm.toFixed(2)}</td>
+    <td style="padding:7px 10px;text-align:center;font-size:13px;font-weight:600;color:#555">${totalExpected} 詞</td>
+    <td style="padding:7px 10px;text-align:center;font-size:11px;color:#888">100%</td>
+  </tr>`;
+
+  html += '</tbody></table></div>';
+  div.innerHTML = html;
+
+  // Also re-render client comparison if visible
+  if(document.getElementById('pos-show-client').checked) renderClientResult();
+}
+
+function toggleClientInputs() {
+  const show = document.getElementById('pos-show-client').checked;
+  const panel = document.getElementById('pos-client-panel');
+  panel.style.display = show ? '' : 'none';
+  if(show) {
+    buildClientInputs();
+    renderClientResult();
+  }
+}
+
+function buildClientInputs() {
+  const div = document.getElementById('pos-client-inputs');
+  if(!div || div.children.length > 0) return; // already built
+  POS_INFO.forEach(({key,label,hint,color,fg,role}) => {
+    let badge = '';
+    if(role==='key_positive') badge='<span style="font-size:9px;padding:1px 4px;border-radius:99px;background:#dff0d6;color:#1e4a0a;margin-left:3px">★</span>';
+    if(role==='key_negative') badge='<span style="font-size:9px;padding:1px 4px;border-radius:99px;background:#fce0e0;color:#6a1515;margin-left:3px">▼</span>';
+    div.innerHTML += `<div style="background:#fafaf8;border:1px solid #eee;border-radius:8px;padding:7px 9px">
+      <div style="display:flex;align-items:center;margin-bottom:4px">
+        <span style="font-size:11px;font-weight:600;padding:1px 7px;border-radius:99px;background:${color};color:${fg}">${label}</span>${badge}
+      </div>
+      <div style="font-size:10px;color:#bbb;margin-bottom:4px">${hint}</div>
+      <input type="number" id="pc-${key}" min="0" placeholder="總詞數" oninput="renderClientResult()"
+        style="width:100%;font-size:12px;border:1px solid #ddd;border-radius:5px;padding:3px 7px;box-sizing:border-box">
+    </div>`;
+  });
+}
+
+function renderClientResult() {
+  const age = document.getElementById('pos-age').value;
+  const utt = +document.getElementById('pos-utt').value || 100;
+  const norm = POS_NORMS[age];
+  const totalNorm = Object.values(norm).reduce((a,b)=>a+b,0);
+
+  const client = {};
+  let anyInput = false;
+  POS_INFO.forEach(({key}) => {
+    const el = document.getElementById('pc-'+key);
+    const v = el && el.value !== '' ? +el.value : null;
+    client[key] = v !== null ? v/utt : null;
+    if(v !== null) anyInput = true;
+  });
+
+  const res = document.getElementById('pos-client-result');
+  if(!res) return;
+  if(!anyInput) { res.innerHTML=''; document.getElementById('pos-interp').innerHTML=''; return; }
+
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:12px">';
+  html += '<thead><tr style="background:#fafaf8">';
+  html += '<th style="text-align:left;padding:6px 10px;font-size:10px;color:#999;border-bottom:2px solid #eee">詞類</th>';
+  html += '<th style="text-align:center;padding:6px 10px;font-size:10px;color:#999;border-bottom:2px solid #eee">個案每句平均</th>';
+  html += '<th style="text-align:center;padding:6px 10px;font-size:10px;color:#999;border-bottom:2px solid #eee">常模每句平均</th>';
+  html += '<th style="padding:6px 10px;font-size:10px;color:#999;border-bottom:2px solid #eee;text-align:left">視覺比較</th>';
+  html += '<th style="text-align:center;padding:6px 10px;font-size:10px;color:#999;border-bottom:2px solid #eee">判斷</th>';
+  html += '</tr></thead><tbody>';
+
+  POS_INFO.forEach(({key,label,color,fg,role}) => {
+    const normVal = norm[key];
+    const cv = client[key];
+    if(cv === null) return;
+
+    const maxBar = Math.max(normVal*1.5, cv*1.2, 0.05);
+    const normW = (normVal/maxBar*80).toFixed(0);
+    const clientW = Math.min((cv/maxBar*80),80).toFixed(0);
+
+    let judgeText, judgeBg, judgeFg;
+    if(role==='key_positive') {
+      if(cv < normVal*0.7){judgeText='⚠ 明顯不足';judgeBg='#fce0e0';judgeFg='#991b1b';}
+      else if(cv < normVal*0.9){judgeText='略低';judgeBg='#fef3c7';judgeFg='#92400e';}
+      else{judgeText='✓ 正常';judgeBg='#dff0d6';judgeFg='#166534';}
+    } else if(role==='key_negative') {
+      if(cv > normVal*1.4){judgeText='⚠ 偏高';judgeBg='#fce0e0';judgeFg='#991b1b';}
+      else{judgeText='✓ 正常';judgeBg='#dff0d6';judgeFg='#166534';}
+    } else {
+      if(cv < normVal*0.7){judgeText='低於常模';judgeBg='#fef3c7';judgeFg='#92400e';}
+      else if(cv > normVal*1.4){judgeText='高於常模';judgeBg='#e8e6fc';judgeFg='#2e2075';}
+      else{judgeText='✓ 正常';judgeBg='#dff0d6';judgeFg='#166534';}
+    }
+
+    html += `<tr style="border-bottom:1px solid #f2f2f0">
+      <td style="padding:6px 10px">
+        <span style="font-size:11px;font-weight:600;padding:1px 7px;border-radius:99px;background:${color};color:${fg}">${label}</span>
+      </td>
+      <td style="padding:6px 10px;text-align:center;font-weight:600;font-size:12px">${cv.toFixed(2)}</td>
+      <td style="padding:6px 10px;text-align:center;font-size:12px;color:#888">${normVal.toFixed(2)}</td>
+      <td style="padding:6px 10px;vertical-align:middle">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:9px;color:#aaa;width:24px;text-align:right">個案</span>
+            <div style="width:${clientW}px;height:8px;background:${color};border:1px solid ${fg}44;border-radius:3px;min-width:2px"></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:9px;color:#aaa;width:24px;text-align:right">常模</span>
+            <div style="width:${normW}px;height:8px;background:#e0e0de;border-radius:3px"></div>
+          </div>
+        </div>
+      </td>
+      <td style="padding:6px 10px;text-align:center">
+        <span style="font-size:10px;padding:2px 7px;border-radius:99px;background:${judgeBg};color:${judgeFg}">${judgeText}</span>
+      </td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  res.innerHTML = html;
+
+  // Interpretation
+  const low_C = client['C']!==null && client['C']<norm['C']*0.9;
+  const low_P = client['P']!==null && client['P']<norm['P']*0.9;
+  const high_I = client['I']!==null && client['I']>norm['I']*1.4;
+  const ageLabel = age+'歲';
+  let pts = [];
+  if(low_C&&low_P) pts.push(`<span style="color:#c2410c">⚠ 介詞與連接詞均低於常模。</span>兩者是${ageLabel}句長的最強正向預測因子（Wu &amp; Lin, 2024），建議優先設為介入目標。可引導個案使用「跟、在、把、從」（介詞）與「然後、可是、因為、所以」（連接詞）。`);
+  else if(low_C) pts.push(`<span style="color:#c2410c">⚠ 連接詞低於常模。</span>建議引導個案使用「然後、可是、因為、所以、還有」等連接詞。`);
+  else if(low_P) pts.push(`<span style="color:#c2410c">⚠ 介詞低於常模。</span>建議引導個案使用「跟、在、把、從、被」等介詞。`);
+  else pts.push('<span style="color:#166534">✓ 介詞和連接詞在正常範圍內。</span>');
+  if(high_I) pts.push('<span style="color:#991b1b">⚠ 感嘆詞偏高。</span>感嘆詞為句長負向預測因子，比例過高可能反映社交填充語偏多。');
+  if(client['V']!==null && client['V']<0.5) pts.push('<span style="color:#92400e">注意：動詞頻率偏低（每句 &lt; 0.5）。</span>動詞是句子核心，建議評估動詞使用情況。');
+  const interp = document.getElementById('pos-interp');
+  if(pts.length){
+    interp.innerHTML = '<div style="background:#f8f8f6;border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.8"><div style="font-weight:600;margin-bottom:6px">臨床解釋</div>'
+      + pts.map(p=>`<div style="margin-bottom:5px;padding-left:6px;border-left:3px solid #e0e0de">${p}</div>`).join('')
+      + '<div style="margin-top:6px;font-size:10px;color:#aaa">以上解釋基於團體常模，需結合個別評估情境判斷。</div></div>';
+  } else interp.innerHTML='';
+}
+
+// Initialize POS table on load
+document.addEventListener('DOMContentLoaded', ()=>{ renderPOSTable(); });
+
 </script>
 </body>
 </html>
