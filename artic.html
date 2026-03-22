@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>華語兒童構音發展</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+
+.site-nav{display:flex;align-items:center;gap:8px;background:#1a1a1a;padding:10px 20px;position:sticky;top:0;z-index:100}
+.site-nav-title{font-size:12px;color:#666;letter-spacing:.04em;flex:1}
+.site-nav a{font-size:12px;padding:5px 14px;border-radius:7px;text-decoration:none;font-weight:500;transition:all .15s}
+.nav-active{background:#fff;color:#1a1a1a}
+.nav-inactive{color:#aaa;border:1px solid #444}
+.nav-inactive:hover{color:#fff;border-color:#888}
+
+.page{max-width:820px;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+.subtitle{font-size:11px;color:#999;margin-bottom:1rem;line-height:1.7}
+
+/* ── Age bar ── */
+.age-bar{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:14px 18px;margin-bottom:1rem;display:flex;align-items:center;gap:14px}
+.age-label{font-size:13px;color:#888;white-space:nowrap}
+.age-bar input[type=range]{flex:1;accent-color:#1a1a1a;height:4px}
+.age-val{font-size:26px;font-weight:700;color:#1a1a1a;min-width:64px;text-align:right;white-space:nowrap}
+
+/* ── Legend ── */
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+.leg-dot{width:14px;height:14px;border-radius:4px}
+
+/* ── Sound grid ── */
+.grid-wrap{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:16px 18px;margin-bottom:1rem}
+.grid-label{font-size:10px;font-weight:600;color:#aaa;letter-spacing:.05em;margin-bottom:10px}
+.sound-grid{display:flex;flex-wrap:wrap;gap:9px}
+
+.s-btn{
+  width:52px;height:60px;border-radius:10px;border:2.5px solid transparent;
+  cursor:pointer;font-size:20px;font-weight:600;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;transition:all .15s;user-select:none;position:relative;
+}
+.s-btn:hover{transform:scale(1.06);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.s-btn.selected{box-shadow:0 0 0 3px #1a1a1a;transform:scale(1.08)}
+.s-btn-sub{font-size:8px;font-weight:500;letter-spacing:.02em;opacity:.75}
+
+/* States */
+.st-mastered {background:#d1fae5;border-color:#34d399;color:#065f46} /* 熟練 */
+.st-acquired {background:#dff0d6;border-color:#86efac;color:#166534} /* 習得 */
+.st-new      {background:#fef9c3;border-color:#facc15;color:#713f12;box-shadow:0 0 0 2px #facc15} /* 本齡新習得 */
+.st-emerging {background:#fef3c7;border-color:#fde68a;color:#92400e} /* 萌發期 */
+.st-not-yet  {background:#f3f4f6;border-color:#e5e7eb;color:#9ca3af} /* 未習得正常 */
+.st-retroflex{background:#ede9fe;border-color:#c4b5fd;color:#5b21b6} /* 捲舌特殊 */
+
+/* ── Info panel ── */
+.info-panel{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:16px 18px;margin-bottom:1rem;min-height:100px}
+.ip-empty{color:#ccc;font-size:13px;text-align:center;padding:20px 0}
+.ip-sound{font-size:40px;font-weight:700;margin-bottom:6px}
+.ip-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.badge{font-size:11px;padding:3px 10px;border-radius:99px}
+.badge-acq{background:#dff0d6;color:#166534}
+.badge-master{background:#deeef9;color:#0a4070}
+.badge-manner{background:#f3f4f6;color:#374151}
+.badge-place{background:#f3f4f6;color:#374151}
+.badge-warn{background:#fce0e0;color:#991b1b}
+.ip-note{font-size:12px;color:#555;line-height:1.75;margin-top:6px;padding:8px 10px;background:#fafaf8;border-radius:7px;border-left:3px solid #e0e0de}
+
+/* ── Summary strip ── */
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.sum-card{background:#fff;border:1px solid #e8e8e6;border-radius:10px;padding:12px 14px}
+.sum-title{font-size:10px;font-weight:600;color:#999;letter-spacing:.05em;margin-bottom:7px}
+.sum-chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:15px;font-weight:600;padding:4px 9px;border-radius:7px}
+
+/* ── Vowel/Nasal section ── */
+.vn-section{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:16px 18px;margin-bottom:1rem}
+.vn-title{font-size:12px;font-weight:600;color:#333;margin-bottom:8px}
+.vn-row{display:flex;gap:8px;align-items:center;font-size:12px;padding:6px 0;border-bottom:1px solid #f5f5f3}
+.vn-row:last-child{border-bottom:none}
+.vn-sound{font-size:18px;font-weight:700;width:36px}
+.vn-info{flex:1;color:#555}
+.vn-tag{font-size:10px;padding:2px 7px;border-radius:99px}
+
+.note{font-size:10px;color:#aaa;line-height:1.7;margin-top:.75rem}
+
+@media(max-width:600px){
+  .page{padding:1rem .75rem 3rem}
+  .s-btn{width:46px;height:54px;font-size:18px}
+  .summary{grid-template-columns:1fr}
+  .age-val{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<div class="site-nav">
+  <span class="site-nav-title">華語兒童語言發展檢索</span>
+  <a href="index.html" class="nav-inactive">📚 詞彙／句法</a>
+  <a href="artic.html" class="nav-active">🗣 構音發展</a>
+</div>
+
+<div class="page">
+  <p class="subtitle">
+    資料來源：鄭靜宜（2017）。華語學前兒童語音的習得。<em>華語文教學研究，14</em>(3)，109-136．N＝416，台灣北中南 3–6 歲。<br>
+    習得標準：同齡 <b>75%</b> 兒童正確構音；熟練標準：<b>90%</b>。
+  </p>
+
+  <!-- Age slider -->
+  <div class="age-bar">
+    <span class="age-label">個案年齡</span>
+    <input type="range" id="age-slider" min="2" max="7" step="0.5" value="4" oninput="update()">
+    <span class="age-val" id="age-val">4 歲</span>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#d1fae5;border:1.5px solid #34d399"></div>已熟練（90%）</div>
+    <div class="leg"><div class="leg-dot" style="background:#dff0d6;border:1.5px solid #86efac"></div>已習得（75%）</div>
+    <div class="leg"><div class="leg-dot" style="background:#fef9c3;border:2px solid #facc15"></div>本齡新習得</div>
+    <div class="leg"><div class="leg-dot" style="background:#f3f4f6;border:1.5px solid #e5e7eb"></div>尚未習得（正常）</div>
+    <div class="leg"><div class="leg-dot" style="background:#ede9fe;border:1.5px solid #c4b5fd"></div>捲舌音（台灣特殊）</div>
+  </div>
+
+  <!-- Sound grid -->
+  <div class="grid-wrap">
+    <div class="grid-label">聲母　—　點選查詳細資訊</div>
+    <div class="sound-grid" id="sound-grid"></div>
+  </div>
+
+  <!-- Info panel -->
+  <div class="info-panel" id="info-panel">
+    <div class="ip-empty">← 點選任意聲母查看習得年齡與臨床說明</div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary" id="summary">
+    <div class="sum-card">
+      <div class="sum-title">✓ 此年齡應已習得（出錯需留意）</div>
+      <div class="sum-chips" id="sum-acquired"></div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-title">○ 尚未習得屬正常（不需介入）</div>
+      <div class="sum-chips" id="sum-notyet"></div>
+    </div>
+  </div>
+
+  <!-- Vowel & Nasal -->
+  <div class="vn-section">
+    <div class="vn-title">韻母與鼻韻習得參考</div>
+
+    <div class="vn-row">
+      <div class="vn-sound" style="color:#166534">母音</div>
+      <div class="vn-info">ㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡ — <b>3 歲前</b>全部達習得（捲舌母音ㄦ除外）</div>
+      <span class="vn-tag" style="background:#dff0d6;color:#166534">3 歲前</span>
+    </div>
+    <div class="vn-row">
+      <div class="vn-sound" style="color:#5b21b6">ㄦ</div>
+      <div class="vn-info">捲舌母音 — 6 歲時正確率僅 43%，尚未達習得水準</div>
+      <span class="vn-tag" style="background:#ede9fe;color:#5b21b6">6 歲後</span>
+    </div>
+    <div class="vn-row">
+      <div class="vn-sound">ㄢ ㄣ ㄥ</div>
+      <div class="vn-info">前鼻韻、後鼻韻 — <b>4 歲</b>達習得；常見錯誤：鼻音省略、ㄣ↔ㄥ替代</div>
+      <span class="vn-tag" style="background:#faebd6;color:#92400e">4 歲</span>
+    </div>
+    <div class="vn-row">
+      <div class="vn-sound">ㄤ</div>
+      <div class="vn-info">軟顎鼻韻 — 最晚習得，<b>5 歲</b>才達習得水準；6 歲仍未達熟練</div>
+      <span class="vn-tag" style="background:#fce0e0;color:#991b1b">5 歲</span>
+    </div>
+
+    <p class="note">
+      鼻韻錯誤主要為「末尾鼻音省略」（ㄢ→ㄚ、ㄤ→ㄚ）或「構音位置替代」（ㄣ↔ㄥ）。<br>
+      3 歲兒童四個鼻韻均尚未達習得標準，屬正常發展。
+    </p>
+  </div>
+
+  <p class="note" style="padding:0 2px">
+    ⚠ <b>捲舌音說明：</b>ㄓㄔㄕㄖ 在台灣因受台語語言環境影響，不捲舌化極為普遍，即使成人也常見。評估時應將捲舌音的不捲舌化與其他音素錯誤分開考量，不宜直接視為構音異常。
+  </p>
+</div>
+
+<script>
+const SOUNDS = [
+  {s:'ㄅ',acq:2.5,master:2.5,manner:'塞音（不送氣）',place:'雙唇音',
+   note:'最早習得音素之一。嬰兒期喃語即常出現，屬「早期音」代表。'},
+  {s:'ㄆ',acq:4,  master:5,  manner:'塞音（送氣）',  place:'雙唇音',
+   note:'送氣音習得晚於同部位不送氣音（ㄅ）約一年，符合「不送氣早於送氣」的普遍趨勢。'},
+  {s:'ㄇ',acq:2.5,master:2.5,manner:'鼻音',          place:'雙唇音',
+   note:'最早習得的鼻音。嬰兒期喃語即常出現（如「媽媽」）。'},
+  {s:'ㄈ',acq:5,  master:6,  manner:'摩擦音',        place:'唇齒音',
+   note:'摩擦音需要精細的氣流控制，習得較晚。5 歲仍未習得屬正常範圍。'},
+  {s:'ㄉ',acq:3,  master:4,  manner:'塞音（不送氣）',place:'齒槽音',
+   note:'3 歲應習得。若 3 歲後仍明顯錯誤，需評估是否有構音問題。'},
+  {s:'ㄊ',acq:4,  master:5,  manner:'塞音（送氣）',  place:'齒槽音',
+   note:'送氣齒槽塞音，4 歲習得。符合「送氣晚於不送氣」趨勢。'},
+  {s:'ㄋ',acq:2.5,master:2.5,manner:'鼻音',          place:'齒槽音',
+   note:'最早習得音素之一，3 歲前已達熟練。'},
+  {s:'ㄌ',acq:3,  master:4,  manner:'邊音',          place:'齒槽音',
+   note:'3 歲習得。邊音在華語中較英語少，發展時間相對早。'},
+  {s:'ㄍ',acq:3,  master:4,  manner:'塞音（不送氣）',place:'軟顎音',
+   note:'3 歲習得。不送氣軟顎塞音。'},
+  {s:'ㄎ',acq:4,  master:5,  manner:'塞音（送氣）',  place:'軟顎音',
+   note:'送氣軟顎塞音，4 歲習得。'},
+  {s:'ㄏ',acq:2.5,master:2.5,manner:'摩擦音',        place:'喉音',
+   note:'雖為摩擦音，但口道較開放，構音動作相對簡單，故較早習得（3 歲前），是摩擦音中最早發展的音。'},
+  {s:'ㄐ',acq:3,  master:4,  manner:'塞擦音（不送氣）',place:'舌面音',
+   note:'不送氣舌面塞擦音，3 歲習得。應早於送氣的ㄑ習得。'},
+  {s:'ㄑ',acq:4,  master:5,  manner:'塞擦音（送氣）', place:'舌面音',
+   note:'送氣舌面塞擦音，4 歲習得。'},
+  {s:'ㄒ',acq:4,  master:5,  manner:'摩擦音',         place:'舌面音',
+   note:'舌面摩擦音，4 歲習得。'},
+  {s:'ㄓ',acq:7,  master:7,  manner:'塞擦音（捲舌）', place:'捲舌音',
+   note:'⚠ 台灣特殊狀況：不捲舌化在台灣華語成人中極為普遍，受台語影響所致。學前兒童未習得此音屬正常，評估時應與其他錯誤音分開考量。'},
+  {s:'ㄔ',acq:7,  master:7,  manner:'塞擦音（捲舌）', place:'捲舌音',
+   note:'⚠ 台灣特殊狀況：同ㄓ，不捲舌化普遍，勿輕易列為介入目標音。'},
+  {s:'ㄕ',acq:7,  master:7,  manner:'摩擦音（捲舌）', place:'捲舌音',
+   note:'⚠ 台灣特殊狀況：同ㄓ，不捲舌化普遍，勿輕易列為介入目標音。'},
+  {s:'ㄖ',acq:7,  master:7,  manner:'摩擦音（捲舌）', place:'捲舌音',
+   note:'⚠ 台灣特殊狀況：同ㄓ，不捲舌化普遍，勿輕易列為介入目標音。'},
+  {s:'ㄗ',acq:5,  master:6,  manner:'塞擦音（不送氣）',place:'齒槽音',
+   note:'舌尖前塞擦音，構音動作精細，5 歲習得。4 歲未習得屬正常。'},
+  {s:'ㄘ',acq:5,  master:6,  manner:'塞擦音（送氣）', place:'齒槽音',
+   note:'送氣齒槽塞擦音，5 歲習得。'},
+  {s:'ㄙ',acq:5,  master:6,  manner:'摩擦音',         place:'齒槽音',
+   note:'舌尖前摩擦音，5 歲習得。與ㄗ、ㄘ同為較晚習得的齒槽音群。'},
+];
+
+const ACQ_BG = {
+  master:  {bg:'#d1fae5',border:'#34d399',text:'#065f46'},
+  acquired:{bg:'#dff0d6',border:'#86efac',text:'#166534'},
+  new:     {bg:'#fef9c3',border:'#facc15',text:'#713f12'},
+  notyet:  {bg:'#f3f4f6',border:'#e5e7eb',text:'#9ca3af'},
+  retroflex:{bg:'#ede9fe',border:'#c4b5fd',text:'#5b21b6'},
+};
+
+let selectedIdx = null;
+
+function getAge() { return +document.getElementById('age-slider').value; }
+
+function getState(sd, age) {
+  if(sd.acq >= 7) return 'retroflex';
+  if(age >= sd.master + 1) return 'master';   // roughly mastered
+  if(age >= sd.acq) {
+    // check if "new" this age step
+    if(sd.acq > age - 0.5) return 'new';
+    return 'acquired';
+  }
+  return 'notyet';
+}
+
+function stateClass(state) {
+  return {master:'st-mastered',acquired:'st-acquired',new:'st-new',notyet:'st-not-yet',retroflex:'st-retroflex'}[state];
+}
+
+function buildGrid() {
+  const grid = document.getElementById('sound-grid');
+  SOUNDS.forEach((sd, i) => {
+    const btn = document.createElement('button');
+    btn.id = 'sb-'+i;
+    btn.className = 's-btn';
+    btn.innerHTML = sd.s + '<span class="s-btn-sub">' + sd.place.replace('音','') + '</span>';
+    btn.onclick = () => selectSound(i);
+    grid.appendChild(btn);
+  });
+}
+
+function selectSound(i) {
+  selectedIdx = i;
+  update();
+  // Scroll info panel into view on mobile
+  document.getElementById('info-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function renderInfo(i, age) {
+  const sd = SOUNDS[i];
+  const state = getState(sd, age);
+  const panel = document.getElementById('info-panel');
+
+  const acqLabel = sd.acq >= 7 ? '6 歲後' : sd.acq <= 2.5 ? '3 歲前' : sd.acq + ' 歲';
+  const masterLabel = sd.master >= 7 ? '6 歲後' : sd.master <= 2.5 ? '3 歲前' : (sd.master+1) + ' 歲（約）';
+
+  let statusBadge = '';
+  if(state==='master')    statusBadge = '<span class="badge" style="background:#d1fae5;color:#065f46">✓ 此年齡已達熟練</span>';
+  if(state==='acquired')  statusBadge = '<span class="badge" style="background:#dff0d6;color:#166534">✓ 此年齡已習得</span>';
+  if(state==='new')       statusBadge = '<span class="badge" style="background:#fef9c3;color:#713f12">★ 本年齡新習得</span>';
+  if(state==='notyet')    statusBadge = '<span class="badge" style="background:#f3f4f6;color:#374151">○ 此年齡尚未習得屬正常</span>';
+  if(state==='retroflex') statusBadge = '<span class="badge" style="background:#ede9fe;color:#5b21b6">⚠ 台灣特殊說明</span>';
+
+  panel.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:14px">
+      <div class="ip-sound" style="background:${ACQ_BG[state].bg};color:${ACQ_BG[state].text};padding:8px 16px;border-radius:10px;border:2px solid ${ACQ_BG[state].border}">${sd.s}</div>
+      <div style="flex:1;min-width:0">
+        <div class="ip-badges">
+          ${statusBadge}
+          <span class="badge badge-acq">習得：${acqLabel}</span>
+          <span class="badge badge-master">熟練：${masterLabel}</span>
+          <span class="badge badge-manner">${sd.manner}</span>
+          <span class="badge badge-place">${sd.place}</span>
+        </div>
+        <div class="ip-note">${sd.note || '—'}</div>
+      </div>
+    </div>`;
+}
+
+function update() {
+  const age = getAge();
+  const label = age === Math.floor(age) ? age+'歲' : age+'歲半';
+  document.getElementById('age-val').textContent = label;
+
+  const acquiredChips = [];
+  const notyetChips = [];
+
+  SOUNDS.forEach((sd, i) => {
+    const state = getState(sd, age);
+    const btn = document.getElementById('sb-'+i);
+    btn.className = 's-btn ' + stateClass(state) + (selectedIdx===i?' selected':'');
+
+    if(state !== 'notyet' && state !== 'retroflex') {
+      acquiredChips.push(`<span class="chip" style="background:${ACQ_BG[state].bg};color:${ACQ_BG[state].text};border:1.5px solid ${ACQ_BG[state].border}">${sd.s}</span>`);
+    } else if(state === 'notyet') {
+      notyetChips.push(`<span class="chip" style="background:#f3f4f6;color:#9ca3af">${sd.s}</span>`);
+    } else {
+      notyetChips.push(`<span class="chip" style="background:#ede9fe;color:#5b21b6">${sd.s}</span>`);
+    }
+  });
+
+  document.getElementById('sum-acquired').innerHTML = acquiredChips.join('');
+  document.getElementById('sum-notyet').innerHTML = notyetChips.join('');
+
+  if(selectedIdx !== null) renderInfo(selectedIdx, age);
+}
+
+buildGrid();
+update();
+</script>
+</body>
+</html>

@@ -160,11 +160,24 @@ tbody td{padding:5px 8px;border-bottom:1px solid #f2f2f0;vertical-align:middle}
 .tag-c{background:#fce0e0;color:#6a1515;padding:1px 6px;border-radius:99px;font-size:10px;margin-right:4px}
 .tag-i{background:#f5f5f3;color:#888;padding:1px 6px;border-radius:99px;font-size:10px;margin-right:4px}
 
+
+/* ── Site nav ── */
+.site-nav{display:flex;align-items:center;gap:8px;background:#1a1a1a;padding:10px 20px;position:sticky;top:0;z-index:100}
+.site-nav-title{font-size:12px;color:#666;letter-spacing:.04em;flex:1}
+.site-nav a{font-size:12px;padding:5px 14px;border-radius:7px;text-decoration:none;font-weight:500;transition:all .15s}
+.nav-active{background:#fff;color:#1a1a1a}
+.nav-inactive{color:#aaa;border:1px solid #444}
+.nav-inactive:hover{color:#fff;border-color:#888}
 </style>
 </head>
 <body>
+<div class="site-nav">
+  <span class="site-nav-title">華語兒童語言發展檢索</span>
+  <a href="index.html" class="nav-active">📚 詞彙 ／ 句法</a>
+  <a href="artic.html" class="nav-inactive">🗣 構音發展</a>
+</div>
 <div class="page">
-  <h1>華語兒童詞彙發展檢索</h1>
+  
   <p class="subtitle">
     <b>嬰幼兒期</b>：劉惠美、陳昱君（2015）．教育心理學報，47(2)，217-242　<a href="https://doi.org/10.6251/BEP.20150205" target="_blank">DOI</a>　·　MCDI 台灣版常模，N=1897，16–36 個月<br>
     <b>學齡前期</b>：Wu, Lin, Huang &amp; Tsai (2021)．SAGE Open　<a href="https://doi.org/10.1177/21582440211036109" target="_blank">DOI</a>　·　語言樣本，N=209，3–6 歲
