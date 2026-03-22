@@ -107,6 +107,104 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 .pp-card.pp-rising{border-color:#93c5fd;background:#f0f7ff}
 .pp-card.pp-rare{border-color:#d1d5db;background:#fafafa;opacity:.75}
 
+/* ── Table modal ── */
+.tbl-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.tbl-modal{background:#fff;border-radius:14px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.tbl-modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #f0f0ee;position:sticky;top:0;background:#fff;z-index:1;border-radius:14px 14px 0 0}
+.tbl-modal-title{font-size:14px;font-weight:600;color:#1a1a1a}
+.tbl-modal-close{width:28px;height:28px;border-radius:99px;border:1px solid #e0e0de;background:#fff;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:#666}
+.tbl-modal-close:hover{background:#f0f0ee}
+.tbl-modal-body{padding:16px 20px 20px}
+/* occurrence table */
+.occ-table{width:100%;border-collapse:collapse;font-size:11px}
+.occ-table th{padding:5px 7px;text-align:center;font-size:10px;font-weight:600;color:#555;border:1px solid #e0e0de;background:#f5f5f3;white-space:nowrap}
+.occ-table td{padding:5px 7px;text-align:center;border:1px solid #e8e8e6;font-weight:500;white-space:nowrap}
+.occ-table .age-col{font-weight:700;color:#1a1a1a;background:#f5f5f3;text-align:center}
+.occ-suppressed{background:#d1d5db;color:#374151}   /* gray: >10%, not yet suppressed */
+.occ-suppressing{background:#fef9c3;color:#713f12}  /* yellow: 10–20%, transitioning */
+.occ-done{background:#fff;color:#9ca3af}            /* white: <10%, suppressed */
+.occ-special{background:#d1fae5;color:#065f46}      /* green: 不捲舌化 special */
+.occ-rising{background:#dbeafe;color:#1e40af}       /* blue: 捲舌化 rising */
+.occ-rare{background:#fef3c7;color:#92400e}         /* amber: rare processes */
+.occ-zero{background:#fff;color:#d1d5db}            /* 0% */
+.occ-group-label{font-size:10px;font-weight:700;padding:4px 8px;text-align:center;border:1px solid #e0e0de}
+.occ-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.occ-leg{display:flex;align-items:center;gap:4px;font-size:10px;color:#555}
+.occ-leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* ── Phonological Analyzer ── */
+.anlz-panel{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:16px 18px;margin-bottom:1rem}
+.anlz-title{font-size:12px;font-weight:600;color:#333;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.anlz-inputs{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
+.anlz-field{display:flex;flex-direction:column;gap:4px}
+.anlz-label{font-size:10px;font-weight:600;color:#888;letter-spacing:.03em}
+.anlz-input{width:96px;padding:8px 10px;border:1.5px solid #ddd;border-radius:8px;font-size:18px;text-align:center;outline:none;font-family:inherit;background:#fafaf8}
+.anlz-input:focus{border-color:#1a1a1a;background:#fff}
+.anlz-input.error{border-color:#f87171;background:#fff8f8}
+.anlz-arrow{font-size:20px;color:#ccc;padding-bottom:6px;align-self:flex-end}
+.anlz-btn{padding:9px 20px;border-radius:8px;background:#1a1a1a;color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;align-self:flex-end;white-space:nowrap}
+.anlz-btn:hover{background:#333}
+.anlz-hint{font-size:10px;color:#bbb;line-height:1.6;margin-bottom:6px}
+.anlz-clear{font-size:10px;color:#aaa;background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;align-self:flex-end;margin-bottom:10px}
+
+/* Stimulability panel */
+.stim-panel{margin-top:10px;padding:10px 12px;background:#f0f7ff;border:1.5px solid #bfdbfe;border-radius:10px}
+.stim-title{font-size:11px;font-weight:600;color:#1e40af;margin-bottom:8px}
+.stim-options{display:flex;gap:8px;flex-wrap:wrap}
+.stim-btn{padding:5px 14px;border-radius:99px;font-size:11px;font-weight:500;border:1.5px solid #93c5fd;background:#fff;color:#1e40af;cursor:pointer;transition:all .15s}
+.stim-btn:hover{background:#dbeafe}
+.stim-btn.stim-selected-yes{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.stim-btn.stim-selected-no{background:#dc2626;color:#fff;border-color:#dc2626}
+.stim-result{margin-top:8px;font-size:11px;line-height:1.7;padding:8px 10px;border-radius:8px}
+.stim-result.stim-yes{background:#dff0d6;color:#14532d}
+.stim-result.stim-no{background:#fce0e0;color:#7f1d1d}
+
+/* ── Method tooltips ── */
+.method-link{color:#1d4ed8;text-decoration:underline dotted;cursor:pointer;font-weight:600;position:relative;white-space:nowrap}
+.method-link:hover{color:#1e40af}
+.method-tooltip{
+  display:none;position:fixed;z-index:999;
+  background:#1a1a1a;color:#fff;
+  border-radius:12px;padding:14px 16px;
+  width:300px;max-width:90vw;
+  font-size:11px;line-height:1.75;
+  box-shadow:0 8px 32px rgba(0,0,0,.35);
+  pointer-events:none;
+}
+.method-tooltip.show{display:block}
+.method-tooltip-title{font-size:12px;font-weight:700;margin-bottom:6px;color:#fbbf24}
+.method-tooltip-src{font-size:9px;color:#6b7280;margin-top:8px;border-top:1px solid #333;padding-top:5px}
+/* results */
+.anlz-results{margin-top:6px}
+.anlz-empty{font-size:12px;color:#bbb;text-align:center;padding:16px 0}
+.anlz-correct{padding:12px 14px;background:#dff0d6;border-radius:10px;color:#166534;font-size:12px;font-weight:600}
+.anlz-omit{padding:12px 14px;background:#fce0e0;border-radius:10px;color:#991b1b;font-size:12px;font-weight:600}
+.anlz-result-card{background:#f8f8f6;border-radius:10px;padding:12px 14px;margin-bottom:8px;border-left:4px solid #e0e0de}
+.anlz-result-card.priority-high{border-left-color:#ef4444;background:#fff8f8}
+.anlz-result-card.priority-med{border-left-color:#f59e0b;background:#fffdf0}
+.anlz-result-card.priority-low{border-left-color:#d1d5db;background:#fafafa}
+.anlz-result-card.priority-special{border-left-color:#7c3aed;background:#faf7ff}
+.anlz-proc-name{font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:3px}
+.anlz-proc-def{font-size:11px;color:#555;margin-bottom:8px;line-height:1.6}
+.anlz-meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.anlz-badge{font-size:10px;padding:2px 8px;border-radius:99px;display:inline-block}
+.anlz-verdict{font-size:11px;font-weight:600;padding:6px 10px;border-radius:7px;margin-bottom:6px}
+.anlz-verdict.normal{background:#dff0d6;color:#166534}
+.anlz-verdict.concern{background:#fce0e0;color:#991b1b}
+.anlz-verdict.transitional{background:#fef3c7;color:#92400e}
+.anlz-verdict.special{background:#ede9fe;color:#5b21b6}
+.anlz-ssd-row{display:flex;gap:6px;align-items:center;font-size:10px;color:#92400e;background:#fafaf8;padding:5px 8px;border-radius:6px;margin-bottom:4px}
+.anlz-priority{font-size:11px;padding:5px 10px;border-radius:7px;font-weight:600}
+.anlz-priority.high{background:#fce0e0;color:#991b1b}
+.anlz-priority.med{background:#fef3c7;color:#92400e}
+.anlz-priority.low{background:#f3f4f6;color:#6b7280}
+.anlz-priority.special{background:#ede9fe;color:#5b21b6}
+.anlz-summary{padding:10px 12px;background:#1a1a1a;border-radius:10px;color:#fff;font-size:11px;line-height:1.7;margin-top:4px}
+@media(max-width:600px){
+  .anlz-inputs{flex-direction:column;align-items:stretch}
+  .anlz-input{width:100%}
+}
+
 /* header */
 .pp-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
 .pp-name{font-size:14px;font-weight:700;color:#1a1a1a}
@@ -172,7 +270,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
   <!-- Page tabs -->
   <div class="page-tabs">
     <button class="page-tab on" id="tab-btn-sound" onclick="switchTab('sound')">🗣 聲母習得</button>
-    <button class="page-tab" id="tab-btn-phono" onclick="switchTab('phono')">🔄 音韻歷程消失時間</button>
+    <button class="page-tab" id="tab-btn-phono" onclick="switchTab('phono')">🔍 音韻歷程＋分析</button>
   </div>
 
   <!-- ════ TAB 1: 聲母習得 ════ -->
@@ -259,6 +357,106 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
     <span class="age-label">個案年齡</span>
     <input type="range" id="pp-age-slider" min="2" max="7" step="0.5" value="4" oninput="updatePhono()">
     <span class="age-val" id="pp-age-val">4 歲</span>
+    <button onclick="origOpenModal()" style="padding:5px 12px;border-radius:7px;border:1px solid #ddd;background:#fff;font-size:11px;color:#444;cursor:pointer;white-space:nowrap;flex-shrink:0">📊 出現率總表</button>
+  </div>
+
+  <!-- Occurrence rate modal -->
+  <div id="occ-modal" class="tbl-modal-overlay" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+    <div class="tbl-modal">
+      <div class="tbl-modal-header">
+        <div>
+          <div class="tbl-modal-title">音韻歷程出現率總表</div>
+          <div style="font-size:10px;color:#aaa;margin-top:2px">鄭靜宜（2011），表 3。N＝326 位普通兒童，2.5–6 歲。灰色＝尚未被抑制（&gt;10%）</div>
+        </div>
+        <button class="tbl-modal-close" onclick="document.getElementById('occ-modal').style.display='none'">✕</button>
+      </div>
+      <div class="tbl-modal-body">
+
+        <!-- Group header labels -->
+        <table class="occ-table" style="margin-bottom:2px">
+          <colgroup>
+            <col style="width:44px">
+            <col span="8"><!-- developmental -->
+            <col span="6"><!-- rare -->
+          </colgroup>
+          <thead>
+            <tr>
+              <th rowspan="2" style="background:#1a1a1a;color:#fff;font-size:11px">年齡組<br><span style="font-weight:400;font-size:9px">（歲）</span></th>
+              <th colspan="8" class="occ-group-label" style="background:#374151;color:#fff">發展性音韻歷程</th>
+              <th colspan="6" class="occ-group-label" style="background:#92400e;color:#fff">罕見音韻歷程</th>
+            </tr>
+            <tr>
+              <th style="background:#ede9fe;color:#5b21b6">不捲舌化</th>
+              <th>後置化</th>
+              <th>塞音化</th>
+              <th>塞擦音化</th>
+              <th>不送氣化</th>
+              <th>聲母省略</th>
+              <th>摩擦音化</th>
+              <th>前置化</th>
+              <th style="background:#dbeafe;color:#1e40af">捲舌化</th>
+              <th style="background:#fef3c7;color:#92400e">邊音化</th>
+              <th style="background:#fef3c7;color:#92400e">唇音化</th>
+              <th style="background:#fef3c7;color:#92400e">鼻音化</th>
+              <th style="background:#fef3c7;color:#92400e">齒槽音化</th>
+              <th style="background:#fef3c7;color:#92400e">送氣化</th>
+            </tr>
+          </thead>
+          <tbody id="occ-tbody"></tbody>
+        </table>
+
+        <!-- Legend -->
+        <div class="occ-legend">
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#d1d5db;border:1px solid #9ca3af"></div>尚未被抑制（&gt;10%）</div>
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#fef9c3;border:1px solid #fde68a"></div>過渡中（10–20%）</div>
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#fff;border:1px solid #e5e7eb"></div>已達抑制（&lt;10%）</div>
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#d1fae5;border:1px solid #34d399"></div>不捲舌化（台灣特殊）</div>
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#dbeafe;border:1px solid #93c5fd"></div>捲舌化（上升型）</div>
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#fef3c7;border:1px solid #fde68a"></div>罕見歷程欄</div>
+        </div>
+        <p style="font-size:10px;color:#aaa;margin-top:10px;line-height:1.6">
+          出現率以各年齡組兒童中有此歷程人數之百分比計算。各歷程至少出現兩次以上方列入計算。<br>
+          抑制標準：出現率在 10% 以下視為該年齡層已達歷程抑制（Hua, 2002；Hua &amp; Dodd, 2000a）。
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Phonological Analyzer ── -->
+  <div class="anlz-panel">
+    <div class="anlz-title">🔍 音韻歷程快速分析</div>
+    <div class="anlz-hint">輸入個案的目標聲母與實際說出的聲母，自動辨識音韻歷程並連動上方年齡滑桿判斷是否正常。若聲母被完全省略，「個案說出」欄位填入「省」。</div>
+    <div class="anlz-inputs">
+      <div class="anlz-field">
+        <span class="anlz-label">目標聲母（正確）</span>
+        <input class="anlz-input" id="anlz-target" placeholder="ㄊ" maxlength="2" oninput="anlzClearError(this)">
+      </div>
+      <div class="anlz-arrow">→</div>
+      <div class="anlz-field">
+        <span class="anlz-label">個案說出的聲母</span>
+        <input class="anlz-input" id="anlz-error" placeholder="ㄉ" maxlength="2" oninput="anlzClearError(this)" onkeydown="if(event.key==='Enter')runAnalysis()">
+      </div>
+      <button class="anlz-btn" onclick="runAnalysis()">分析</button>
+      <button class="anlz-clear" onclick="clearAnalysis()">清除</button>
+    </div>
+    <div class="anlz-results" id="anlz-results">
+      <div class="anlz-empty">輸入聲母後點「分析」</div>
+    </div>
+
+    <!-- Stimulability follow-up -->
+    <div class="stim-panel" id="stim-panel" style="display:none">
+      <div class="stim-title">📋 目標音可刺激性（Stimulability）</div>
+      <div style="font-size:10px;color:#3b82f6;margin-bottom:8px;line-height:1.6">
+        個案在示範與口語引導下，能否發出正確的目標音<b>「<span id="stim-target-label">─</span>」</b>？<br>
+        <span style="color:#6b7280">（聽覺刺激／模仿嘗試，不需達到穩定正確率）</span>
+      </div>
+      <div class="stim-options">
+        <button class="stim-btn" id="stim-yes" onclick="selectStim('yes')">✓ 可刺激（可模仿發出）</button>
+        <button class="stim-btn" id="stim-no" onclick="selectStim('no')">✕ 不可刺激（模仿後仍錯誤）</button>
+        <button class="stim-btn" id="stim-unknown" onclick="selectStim('unknown')" style="border-color:#d1d5db;color:#6b7280">? 未測試</button>
+      </div>
+      <div class="stim-result" id="stim-result" style="display:none"></div>
+    </div>
   </div>
 
   <!-- Legend -->
@@ -699,6 +897,52 @@ function makeSSDBar(proc, normalRate) {
   </div>`;
 }
 
+// ════════ Occurrence rate table ════════
+const OCC_TABLE_DATA = [
+  // [不捲舌化, 後置化, 塞音化, 塞擦音化, 不送氣化, 聲母省略, 摩擦音化, 前置化, 捲舌化, 邊音化, 唇音化, 鼻音化, 齒槽音化, 送氣化]
+  { age:'2.5', vals:[91,81,68,51,47,30,19,19,2,6,2,2,0,0] },
+  { age:'3',   vals:[86,73,59,39,39,24,14,4,10,10,0,2,2,2] },
+  { age:'3.5', vals:[88,53,45,37,16,10,10,8,8,4,0,0,0,0] },
+  { age:'4',   vals:[80,31,27,22,10,3,5,2,15,3,0,0,0,0] },
+  { age:'5',   vals:[72,11,11,6,9,2,0,2,19,4,0,0,0,0] },
+  { age:'6',   vals:[64,3,2,3,2,0,0,0,23,2,0,0,0,0] },
+];
+// Which col indices are "rare" (amber header)
+const RARE_COLS = new Set([8,9,10,11,12,13]); // 捲舌化=8 is rising, 9-13 rare
+
+function cellClass(colIdx, val) {
+  if(colIdx === 0) return 'occ-special';   // 不捲舌化 always green
+  if(colIdx === 8) {                        // 捲舌化 always blue
+    return val === 0 ? 'occ-zero' : 'occ-rising';
+  }
+  if(RARE_COLS.has(colIdx)) {
+    return val === 0 ? 'occ-zero' : 'occ-rare';
+  }
+  if(val === 0) return 'occ-zero';
+  if(val < 10) return 'occ-done';
+  if(val < 20) return 'occ-suppressing';
+  return 'occ-suppressed';
+}
+
+function buildOccTable() {
+  const tbody = document.getElementById('occ-tbody');
+  if(!tbody || tbody.children.length > 0) return;
+  OCC_TABLE_DATA.forEach(({age, vals}) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="age-col">${age}</td>` +
+      vals.map((v,i) => `<td class="${cellClass(i,v)}">${v===0 ? '0%' : v+'%'}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+}
+
+// Build table when modal first opens
+document.addEventListener('DOMContentLoaded', ()=>{});
+// Lazy-build on first open via button onclick addendum
+const origOpenModal = ()=>{
+  buildOccTable();
+  document.getElementById('occ-modal').style.display='flex';
+};
+
 // ════════ Build grid ════════
 let ppBuilt = false;
 function buildPPGrid() {
@@ -762,7 +1006,511 @@ function updatePhono() {
   });
 }
 
+// ════════════════════════════════════════
+// PHONOLOGICAL ANALYSIS ENGINE
+// Based on 鄭靜宜 (2011) Appendix 2
+// ════════════════════════════════════════
+
+const CONS_FEATURES = {
+  'ㄅ': {manner:'stop',      place:'bilabial',     asp:'unaspirated'},
+  'ㄆ': {manner:'stop',      place:'bilabial',     asp:'aspirated'},
+  'ㄇ': {manner:'nasal',     place:'bilabial',     asp:null},
+  'ㄈ': {manner:'fricative', place:'labiodental',  asp:null},
+  'ㄉ': {manner:'stop',      place:'alveolar',     asp:'unaspirated'},
+  'ㄊ': {manner:'stop',      place:'alveolar',     asp:'aspirated'},
+  'ㄋ': {manner:'nasal',     place:'alveolar',     asp:null},
+  'ㄌ': {manner:'lateral',   place:'alveolar',     asp:null},
+  'ㄍ': {manner:'stop',      place:'velar',        asp:'unaspirated'},
+  'ㄎ': {manner:'stop',      place:'velar',        asp:'aspirated'},
+  'ㄏ': {manner:'fricative', place:'velar',        asp:null},
+  'ㄐ': {manner:'affricate', place:'palatal',      asp:'unaspirated'},
+  'ㄑ': {manner:'affricate', place:'palatal',      asp:'aspirated'},
+  'ㄒ': {manner:'fricative', place:'palatal',      asp:null},
+  'ㄓ': {manner:'affricate', place:'retroflex',    asp:'unaspirated'},
+  'ㄔ': {manner:'affricate', place:'retroflex',    asp:'aspirated'},
+  'ㄕ': {manner:'fricative', place:'retroflex',    asp:null},
+  'ㄖ': {manner:'fricative', place:'retroflex',    asp:null},
+  'ㄗ': {manner:'affricate', place:'alveolar',     asp:'unaspirated'},
+  'ㄘ': {manner:'affricate', place:'alveolar',     asp:'aspirated'},
+  'ㄙ': {manner:'fricative', place:'alveolar',     asp:null},
+};
+
+const PLACE_ORDER = {bilabial:1, labiodental:2, alveolar:3, palatal:4, retroflex:5, velar:6};
+
+// Process names that map to PROCESSES array entries
+const PROCESS_INFO = {
+  '不捲舌化': {suppressAge:null, type:'special', priority:'special',
+    def:'捲舌音（ㄓㄔㄕㄖ）發成非捲舌音，台灣普遍方言現象，非語音異常指標'},
+  '捲舌化':   {suppressAge:null, type:'rising',  priority:'special',
+    def:'非捲舌音被過度類化發成捲舌音，隨年齡上升，不宜介入'},
+  '後置化':   {suppressAge:6,    type:'developmental', priority:'high',
+    def:'構音部位後移，以舌根音（ㄍㄎㄏ）取代前位音'},
+  '前置化':   {suppressAge:3,    type:'developmental', priority:'med',
+    def:'構音部位前移，以齒槽音取代後位音（ㄍㄎ）'},
+  '塞音化':   {suppressAge:6,    type:'developmental', priority:'high',
+    def:'以塞音取代摩擦音或塞擦音（構音方式簡化）'},
+  '塞擦音化': {suppressAge:5,    type:'developmental', priority:'med',
+    def:'以塞擦音取代摩擦音或塞音（過渡性歷程）'},
+  '摩擦音化': {suppressAge:4,    type:'developmental', priority:'med',
+    def:'塞音發音時口道未完全閉合，帶摩擦音質'},
+  '不送氣化': {suppressAge:5,    type:'developmental', priority:'med',
+    def:'以不送氣音取代送氣音，省略送氣動作'},
+  '送氣化':   {suppressAge:3,    type:'rare',    priority:'high',
+    def:'以送氣音取代不送氣音（少見反向歷程），出現率極低，若出現需評估'},
+  '鼻音化':   {suppressAge:3,    type:'rare',    priority:'high',
+    def:'以鼻音取代非鼻音，出現率極低，多與顎咽結構或功能異常有關，需轉介評估'},
+  '邊音化':   {suppressAge:null, type:'deviant', priority:'highest',
+    def:'以邊音ㄌ取代其他非邊音，SSD兒童出現率遠高於普通兒童（30% vs 3%），偏異性歷程'},
+  '唇音化':   {suppressAge:2.5,  type:'rare',    priority:'high',
+    def:'以唇音取代非唇音，出現率極低，2.5歲後出現屬偏異性（deviant）語音發展'},
+  '齒槽音化': {suppressAge:3,    type:'rare',    priority:'high',
+    def:'以齒槽音取代唇音或唇齒音，出現率極低，若出現需排除器質性因素並評估介入'},
+  '顎音化':   {suppressAge:4,    type:'developmental', priority:'med',
+    def:'以硬顎音取代齒槽音，構音部位後移至硬顎（ㄙ→ㄒ、ㄉ→ㄐ）'},
+  '聲母省略': {suppressAge:4,    type:'developmental', priority:'high',
+    def:'完全省略音節首聲母，對語音清晰度影響最大，4歲後出現需關注'},
+};
+
+function detectProcesses(target, errorSound) {
+  // Handle omission
+  if(errorSound === '省' || errorSound === '省略' || errorSound === '') {
+    return ['聲母省略'];
+  }
+
+  const tF = CONS_FEATURES[target];
+  const eF = CONS_FEATURES[errorSound];
+  if(!tF || !eF) return [];
+  if(target === errorSound) return []; // correct
+
+  const procs = [];
+
+  // — Place-based —
+  // 不捲舌化: retroflex → non-retroflex
+  if(tF.place === 'retroflex' && eF.place !== 'retroflex') {
+    procs.push('不捲舌化');
+  }
+  // 捲舌化: non-retroflex → retroflex
+  if(tF.place !== 'retroflex' && eF.place === 'retroflex') {
+    procs.push('捲舌化');
+  }
+  // 後置化: non-velar, non-retroflex → velar
+  if(tF.place !== 'velar' && tF.place !== 'retroflex' && eF.place === 'velar') {
+    procs.push('後置化');
+  }
+  // 前置化: velar/palatal → alveolar/bilabial
+  if((tF.place === 'velar' || tF.place === 'palatal') &&
+     (eF.place === 'alveolar' || eF.place === 'bilabial' || eF.place === 'labiodental')) {
+    procs.push('前置化');
+  }
+  // 顎音化: alveolar → palatal
+  if(tF.place === 'alveolar' && eF.place === 'palatal') {
+    procs.push('顎音化');
+  }
+  // 唇音化: non-labial → bilabial/labiodental
+  if(tF.place !== 'bilabial' && tF.place !== 'labiodental' &&
+     (eF.place === 'bilabial' || eF.place === 'labiodental')) {
+    procs.push('唇音化');
+  }
+  // 齒槽音化: bilabial/labiodental → alveolar
+  if((tF.place === 'bilabial' || tF.place === 'labiodental') && eF.place === 'alveolar') {
+    procs.push('齒槽音化');
+  }
+
+  // — Aspiration —
+  if(tF.asp === 'aspirated' && eF.asp === 'unaspirated' && tF.place === eF.place) {
+    procs.push('不送氣化');
+  }
+  if(tF.asp === 'unaspirated' && eF.asp === 'aspirated' && tF.place === eF.place) {
+    procs.push('送氣化');
+  }
+
+  // — Manner —
+  if((tF.manner === 'fricative' || tF.manner === 'affricate') && eF.manner === 'stop') {
+    procs.push('塞音化');
+  }
+  if((tF.manner === 'fricative' || tF.manner === 'stop') && eF.manner === 'affricate') {
+    procs.push('塞擦音化');
+  }
+  if((tF.manner === 'stop' || tF.manner === 'affricate') && eF.manner === 'fricative') {
+    procs.push('摩擦音化');
+  }
+  if(tF.manner !== 'nasal' && eF.manner === 'nasal') {
+    procs.push('鼻音化');
+  }
+  if(tF.manner !== 'lateral' && eF.manner === 'lateral') {
+    procs.push('邊音化');
+  }
+
+  return [...new Set(procs)]; // deduplicate
+}
+
+function getProcessRate(procName, age) {
+  const p = PROCESSES.find(x => x.name === procName);
+  if(!p) return null;
+  return getRateAtAge(p, age);
+}
+
+function getProcessSSD(procName) {
+  const p = PROCESSES.find(x => x.name === procName);
+  return p ? p.ssdRate : null;
+}
+
+function getProcessSSDSig(procName) {
+  const p = PROCESSES.find(x => x.name === procName);
+  return p ? p.ssdSig : false;
+}
+
+function anlzVerdictHTML(procName, info, age) {
+  if(info.type === 'special' || info.type === 'rising') {
+    return `<div class="anlz-verdict special">台灣特殊考量：不計入語音異常判斷</div>`;
+  }
+  if(info.type === 'deviant') {
+    return `<div class="anlz-verdict concern">⚠ 偏異性歷程：任何年齡出現均需關注</div>`;
+  }
+  const rate = getProcessRate(procName, age);
+  if(rate === null) return '';
+  if(rate < 10) {
+    return `<div class="anlz-verdict concern">⚠ 此歷程在 ${age} 歲時同齡兒童出現率僅 ${rate}%（已達抑制標準），個案出現屬<b>非典型</b></div>`;
+  } else if(rate < 20) {
+    return `<div class="anlz-verdict transitional">↓ 此歷程在 ${age} 歲時同齡兒童出現率 ${rate}%（消退中），持續觀察</div>`;
+  } else {
+    return `<div class="anlz-verdict normal">✓ 此歷程在 ${age} 歲時同齡兒童出現率 ${rate}%，此年齡屬<b>正常發展</b></div>`;
+  }
+}
+
+function anlzPriorityHTML(procName, info, age) {
+  const rate = getProcessRate(procName, age);
+  let cls, text;
+  if(info.type === 'deviant') {
+    cls='high'; text='🔴 最優先介入：偏異性歷程，SSD 兒童出現率遠高於普通兒童（30% vs ≤4%），任何年齡出現均需評估';
+  } else if(info.type === 'special' || info.type === 'rising') {
+    cls='special'; text='🟣 不建議介入：台灣特殊語音現象，非錯誤';
+  } else if(info.type === 'rare') {
+    cls='high'; text='🔴 優先評估介入：罕見歷程，出現率極低，鄭靜宜（2011）指出 2.5 歲後出現屬偏異性（deviant）語音發展，需排除器質性因素並納入介入計畫';
+  } else if(rate !== null && rate < 10) {
+    cls='high'; text='🔴 優先介入：此歷程在此年齡應已消失（出現率 <10%）';
+  } else if(rate !== null && rate < 20) {
+    cls='med'; text='🟡 持續觀察：歷程消退中，若無進展則列為目標';
+  } else {
+    cls='low'; text='🟢 此年齡正常，暫不列為介入目標';
+  }
+  return `<div class="anlz-priority ${cls}">介入建議：${text}</div>`;
+}
+
+function anlzSSDHTML(procName, normalRate) {
+  const ssd = getProcessSSD(procName);
+  const sig = getProcessSSDSig(procName);
+  if(ssd === null) return '';
+  const ratio = normalRate > 0 ? (ssd/normalRate).toFixed(1) : '─';
+  return `<div class="anlz-ssd-row">
+    <span>SSD 兒童出現率：<b>${ssd}%</b></span>
+    <span style="color:#d1d5db">｜</span>
+    <span>普通同齡：<b style="color:#374151">${normalRate !== null ? normalRate+'%' : '─'}</b></span>
+    ${normalRate > 0 ? `<span style="color:#d1d5db">｜</span><span>倍率 <b>${ratio}×</b></span>` : ''}
+    ${sig ? '<span style="margin-left:4px;color:#9a3412">★ p&lt;.05</span>' : ''}
+  </div>`;
+}
+
+function anlzClearError(el) { el.classList.remove('error'); }
+
+function clearAnalysis() {
+  document.getElementById('anlz-target').value = '';
+  document.getElementById('anlz-error').value = '';
+  document.getElementById('anlz-results').innerHTML = '<div class="anlz-empty">輸入聲母後點「分析」</div>';
+  document.getElementById('stim-panel').style.display = 'none';
+  document.getElementById('stim-result').style.display = 'none';
+  ['stim-yes','stim-no','stim-unknown'].forEach(id=>{
+    document.getElementById(id).className = 'stim-btn';
+  });
+}
+
+function selectStim(choice) {
+  // Reset button styles
+  document.getElementById('stim-yes').className = 'stim-btn' + (choice==='yes' ? ' stim-selected-yes' : '');
+  document.getElementById('stim-no').className = 'stim-btn' + (choice==='no' ? ' stim-selected-no' : '');
+  document.getElementById('stim-unknown').className = 'stim-btn' + (choice==='unknown' ? ' stim-selected-yes' : '');
+
+  const target = document.getElementById('anlz-target').value.trim();
+  const age = +document.getElementById('pp-age-slider').value;
+  const ageLabel = age===Math.floor(age) ? age+'歲' : age+'歲半';
+  const res = document.getElementById('stim-result');
+
+  // Get detected processes from current analysis (stored globally)
+  const procs = window._lastDetectedProcs || [];
+  const hasHighPriority = procs.some(n => {
+    const info = PROCESS_INFO[n];
+    if(!info) return false;
+    if(info.type==='deviant' || info.type==='rare') return true;
+    const r = getProcessRate(n, age);
+    return r !== null && r < 10;
+  });
+
+  let html = '';
+  if(choice === 'yes') {
+    res.className = 'stim-result stim-yes';
+    if(hasHighPriority) {
+      html = `<b>✓ 可刺激 → 適合作為治療起點（傳統取向）</b><br>
+      個案能在引導下發出目標音，可刺激性高，依你的課程講義建議，這是選擇治療起點的第一優先考量（Guidelines for beginning therapy #1）。<br>
+      <b>建議做法：</b>以個別音方法（sound-by-sound approach）開始，從聽知覺訓練（Stage 1）→ ${methodLink('auditory_stimulation','聽覺刺激模仿法')} 誘發單音（Stage 2）。
+      ${procs.length > 1 ? '<br><span style="color:#166534">⚠ 注意：同時偵測到多個歷程，可考慮以出現率最高或影響最多音素的歷程為主，搭配音韻取向同步處理。</span>' : ''}`;
+    } else {
+      html = `<b>✓ 可刺激 → 可列為介入目標，預後佳</b><br>
+      可刺激性高表示個案具備基礎動作能力。雖然此歷程在 ${ageLabel} 出現率尚屬正常，若整體語音清晰度受影響，仍可列入觀察名單，並優先選為未來治療起點。`;
+    }
+  } else if(choice === 'no') {
+    res.className = 'stim-result stim-no';
+    if(hasHighPriority) {
+      html = `<b>✕ 不可刺激 → 需先建立可刺激性，或考慮 complexity approach</b><br>
+      個案目前無法模仿發出目標音，有兩個方向：<br>
+      <b>① 先建立可刺激性：</b>使用 ${methodLink('phonetic_placement','語音位置治療法')} 或 ${methodLink('sound_modification','語音改變法')}（講義 Stage 2），讓個案先能在引導下發出該音，再進入練習階段。<br>
+      <b>② Complexity approach：</b>文獻（Miccio et al., 1999）指出，針對不可刺激音介入反而可能引發更大範圍的系統性改變，適合搭配 ${methodLink('minimal_pairs','最小配對詞彙訓練')}（音韻取向介入）。<br>
+      <span style="color:#991b1b">建議先做完整可刺激性評估再決定介入策略。</span>`;
+    } else {
+      html = `<b>✕ 不可刺激 → 此時不宜列為構音取向治療起點</b><br>
+      此歷程在 ${ageLabel} 出現率尚屬正常，加上不可刺激，短期內進展機率較低。建議持續觀察；若需介入，可採 ${methodLink('minimal_pairs','最小配對詞彙訓練')} 間接建立音韻概念。`;
+    }
+  } else {
+    res.className = 'stim-result';
+    res.style.background = '#f8f8f6';
+    res.style.color = '#555';
+    html = `<b>可刺激性未測試</b> — 建議於下次評估時加入可刺激性測試。<br>
+    做法：呈現目標音聽覺刺激，請個案模仿（${methodLink('auditory_stimulation','聽覺刺激模仿法')}），觀察能否在音節或詞語層次正確發出。結果將影響治療起點與方法的選擇（講義 Guideline #1）。`;
+  }
+
+  res.innerHTML = html;
+  res.style.display = 'block';
+}
+
+function runAnalysis() {
+  const target = document.getElementById('anlz-target').value.trim();
+  const errorInput = document.getElementById('anlz-error').value.trim();
+  const age = +document.getElementById('pp-age-slider').value;
+  const ageLabel = age===Math.floor(age) ? age+'歲' : age+'歲半';
+  const res = document.getElementById('anlz-results');
+
+  // Validate
+  let valid = true;
+  if(!target || (!CONS_FEATURES[target])) {
+    document.getElementById('anlz-target').classList.add('error');
+    valid = false;
+  }
+  const isOmission = (errorInput === '省' || errorInput === '省略');
+  if(!isOmission && !CONS_FEATURES[errorInput]) {
+    document.getElementById('anlz-error').classList.add('error');
+    valid = false;
+  }
+  if(!valid) {
+    res.innerHTML = `<div style="font-size:11px;color:#991b1b;padding:8px 10px;background:#fce0e0;border-radius:7px">請輸入有效的注音聲母（ㄅ～ㄙ），省略請輸入「省」</div>`;
+    document.getElementById('stim-panel').style.display = 'none';
+    return;
+  }
+
+  // Correct production
+  if(target === errorInput) {
+    res.innerHTML = `<div class="anlz-correct">✓ 目標音與實際音相同，構音正確，無音韻歷程</div>`;
+    document.getElementById('stim-panel').style.display = 'none';
+    return;
+  }
+
+  const procs = detectProcesses(target, errorInput);
+
+  if(procs.length === 0) {
+    res.innerHTML = `<div style="font-size:11px;color:#92400e;padding:8px 10px;background:#fef3c7;border-radius:7px">⚠ 無法自動辨識音韻歷程分類（可能為同化歷程或複合錯誤），建議人工判斷</div>`;
+    document.getElementById('stim-panel').style.display = 'none';
+    return;
+  }
+
+  // Omission special case
+  if(procs[0] === '聲母省略') {
+    const info = PROCESS_INFO['聲母省略'];
+    const rate = getProcessRate('聲母省略', age);
+    const verdict = anlzVerdictHTML('聲母省略', info, age);
+    const priority = anlzPriorityHTML('聲母省略', info, age);
+    const ssd = anlzSSDHTML('聲母省略', rate);
+    res.innerHTML = `
+      <div class="anlz-omit">⚠ 聲母省略：「${target}」被完全省略</div>
+      <div class="anlz-result-card priority-high" style="margin-top:8px">
+        <div class="anlz-proc-name">聲母省略　<span style="font-size:10px;font-weight:400;color:#888">Initial Consonant Deletion</span></div>
+        <div class="anlz-proc-def">${info.def}</div>
+        ${verdict}${ssd}${priority}
+      </div>`;
+    // Show stim panel for omission too
+    window._lastDetectedProcs = ['聲母省略'];
+    document.getElementById('stim-target-label').textContent = target;
+    document.getElementById('stim-panel').style.display = 'block';
+    ['stim-yes','stim-no','stim-unknown'].forEach(id=>{ document.getElementById(id).className='stim-btn'; });
+    document.getElementById('stim-result').style.display = 'none';
+    return;
+  }
+
+  // Sort: deviant first, then by priority
+  const PRIO_ORDER = {deviant:0, special:1, rising:2};
+  procs.sort((a,b)=>{
+    const ia = PROCESS_INFO[a], ib = PROCESS_INFO[b];
+    if(!ia||!ib) return 0;
+    const oa = PRIO_ORDER[ia.type]??3, ob = PRIO_ORDER[ib.type]??3;
+    return oa-ob;
+  });
+
+  let html = `<div style="font-size:11px;color:#555;margin-bottom:8px">
+    <b>${target}</b>→<b>${errorInput}</b>　偵測到 <b>${procs.length}</b> 個音韻歷程　（年齡：${ageLabel}）
+  </div>`;
+
+  procs.forEach(procName => {
+    const info = PROCESS_INFO[procName] || {};
+    const rate = getProcessRate(procName, age);
+    const verdict = anlzVerdictHTML(procName, info, age);
+    const priority = anlzPriorityHTML(procName, info, age);
+    const ssd = anlzSSDHTML(procName, rate);
+
+    let cardClass = 'priority-low';
+    if(info.type==='deviant' || info.type==='rare') cardClass='priority-high';
+    else if(info.type==='special'||info.type==='rising') cardClass='priority-special';
+    else if(rate!==null && rate<10) cardClass='priority-high';
+    else if(rate!==null && rate<20) cardClass='priority-med';
+
+    const suppressText = info.suppressAge
+      ? `應消失年齡：<b>${info.suppressAge} 歲</b>`
+      : (info.type==='special'||info.type==='rising') ? '不適用（台灣特殊）'
+      : info.type==='deviant' ? '任何年齡出現均為偏異' : '─';
+
+    html += `<div class="anlz-result-card ${cardClass}">
+      <div class="anlz-proc-name">${procName}　<span style="font-size:10px;font-weight:400;color:#888">${procName==='後置化'?'Backing':procName==='前置化'?'Fronting':procName==='塞音化'?'Stopping':procName==='不捲舌化'?'De-retroflexion':procName==='捲舌化'?'Retroflexion':procName==='不送氣化'?'Deaspiration':procName==='送氣化'?'Aspiration':procName==='塞擦音化'?'Affrication':procName==='摩擦音化'?'Frication':procName==='鼻音化'?'Nasalization':procName==='邊音化'?'Lateralization':procName==='唇音化'?'Labialization':procName==='齒槽音化'?'Alveolarization':procName==='顎音化'?'Palatalization':''}</span></div>
+      <div class="anlz-proc-def">${info.def||'─'}</div>
+      <div class="anlz-meta-row">
+        <span class="anlz-badge" style="background:#f0f0ee;color:#555">${suppressText}</span>
+        ${rate!==null?`<span class="anlz-badge" style="background:#f0f0ee;color:#555">${ageLabel}出現率：${rate}%</span>`:''}
+      </div>
+      ${verdict}${ssd}${priority}
+    </div>`;
+  });
+
+  // Summary
+  const concernProcs = procs.filter(n=>{
+    const info=PROCESS_INFO[n];
+    if(!info) return false;
+    if(info.type==='deviant' || info.type==='rare') return true;
+    const r=getProcessRate(n,age);
+    return r!==null && r<10;
+  });
+  const normalProcs = procs.filter(n=>{
+    const info=PROCESS_INFO[n];
+    if(!info||info.type==='deviant') return false;
+    const r=getProcessRate(n,age);
+    return r!==null && r>=20;
+  });
+
+  if(procs.length > 0 && !(procs.length===1 && (PROCESS_INFO[procs[0]]?.type==='special'||PROCESS_INFO[procs[0]]?.type==='rising'))) {
+    let sumText = '';
+    if(concernProcs.length > 0)
+      sumText += `⚠ <b>${concernProcs.join('、')}</b>在此年齡已屬非典型，需納入評估或介入考量。`;
+    if(normalProcs.length > 0)
+      sumText += (sumText?' ':'') + `✓ <b>${normalProcs.join('、')}</b>在此年齡屬正常發展，暫不需介入。`;
+    if(sumText)
+      html += `<div class="anlz-summary">${sumText}<br><span style="font-size:9px;opacity:.6">僅供參考，需結合完整語音樣本及個別評估情境判斷。鄭靜宜（2011）</span></div>`;
+  }
+
+  res.innerHTML = html;
+
+  // Store procs for stimulability follow-up and show the panel
+  window._lastDetectedProcs = procs;
+  const stimPanel = document.getElementById('stim-panel');
+  const stimTargetLabel = document.getElementById('stim-target-label');
+  stimTargetLabel.textContent = target;
+  stimPanel.style.display = 'block';
+  // Reset stim selection
+  ['stim-yes','stim-no','stim-unknown'].forEach(id=>{
+    document.getElementById(id).className = 'stim-btn';
+  });
+  document.getElementById('stim-result').style.display = 'none';
+}
+
+// ════════ Method Tooltip System ════════
+const METHOD_INFO = {
+  'phonetic_placement': {
+    title: '語音位置治療法（Phonetic Placement Method）',
+    body: `<b>目的：</b>透過詳細說明，讓個案了解目標音的正確發音方式，並調整構音器官至正確位置。<br><br>
+<b>做法：</b><br>
+① SLP 詳細說明目標音的構音位置（舌頭放哪裡、嘴型怎麼擺、氣流方向）<br>
+② 將目標音的語音特徵與個案的錯誤音進行比較<br>
+③ 確認需要調整哪些構音器官的動作<br>
+④ 可搭配鏡子、壓舌板等輔助工具引導個案調整<br><br>
+<b>適用時機：</b>聽覺刺激模仿效果不佳時（auditory stimulation 效果不好）`,
+    src: '資料來源：構音治療流程課程講義 Stage 2 — Production of the sound in isolation（馬偕醫學院）'
+  },
+  'sound_modification': {
+    title: '語音改變法（Sound Modification Method）',
+    body: `<b>目的：</b>從個案已能正確發出的「相近音」出發，透過調整動作逐步塑形至目標音。<br><br>
+<b>做法：</b><br>
+① 找一個個案能正確發出、且與目標音語音特徵相近的音當起點<br>
+② 以此音為基礎，逐步引導調整構音動作（如舌位前移、氣流強弱）<br>
+③ 每次只調整一個構音面向，直到產出接近目標音<br><br>
+<b>例子：</b>目標音 ㄙ → 從個案會發的 ㄊ 開始，引導氣流持續而不爆破<br><br>
+<b>適用時機：</b>個案完全無法模仿目標音，但能發出與目標音相近的其他音`,
+    src: '資料來源：構音治療流程課程講義 Stage 2 — Production of the sound in isolation（馬偕醫學院）'
+  },
+  'auditory_stimulation': {
+    title: '聽覺刺激／模仿法（Auditory Stimulation / Imitation）',
+    body: `<b>目的：</b>提供大量目標音的聽覺示範，讓個案透過模仿直接發出目標音。<br><br>
+<b>做法：</b><br>
+① SLP 示範目標音，請個案「看著我，做一模一樣的」<br>
+② 提供重複的聽覺刺激範例<br>
+③ 若個案成功，作為之後練習的最快捷徑<br><br>
+<b>注意：</b>課程講義標注此法「通常效果不好」，不穩定成功後仍建議加入語音位置或語音改變技術鞏固`,
+    src: '資料來源：構音治療流程課程講義 Stage 2 — Production of the sound in isolation（馬偕醫學院）'
+  },
+  'minimal_pairs': {
+    title: '最小配對詞彙訓練（Minimal Pair Therapy）',
+    body: `<b>目的：</b>建立個案腦中的音素對比性（phonemic contrast），讓個案理解不同語音代表不同意義。<br><br>
+<b>做法：</b><br>
+① 選擇只差一個音素的詞對（如「飛／杯」、「讀／鼓」）<br>
+② 接收性：SLP 說詞，個案指圖（檢驗理解）<br>
+③ 表達性：個案說詞，SLP 指圖（若說錯，SLP 指錯的圖，引發溝通失效意識）<br>
+④ 目標是讓個案發現「我說的和我想說的不一樣，聽者聽到了不同的詞」<br><br>
+<b>適用時機：</b>個案有音韻歷程（系統性替代），音素對比性消失`,
+    src: '資料來源：構音與音韻評估診斷課程講義（馬偕醫學院）、臨床手冊'
+  }
+};
+
+let _tooltipVisible = false;
+
+function showMethodTooltip(key, event) {
+  const info = METHOD_INFO[key];
+  if(!info) return;
+  const tt = document.getElementById('method-tooltip');
+  document.getElementById('method-tooltip-title').innerHTML = info.title;
+  document.getElementById('method-tooltip-body').innerHTML = info.body;
+  document.getElementById('method-tooltip-src').innerHTML = info.src;
+
+  // Position near click
+  const x = Math.min(event.clientX + 12, window.innerWidth - 320);
+  const y = Math.min(event.clientY + 12, window.innerHeight - 280);
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+  tt.classList.add('show');
+  _tooltipVisible = true;
+  event.stopPropagation();
+}
+
+function hideMethodTooltip() {
+  document.getElementById('method-tooltip').classList.remove('show');
+  _tooltipVisible = false;
+}
+
+document.addEventListener('click', ()=>{ if(_tooltipVisible) hideMethodTooltip(); });
+
+// Helper: wrap method name in clickable span
+function methodLink(key, label) {
+  return `<span class="method-link" onclick="showMethodTooltip('${key}', event)">${label} ⓘ</span>`;
+}
 
 </script>
+<!-- Method tooltip popup -->
+<div class="method-tooltip" id="method-tooltip">
+  <div class="method-tooltip-title" id="method-tooltip-title"></div>
+  <div id="method-tooltip-body"></div>
+  <div class="method-tooltip-src" id="method-tooltip-src"></div>
+</div>
+
 </body>
 </html>
