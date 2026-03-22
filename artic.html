@@ -120,10 +120,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 .occ-table th{padding:5px 7px;text-align:center;font-size:10px;font-weight:600;color:#555;border:1px solid #e0e0de;background:#f5f5f3;white-space:nowrap}
 .occ-table td{padding:5px 7px;text-align:center;border:1px solid #e8e8e6;font-weight:500;white-space:nowrap}
 .occ-table .age-col{font-weight:700;color:#1a1a1a;background:#f5f5f3;text-align:center}
-.occ-suppressed{background:#d1d5db;color:#374151}   /* gray: >10%, not yet suppressed */
+.occ-suppressed{background:#d1fae5;color:#065f46}   /* green: >10%, not yet suppressed */
 .occ-suppressing{background:#fef9c3;color:#713f12}  /* yellow: 10–20%, transitioning */
 .occ-done{background:#fff;color:#9ca3af}            /* white: <10%, suppressed */
-.occ-special{background:#d1fae5;color:#065f46}      /* green: 不捲舌化 special */
+.occ-special{background:#ede9fe;color:#5b21b6}      /* purple: 不捲舌化 special */
 .occ-rising{background:#dbeafe;color:#1e40af}       /* blue: 捲舌化 rising */
 .occ-rare{background:#fef3c7;color:#92400e}         /* amber: rare processes */
 .occ-zero{background:#fff;color:#d1d5db}            /* 0% */
@@ -194,6 +194,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 .anlz-verdict.transitional{background:#fef3c7;color:#92400e}
 .anlz-verdict.special{background:#ede9fe;color:#5b21b6}
 .anlz-ssd-row{display:flex;gap:6px;align-items:center;font-size:10px;color:#92400e;background:#fafaf8;padding:5px 8px;border-radius:6px;margin-bottom:4px}
+.anlz-approach{font-size:10px;color:#374151;line-height:1.7;margin:5px 0 3px;padding:6px 8px;background:#f8f8f6;border-radius:6px;border-left:3px solid #d1d5db}
+.anlz-approach-tag{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;margin-right:4px;vertical-align:middle}
+.anlz-approach-tag.phonological{background:#ede9fe;color:#5b21b6}
+.anlz-approach-tag.phonetic{background:#dbeafe;color:#1e40af}
 .anlz-priority{font-size:11px;padding:5px 10px;border-radius:7px;font-weight:600}
 .anlz-priority.high{background:#fce0e0;color:#991b1b}
 .anlz-priority.med{background:#fef3c7;color:#92400e}
@@ -366,7 +370,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
       <div class="tbl-modal-header">
         <div>
           <div class="tbl-modal-title">音韻歷程出現率總表</div>
-          <div style="font-size:10px;color:#aaa;margin-top:2px">鄭靜宜（2011），表 3。N＝326 位普通兒童，2.5–6 歲。灰色＝尚未被抑制（&gt;10%）</div>
+          <div style="font-size:10px;color:#aaa;margin-top:2px">鄭靜宜（2011），表 3。N＝326 位普通兒童，2.5–6 歲。綠色＝尚未被抑制（&gt;10%）</div>
         </div>
         <button class="tbl-modal-close" onclick="document.getElementById('occ-modal').style.display='none'">✕</button>
       </div>
@@ -407,10 +411,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 
         <!-- Legend -->
         <div class="occ-legend">
-          <div class="occ-leg"><div class="occ-leg-dot" style="background:#d1d5db;border:1px solid #9ca3af"></div>尚未被抑制（&gt;10%）</div>
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#d1fae5;border:1px solid #34d399"></div>尚未被抑制（&gt;10%）</div>
           <div class="occ-leg"><div class="occ-leg-dot" style="background:#fef9c3;border:1px solid #fde68a"></div>過渡中（10–20%）</div>
           <div class="occ-leg"><div class="occ-leg-dot" style="background:#fff;border:1px solid #e5e7eb"></div>已達抑制（&lt;10%）</div>
-          <div class="occ-leg"><div class="occ-leg-dot" style="background:#d1fae5;border:1px solid #34d399"></div>不捲舌化（台灣特殊）</div>
+          <div class="occ-leg"><div class="occ-leg-dot" style="background:#ede9fe;border:1px solid #c4b5fd"></div>不捲舌化（台灣特殊）</div>
           <div class="occ-leg"><div class="occ-leg-dot" style="background:#dbeafe;border:1px solid #93c5fd"></div>捲舌化（上升型）</div>
           <div class="occ-leg"><div class="occ-leg-dot" style="background:#fef3c7;border:1px solid #fde68a"></div>罕見歷程欄</div>
         </div>
@@ -1211,6 +1215,55 @@ function anlzSSDHTML(procName, normalRate) {
   </div>`;
 }
 
+function anlzClassificationHTML(procName, info, age) {
+  if (info.type === 'special' || info.type === 'rising') return '';
+
+  let clsKey, label, approachHTML;
+
+  if (info.type === 'deviant') {
+    clsKey = 'deviant'; label = '偏異性歷程';
+    approachHTML = `<div class="anlz-approach">
+      <span class="anlz-approach-tag phonological">音韻取向優先</span>
+      偏異性歷程反映深層音韻系統缺陷，建議採${methodLink('minimal_pairs','最小配對詞彙訓練')}建立音韻對立概念，而非單純從動作層面糾正。
+      若目標音完全無法誘發，需先以${methodLink('phonetic_placement','語音位置治療法')}建立基礎動作後，再切換為音韻介入。
+    </div>`;
+  } else if (info.type === 'rare') {
+    clsKey = 'rare'; label = '罕見音韻歷程';
+    approachHTML = `<div class="anlz-approach">
+      <span class="anlz-approach-tag phonological">音韻取向優先</span>
+      罕見歷程通常反映音韻系統缺陷而非單純動作問題，建議優先採${methodLink('minimal_pairs','最小配對詞彙訓練')}介入。
+      若個案無法誘發目標音，需先以${methodLink('phonetic_placement','語音位置治療法')}建立構音基礎，再切換音韻取向。
+    </div>`;
+  } else {
+    const rate = getProcessRate(procName, age);
+    if (rate === null) return '';
+    if (rate >= 10) {
+      clsKey = 'typical'; label = '典型音韻歷程';
+      approachHTML = `<div class="anlz-approach" style="border-left-color:#6ee7b7;color:#6b7280">
+        此歷程在當前年齡出現率 ${rate}%（≥10%），屬正常發展範圍，暫不需介入。
+      </div>`;
+    } else {
+      clsKey = 'developmental'; label = '發展性音韻歷程';
+      approachHTML = `<div class="anlz-approach">
+        <div style="margin-bottom:4px"><span class="anlz-approach-tag phonological">音韻取向為主</span>此歷程具系統性規則，建議採${methodLink('minimal_pairs','最小配對詞彙訓練')}同步處理所有受影響音素，促進類化效果。</div>
+        <div><span class="anlz-approach-tag phonetic">構音取向輔助</span>若個案無法誘發目標音，需先以${methodLink('phonetic_placement','語音位置治療法')}或${methodLink('sound_modification','語音改變法')}建立動作基礎，再進入音韻訓練。</div>
+      </div>`;
+    }
+  }
+
+  const colors = {
+    typical:      {bg:'#d1fae5', color:'#065f46'},
+    developmental:{bg:'#fef3c7', color:'#92400e'},
+    rare:         {bg:'#fee2e2', color:'#991b1b'},
+    deviant:      {bg:'#fce7f3', color:'#9d174d'},
+  };
+  const c = colors[clsKey] || {bg:'#f0f0ee', color:'#555'};
+
+  return `<div style="margin:6px 0 2px">
+    <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:${c.bg};color:${c.color}">${label}</span>
+  </div>${approachHTML}`;
+}
+
 function anlzClearError(el) { el.classList.remove('error'); }
 
 function clearAnalysis() {
@@ -1332,7 +1385,7 @@ function runAnalysis() {
       <div class="anlz-result-card priority-high" style="margin-top:8px">
         <div class="anlz-proc-name">聲母省略　<span style="font-size:10px;font-weight:400;color:#888">Initial Consonant Deletion</span></div>
         <div class="anlz-proc-def">${info.def}</div>
-        ${verdict}${ssd}${priority}
+        ${verdict}${ssd}${anlzClassificationHTML('聲母省略', info, age)}${priority}
       </div>`;
     // Show stim panel for omission too
     window._lastDetectedProcs = ['聲母省略'];
@@ -1381,7 +1434,7 @@ function runAnalysis() {
         <span class="anlz-badge" style="background:#f0f0ee;color:#555">${suppressText}</span>
         ${rate!==null?`<span class="anlz-badge" style="background:#f0f0ee;color:#555">${ageLabel}出現率：${rate}%</span>`:''}
       </div>
-      ${verdict}${ssd}${priority}
+      ${verdict}${ssd}${anlzClassificationHTML(procName, info, age)}${priority}
     </div>`;
   });
 
@@ -1482,12 +1535,29 @@ function showMethodTooltip(key, event) {
   document.getElementById('method-tooltip-body').innerHTML = info.body;
   document.getElementById('method-tooltip-src').innerHTML = info.src;
 
-  // Position near click
-  const x = Math.min(event.clientX + 12, window.innerWidth - 320);
-  const y = Math.min(event.clientY + 12, window.innerHeight - 280);
+  // 先顯示以便量出實際高度，再決定位置
+  tt.style.left = '-9999px';
+  tt.style.top = '-9999px';
+  tt.classList.add('show');
+
+  const ttH = tt.offsetHeight;
+  const ttW = tt.offsetWidth;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const MARGIN = 10;
+
+  // X：游標右側，超出右邊則往左移
+  let x = event.clientX + 12;
+  if (x + ttW + MARGIN > vw) x = event.clientX - ttW - 12;
+  x = Math.max(MARGIN, x);
+
+  // Y：優先放游標下方；下方放不下則改放上方
+  let y = event.clientY + 12;
+  if (y + ttH + MARGIN > vh) y = event.clientY - ttH - 12;
+  y = Math.max(MARGIN, y);
+
   tt.style.left = x + 'px';
   tt.style.top = y + 'px';
-  tt.classList.add('show');
   _tooltipVisible = true;
   event.stopPropagation();
 }
