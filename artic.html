@@ -84,11 +84,74 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 
 .note{font-size:10px;color:#aaa;line-height:1.7;margin-top:.75rem}
 
+/* ── Page tabs ── */
+.page-tabs{display:flex;gap:0;margin-bottom:1.25rem;border:1px solid #ddd;border-radius:10px;overflow:hidden;background:#fff}
+.page-tab{flex:1;padding:9px 0;text-align:center;cursor:pointer;font-size:13px;font-weight:500;color:#666;border:none;background:transparent;transition:all .15s}
+.page-tab.on{background:#1a1a1a;color:#fff}
+
+/* ── PP age bar ── */
+.pp-age-bar{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:14px 18px;margin-bottom:1rem;display:flex;align-items:center;gap:14px}
+
+/* ── PP grid ── */
+.pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-bottom:1rem}
+
+/* ── PP card base ── */
+.pp-card{background:#fff;border:1.5px solid #e8e8e6;border-radius:12px;padding:14px 16px;cursor:pointer;transition:box-shadow .15s}
+.pp-card:hover{box-shadow:0 2px 10px rgba(0,0,0,.1)}
+
+/* status tints */
+.pp-card.pp-concern{border-color:#fca5a5;background:#fff8f8}
+.pp-card.pp-transitional{border-color:#fde68a;background:#fffdf0}
+.pp-card.pp-expected{border-color:#e5e7eb;background:#fafafa}
+.pp-card.pp-special{border-color:#c4b5fd;background:#faf7ff}
+.pp-card.pp-rising{border-color:#93c5fd;background:#f0f7ff}
+.pp-card.pp-rare{border-color:#d1d5db;background:#fafafa;opacity:.75}
+
+/* header */
+.pp-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.pp-name{font-size:14px;font-weight:700;color:#1a1a1a}
+.pp-eng{font-size:10px;color:#aaa;margin-top:1px}
+.pp-status-badge{font-size:10px;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.pp-concern .pp-status-badge{background:#fce0e0;color:#991b1b}
+.pp-transitional .pp-status-badge{background:#fef3c7;color:#92400e}
+.pp-expected .pp-status-badge{background:#f3f4f6;color:#6b7280}
+.pp-special .pp-status-badge{background:#ede9fe;color:#5b21b6}
+.pp-rising .pp-status-badge{background:#dbeafe;color:#1e40af}
+.pp-rare .pp-status-badge{background:#f3f4f6;color:#9ca3af}
+
+/* rate display */
+.pp-rate-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pp-rate-big{font-size:28px;font-weight:700;flex-shrink:0}
+.pp-concern .pp-rate-big{color:#991b1b}
+.pp-transitional .pp-rate-big{color:#92400e}
+.pp-expected .pp-rate-big{color:#374151}
+.pp-special .pp-rate-big{color:#5b21b6}
+.pp-rising .pp-rate-big{color:#1e40af}
+.pp-rare .pp-rate-big{color:#9ca3af}
+
+/* sparkline */
+.pp-spark{flex:1;height:36px}
+
+/* example text */
+.pp-example{font-size:11px;color:#666;margin-bottom:4px;line-height:1.6}
+.pp-example b{color:#1a1a1a}
+
+/* expandable note */
+.pp-toggle{font-size:10px;color:#aaa;margin-top:4px}
+.pp-note{font-size:11px;color:#555;line-height:1.65;padding:8px 10px;background:#fafaf8;border-radius:7px;border-left:3px solid #e0e0de;margin-top:6px;display:none}
+.pp-note.show{display:block}
+
+/* legend */
+.pp-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pp-leg{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+.pp-leg-dot{width:12px;height:12px;border-radius:3px}
+
 @media(max-width:600px){
   .page{padding:1rem .75rem 3rem}
   .s-btn{width:46px;height:54px;font-size:18px}
   .summary{grid-template-columns:1fr}
   .age-val{font-size:20px}
+  .pp-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -102,9 +165,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 
 <div class="page">
   <p class="subtitle">
-    資料來源：鄭靜宜（2017）。華語學前兒童語音的習得。<em>華語文教學研究，14</em>(3)，109-136．N＝416，台灣北中南 3–6 歲。<br>
-    習得標準：同齡 <b>75%</b> 兒童正確構音；熟練標準：<b>90%</b>。
+    聲母習得：鄭靜宜（2017）。華語學前兒童語音的習得。<em>華語文教學研究，14</em>(3)，109–136．N＝416，台灣北中南 3–6 歲。<br>
+    音韻歷程：鄭靜宜（2011）。學前兒童華語聲母之音韻歷程分析。<em>特殊教育學報</em>，34，133–168．N＝326，台灣南部 2.5–6 歲。
   </p>
+
+  <!-- Page tabs -->
+  <div class="page-tabs">
+    <button class="page-tab on" id="tab-btn-sound" onclick="switchTab('sound')">🗣 聲母習得</button>
+    <button class="page-tab" id="tab-btn-phono" onclick="switchTab('phono')">🔄 音韻歷程消失時間</button>
+  </div>
+
+  <!-- ════ TAB 1: 聲母習得 ════ -->
+  <div id="tab-sound">
 
   <!-- Age slider -->
   <div class="age-bar">
@@ -119,7 +191,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
     <div class="leg"><div class="leg-dot" style="background:#dff0d6;border:1.5px solid #86efac"></div>已習得（75%）</div>
     <div class="leg"><div class="leg-dot" style="background:#fef9c3;border:2px solid #facc15"></div>本齡新習得</div>
     <div class="leg"><div class="leg-dot" style="background:#f3f4f6;border:1.5px solid #e5e7eb"></div>尚未習得（正常）</div>
-
   </div>
 
   <!-- Sound grid -->
@@ -148,7 +219,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
   <!-- Vowel & Nasal -->
   <div class="vn-section">
     <div class="vn-title">韻母與鼻韻習得參考</div>
-
     <div class="vn-row">
       <div class="vn-sound" style="color:#166534">母音</div>
       <div class="vn-info">ㄧㄨㄩㄚㄛㄜㄝㄞㄟㄠㄡ — <b>3 歲前</b>全部達習得（捲舌母音ㄦ除外）</div>
@@ -169,16 +239,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
       <div class="vn-info">軟顎鼻韻 — 最晚習得，<b>5 歲</b>才達習得水準；6 歲仍未達熟練</div>
       <span class="vn-tag" style="background:#fce0e0;color:#991b1b">5 歲</span>
     </div>
-
-    <p class="note">
-      鼻韻錯誤主要為「末尾鼻音省略」（ㄢ→ㄚ、ㄤ→ㄚ）或「構音位置替代」（ㄣ↔ㄥ）。<br>
-      3 歲兒童四個鼻韻均尚未達習得標準，屬正常發展。
-    </p>
+    <p class="note">鼻韻錯誤主要為「末尾鼻音省略」（ㄢ→ㄚ、ㄤ→ㄚ）或「構音位置替代」（ㄣ↔ㄥ）。<br>3 歲兒童四個鼻韻均尚未達習得標準，屬正常發展。</p>
   </div>
 
   <p class="note" style="padding:0 2px">
     ⚠ <b>捲舌音說明：</b>ㄓㄔㄕㄖ 在台灣因受台語語言環境影響，不捲舌化極為普遍，即使成人也常見。評估時應將捲舌音的不捲舌化與其他音素錯誤分開考量，不宜直接視為構音異常。
   </p>
+  </div><!-- /tab-sound -->
+
+  <!-- ════ TAB 2: 音韻歷程 ════ -->
+  <div id="tab-phono" style="display:none">
+
+  <p style="font-size:12px;color:#555;line-height:1.7;margin-bottom:1rem;padding:10px 12px;background:#fff;border:1px solid #e8e8e6;border-radius:10px">
+    <b>出現率</b>（incidence）= 該年齡組中有此歷程的兒童比例。以 <b>10%</b> 為臨床抑制標準（Hua, 2002）：出現率 &gt;10% 表示此年齡仍普遍，個案出現屬正常；出現率 &lt;10% 表示同齡多數已抑制，個案仍頻繁出現需關注。拖動滑桿即時更新，點開每張卡片查看臨床說明。
+  </p>
+
+  <!-- Age slider (phono) -->
+  <div class="pp-age-bar">
+    <span class="age-label">個案年齡</span>
+    <input type="range" id="pp-age-slider" min="2" max="7" step="0.5" value="4" oninput="updatePhono()">
+    <span class="age-val" id="pp-age-val">4 歲</span>
+  </div>
+
+  <!-- Legend -->
+  <div class="pp-legend">
+    <div class="pp-leg"><div class="pp-leg-dot" style="background:#fce0e0;border:1.5px solid #fca5a5"></div>⚠ 應已消失（出現率 &lt;10%）</div>
+    <div class="pp-leg"><div class="pp-leg-dot" style="background:#fef9c3;border:1.5px solid #fde68a"></div>過渡期（10–20%）</div>
+    <div class="pp-leg"><div class="pp-leg-dot" style="background:#f3f4f6;border:1.5px solid #e5e7eb"></div>此年齡正常（&gt;20%）</div>
+    <div class="pp-leg"><div class="pp-leg-dot" style="background:#ede9fe;border:1.5px solid #c4b5fd"></div>台灣特殊考量（非臨床指標）</div>
+    <div class="pp-leg"><div class="pp-leg-dot" style="background:#dbeafe;border:1.5px solid #93c5fd"></div>上升型（過度類化）</div>
+  </div>
+
+  <div class="pp-grid" id="pp-grid"></div>
+
+  <p class="note" style="padding:0 2px">
+    資料來源：鄭靜宜（2011）。學前兒童華語聲母之音韻歷程分析。<em>特殊教育學報</em>，34，133–168。研究一 N＝326 位台灣南部普通兒童（2.5–6 歲），各年齡組出現率（表 3）直接引用。<br>
+    抑制標準：各年齡組出現率 10% 以下視為該歷程達成抑制（Hua, 2002；Hua &amp; Dodd, 2000a）。顯示之出現率為論文原始數據，2.5 歲以下及 6.5 歲以上以最近年齡組推算。<br>
+    ⚠ <b>不捲舌化</b>在台灣華語環境為方言性變異而非語音錯誤，鄭靜宜（2011）明確指出「絕不能作為兒童語音缺陷判斷的依據」。
+  </p>
+
+  </div><!-- /tab-phono -->
 </div>
 
 <script>
@@ -332,6 +432,337 @@ function update() {
 
 buildGrid();
 update();
+
+// ════════ Tab switching ════════
+function switchTab(tab) {
+  document.getElementById('tab-sound').style.display = tab==='sound' ? '' : 'none';
+  document.getElementById('tab-phono').style.display = tab==='phono' ? '' : 'none';
+  document.getElementById('tab-btn-sound').className = 'page-tab' + (tab==='sound' ? ' on' : '');
+  document.getElementById('tab-btn-phono').className = 'page-tab' + (tab==='phono' ? ' on' : '');
+  if(tab==='phono') { buildPPGrid(); updatePhono(); }
+}
+
+// ════════ Phonological Process Data ════════
+// rates[]   = [2.5, 3, 3.5, 4, 5, 6] 普通兒童出現率 % — 直接引用鄭靜宜（2011）表 3
+// ssdRate   = SSD 兒童（5–6 歲組）出現率 % — 引用鄭靜宜（2011）圖 5 及文字敘述
+//             ★ = 兩組間差異達顯著（p<.05），依據表 8
+const PP_AGE_POINTS = [2.5, 3, 3.5, 4, 5, 6];
+
+const PROCESSES = [
+  {
+    name: '後置化（舌根音化）', eng: 'Backing',
+    type: 'developmental',
+    rates: [81, 73, 53, 31, 11, 3],
+    ssdRate: 50, ssdSig: true,
+    errorType: '齒槽音／舌面音 → 舌根音（構音位置後移）',
+    examples: ['ㄉ→ㄍ（「大」→「戛」）', 'ㄊ→ㄎ（「頭」→「扣」）', 'ㄙ→ㄎ、ㄐ→ㄍ（部分兒童）'],
+    targets: 'ㄉ ㄊ ㄋ ㄌ ㄐ ㄑ ㄒ ㄗ ㄘ ㄙ ㄈ',
+    note: '2.5 歲出現率高達 81%，是華語兒童最常見的發展性歷程之一。6 歲組降至 3%，消退幅度最大。與英語兒童相反——鄭靜宜（2011）指出，因為華語齒槽音數量遠多於舌根音，齒槽音犯錯後多數是向後移位，故後置化出現率遠高於前置化。SSD 兒童出現率約 50%（是同齡普通兒童的 10–17 倍），是區別分析中鑑別力最高的歷程之一（★ p<.001）。'
+  },
+  {
+    name: '塞音化', eng: 'Stopping',
+    type: 'developmental',
+    rates: [68, 59, 45, 27, 11, 2],
+    ssdRate: 30, ssdSig: true,
+    errorType: '摩擦音／塞擦音 → 塞音',
+    examples: ['ㄙ→ㄉ（「四」→「地」）', 'ㄒ→ㄅ（「小」→「表」）', 'ㄈ→ㄅ（「飛」→「北」）'],
+    targets: 'ㄈ ㄒ ㄙ ㄘ ㄗ ㄐ',
+    note: '以構音動作較簡單的塞音取代摩擦音或塞擦音。2.5 歲組出現率 68%，約在 5–6 歲間完成抑制（6 歲組 2%）。SSD 兒童出現率約 30%（同齡普通兒童約 2–11%），差異達顯著（★ p<.001）。若 5 歲後仍頻繁出現，為語音異常重要指標。'
+  },
+  {
+    name: '塞擦音化', eng: 'Affrication',
+    type: 'developmental',
+    rates: [51, 39, 37, 22, 6, 3],
+    ssdRate: 30, ssdSig: true,
+    errorType: '摩擦音／塞音 → 塞擦音',
+    examples: ['ㄒ→ㄐ（「小」→「角」）', 'ㄙ→ㄘ（「四」→「次」）', '「星星」→「晶晶」'],
+    targets: 'ㄈ ㄒ ㄙ 及部分塞音',
+    note: '以塞擦音取代摩擦音或塞音，可視為抑制摩擦音塞音化過程中的中間步驟。3.5–5 歲間出現較陡降（37%→6%）。SSD 兒童出現率約 30%（同齡普通兒童約 3–6%），差異達顯著（★ p<.001）。'
+  },
+  {
+    name: '不送氣化', eng: 'Deaspiration',
+    type: 'developmental',
+    rates: [47, 39, 16, 10, 9, 2],
+    ssdRate: 15, ssdSig: true,
+    errorType: '送氣音 → 同部位不送氣音',
+    examples: ['ㄆ→ㄅ（「葡萄」→「布桃」）', 'ㄊ→ㄉ（「頭髮」→「豆髮」）', 'ㄎ→ㄍ、ㄑ→ㄐ'],
+    targets: 'ㄆ ㄊ ㄎ ㄑ ㄘ ㄔ',
+    note: '兒童省略送氣動作（送氣音的 VOT 較長，協調要求更高）。3 歲到 3.5 歲大幅下降（39%→16%），但 4–5 歲間維持 9–10%，是「頑固難以抑制的歷程」（鄭靜宜，2011）。類似英語的有聲化歷程（voicing）。SSD 兒童出現率略高於普通兒童，差異達顯著（★ p<.05）。'
+  },
+  {
+    name: '聲母省略', eng: 'Initial Consonant Deletion',
+    type: 'developmental',
+    rates: [30, 24, 10, 3, 2, 0],
+    ssdRate: null, ssdSig: false,
+    errorType: '省略音節首聲母（音節結構歷程）',
+    examples: ['「狗」→「ㄡ」', '「飛機」→「ㄟ機」', '「杯子」→「ㄟ子」'],
+    targets: '各聲母（尤以摩擦音、塞擦音為多）',
+    note: '省略整個聲母的音節結構歷程，是語音發展初期才會出現的「原始歷程」（鄭靜宜，2011）。約在 3.5–4 歲間完成抑制，4 歲後出現率僅 3%。對語音清晰度影響大，若 4 歲後仍系統性出現，是嚴重音韻異常的重要指標。SSD 兒童與普通兒童在此歷程次數上差異不顯著（論文表 8），但若出現應特別警示。'
+  },
+  {
+    name: '摩擦音化', eng: 'Frication',
+    type: 'developmental',
+    rates: [19, 14, 10, 5, 0, 0],
+    ssdRate: 8, ssdSig: true,
+    errorType: '塞音發音時口道未完全緊閉，帶摩擦噪音',
+    examples: ['ㄆ→ㄈ（「爬山」→「罰山」）', '塞音帶有摩擦音質（扭曲音）'],
+    targets: 'ㄆ ㄊ ㄎ（塞音群）',
+    note: '發塞音時口道未完全緊閉，形成帶摩擦噪音的音質。在 3.5–4 歲間達成抑制。整體出現率不高（最高 19%），是所有發展性歷程中較早消失的之一。SSD 兒童略高於普通兒童，差異達顯著（★ p<.05）。'
+  },
+  {
+    name: '前置化（齒槽化）', eng: 'Fronting',
+    type: 'developmental',
+    rates: [19, 4, 8, 2, 2, 0],
+    ssdRate: 8, ssdSig: true,
+    errorType: '舌根音（軟顎）→ 齒槽音（構音位置前移）',
+    examples: ['ㄍ→ㄉ（「哥」→「多」）', 'ㄎ→ㄊ（「可」→「拖」）'],
+    targets: 'ㄍ ㄎ',
+    note: '與後置化方向相反，出現率遠低於後置化（2.5 歲 19% vs 81%）。約在 3 歲時即達抑制（3 歲組 4%），是所有發展性歷程中消失最早的之一。鄭靜宜（2011）指出，華語缺乏舌根音與前高母音 /i/ 拼合的音節（如 /ki/），減少了前置化機會，與英語相反。SSD 兒童略高，差異達顯著（★ p<.05）。'
+  },
+  {
+    name: '邊音化', eng: 'Lateralization',
+    type: 'developmental',
+    rates: [6, 10, 4, 3, 4, 2],
+    ssdRate: 30, ssdSig: true,
+    errorType: '非邊音 → ㄌ（邊音）',
+    examples: ['「很熱」→「很樂」', '「丟掉」→「溜掉」', 'ㄖ→ㄌ、ㄙ→ㄌ'],
+    targets: 'ㄖ ㄙ ㄘ ㄗ 等（非邊音）',
+    note: '在普通學前兒童中整體出現率偏低（各年齡均不超過 10%）。但鄭靜宜（2011）研究二發現，SSD 兒童出現率高達 30%，遠高於普通兒童（約 3%），在區別分析結構矩陣係數中排名第一（r＝0.52）。若個案頻繁出現邊音化，是「偏異性（deviant）音韻歷程」的最重要指標，優先評估（★ p<.001）。'
+  },
+  {
+    name: '顎音化', eng: 'Palatalization',
+    type: 'developmental',
+    rates: [null, null, null, null, null, null],
+    ssdRate: null, ssdSig: false,
+    errorType: '齒槽音 → 硬顎音（構音位置後移至硬顎）',
+    examples: ['ㄙ→ㄒ（/s/→[ɕ]）', 'ㄉ→ㄐ（「低」→「機」）'],
+    targets: 'ㄙ ㄘ ㄗ ㄉ ㄊ',
+    note: '以硬顎音取代齒槽音，鄭靜宜（phono 講義）將其列為構音位置改變的替代歷程之一。2011 年論文表 3 未單獨計算此歷程的出現率（部分可能被歸入後置化或塞擦音化計算）。臨床上可見於較年幼兒童或語音異常兒童，評估時需與後置化（→舌根）區分：後置化到軟顎，顎音化到硬顎。',
+    noData: true
+  },
+  {
+    name: '齒槽音化（唇音→齒槽）', eng: 'Alveolarization',
+    type: 'rare',
+    rates: [0, 2, 0, 0, 0, 0],
+    ssdRate: null, ssdSig: false,
+    errorType: '雙唇音或唇齒音 → 齒槽音',
+    examples: ['ㄅ→ㄉ（「八」→「搭」）', 'ㄆ→ㄊ（「爬」→「他」）', 'ㄈ→ㄙ（唇齒→齒槽）'],
+    targets: 'ㄅ ㄆ ㄇ ㄈ（唇音群）',
+    note: '出現率極低——鄭靜宜（2011）表 3 全年齡組幾乎為 0（僅 3 歲組 2%），屬罕見歷程。鄭靜宜（2011）指出「此歷程的出現通常很低」。若有大於 2.5 歲的兒童出現，語音發展可能屬偏異性（deviant）情況。'
+  },
+  {
+    name: '送氣化', eng: 'Aspiration',
+    type: 'rare',
+    rates: [0, 2, 0, 0, 0, 0],
+    ssdRate: null, ssdSig: true,
+    errorType: '不送氣音 → 同部位送氣音（反向替代）',
+    examples: ['ㄅ→ㄆ（「包」→「拋」）', 'ㄐ→ㄑ、ㄍ→ㄎ'],
+    targets: 'ㄅ ㄉ ㄍ ㄐ ㄗ ㄓ（不送氣音群）',
+    note: '不送氣化的反向歷程，出現率極低（鄭靜宜，2011 表 3：除 3 歲組 2% 外均為 0）。屬罕見歷程。然而在 SSD 兒童與普通同齡兒童的區別分析中，送氣化次數的差異達顯著（★ p<.01，組間相差值 -0.11），SSD 兒童略多。若出現應留意。'
+  },
+  {
+    name: '不捲舌化', eng: 'De-retroflexion',
+    type: 'special',
+    rates: [91, 86, 88, 80, 72, 64],
+    ssdRate: 90, ssdSig: false,
+    errorType: '捲舌音 → 非捲舌音（齒槽位置）',
+    examples: ['ㄓ→ㄗ（「這」→「則」）', 'ㄔ→ㄘ（「車」→「醋」）', 'ㄕ→ㄙ（「是」→「四」）', 'ㄖ→ㄌ（「人」→「輪」）'],
+    targets: 'ㄓ ㄔ ㄕ ㄖ',
+    note: '⚠ 台灣特殊考量：普通兒童出現率從 2.5 歲的 91% 到 6 歲仍有 64%，從未達 10% 抑制標準。SSD 兒童出現率同樣接近 90%，兩組差異不顯著（鄭靜宜，2011 表 8：t=−4.69，但 SSD 組不捲舌化次數多，主要因整體語音次數多，非此歷程本身的特異性）。台灣華語的不捲舌化屬方言性變異（dialectal variation）而非語音錯誤，鄭靜宜（2011）明確指出「絕不能作為兒童語音缺陷判斷的依據」。'
+  },
+  {
+    name: '捲舌化', eng: 'Retroflexion',
+    type: 'rising',
+    rates: [2, 10, 8, 15, 19, 23],
+    ssdRate: 5, ssdSig: false,
+    errorType: '非捲舌音 → 捲舌音（過度類化）',
+    examples: ['ㄙ→ㄕ（「撕」→「詩」）', 'ㄗ→ㄓ（不該捲舌的音被捲舌化）'],
+    targets: 'ㄗ ㄘ ㄙ ㄉ 等（被過度類化）',
+    note: '唯一出現率隨年齡「上升」的歷程（6 歲組 23%）。鄭靜宜（2011）推論：較大兒童學會捲舌動作後，因音韻認知混淆，將不該捲舌的音過度類化（overgeneralization）。有趣的是，SSD 兒童的捲舌化次數反而「顯著少於」普通兒童（t=1.32，不顯著，且差值為正），推論因多數 SSD 兒童無法發出捲舌音，自然也無法過度類化。不宜視為介入目標。'
+  },
+  {
+    name: '唇音化', eng: 'Labialization',
+    type: 'rare',
+    rates: [2, 0, 0, 0, 0, 0],
+    ssdRate: null, ssdSig: false,
+    errorType: '非唇音 → 雙唇音或唇齒音',
+    examples: ['ㄉ→ㄅ（「阿弟」→「阿畢」）', 'ㄙ→ㄈ（部分兒童）'],
+    targets: '非唇音',
+    note: '出現率極低（罕見歷程），2.5 歲組僅 2%，3 歲後歸零。鄭靜宜（2011）指出「若有大於 2.5 歲兒童出現此歷程，語音發展可能屬偏異性（deviant）情況」。在 SSD 兒童 vs 普通兒童的比較中差異不顯著（p=.14）。'
+  },
+  {
+    name: '鼻音化', eng: 'Nasalization',
+    type: 'rare',
+    rates: [2, 2, 0, 0, 0, 0],
+    ssdRate: null, ssdSig: false,
+    errorType: '非鼻音 → 鼻音',
+    examples: ['「恐怖」→「恐木」（ㄅ→ㄇ）'],
+    targets: '非鼻音',
+    note: '出現率極低，2.5–3 歲組僅 2%。多見於顎咽結構或功能異常者（如唇顎裂），在一般學前兒童屬罕見歷程。若出現需排除器質性因素（鄭靜宜，2011）。'
+  },
+];
+
+// ════════ Interpolation ════════
+function getRateAtAge(proc, age) {
+  if(proc.noData) return null;
+  const pts = PP_AGE_POINTS;
+  const r = proc.rates;
+  if(age <= pts[0]) return r[0];
+  if(age >= pts[pts.length-1]) return r[pts.length-1];
+  for(let i=0;i<pts.length-1;i++){
+    if(age >= pts[i] && age <= pts[i+1]){
+      const t = (age - pts[i]) / (pts[i+1] - pts[i]);
+      return Math.round(r[i] + t * (r[i+1] - r[i]));
+    }
+  }
+  return 0;
+}
+
+function getStatus(proc, rate) {
+  if(proc.type === 'special') return 'special';
+  if(proc.type === 'rising')  return 'rising';
+  if(proc.type === 'rare')    return 'rare';
+  if(proc.noData)             return 'expected';
+  if(rate < 10) return 'concern';
+  if(rate < 20) return 'transitional';
+  return 'expected';
+}
+
+const STATUS_LABEL = {
+  concern:     '⚠ 應已消失',
+  transitional:'↓ 過渡消退中',
+  expected:    '○ 此年齡正常',
+  special:     '台灣特殊考量',
+  rising:      '↑ 上升型',
+  rare:        '罕見歷程',
+};
+
+// ════════ Spark SVG ════════
+function makeSpark(proc, currentAge) {
+  if(proc.noData) return `<svg viewBox="0 0 100 46" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:46px"><text x="50" y="23" font-size="9" fill="#ccc" text-anchor="middle">無出現率資料</text></svg>`;
+  const pts = PP_AGE_POINTS;
+  const w = 100, h = 34;
+  const maxVal = proc.type === 'rare' ? 20 : 100;
+  const xs = pts.map((_,i) => Math.round(i / (pts.length-1) * w));
+  const ys = proc.rates.map(v => Math.round(h - (v/maxVal)*h));
+  const path = xs.map((x,i)=>(i===0?`M${x},${ys[i]}`:`L${x},${ys[i]}`)).join(' ');
+  const clampedAge = Math.max(pts[0], Math.min(pts[pts.length-1], currentAge));
+  let cx = xs[0];
+  for(let i=0;i<pts.length-1;i++){
+    if(clampedAge >= pts[i] && clampedAge <= pts[i+1]){
+      const t=(clampedAge-pts[i])/(pts[i+1]-pts[i]);
+      cx = Math.round(xs[i] + t*(xs[i+1]-xs[i])); break;
+    }
+  }
+  if(clampedAge >= pts[pts.length-1]) cx = xs[pts.length-1];
+  const cy = Math.round(h - (getRateAtAge(proc, currentAge)/maxVal)*h);
+  const colors = {concern:'#ef4444',transitional:'#f59e0b',expected:'#9ca3af',special:'#7c3aed',rising:'#3b82f6',rare:'#d1d5db'};
+  const status = getStatus(proc, getRateAtAge(proc, currentAge));
+  const col = colors[status] || '#9ca3af';
+  let ssdLine = '';
+  if(proc.ssdRate !== null) {
+    const sy = Math.round(h - (proc.ssdRate/maxVal)*h);
+    ssdLine = `<line x1="0" y1="${sy}" x2="${w}" y2="${sy}" stroke="#f97316" stroke-width="1" stroke-dasharray="3,2" opacity="0.7"/>
+    <text x="${w}" y="${sy-2}" font-size="7" fill="#f97316" text-anchor="end">SSD ${proc.ssdRate}%</text>`;
+  }
+  return `<svg viewBox="0 0 ${w} ${h+12}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:46px">
+    ${ssdLine}
+    <path d="${path}" fill="none" stroke="#e5e7eb" stroke-width="1.5"/>
+    <path d="${path}" fill="none" stroke="${col}" stroke-width="2" opacity="0.7"/>
+    <circle cx="${cx}" cy="${cy}" r="3.5" fill="${col}"/>
+    ${pts.map((p,i)=>`<text x="${xs[i]}" y="${h+11}" font-size="7" fill="#bbb" text-anchor="middle">${p}</text>`).join('')}
+  </svg>`;
+}
+
+// ════════ SSD comparison bar ════════
+function makeSSDBar(proc, normalRate) {
+  if(proc.ssdRate === null) return '';
+  const maxBar = 80;
+  const maxVal = Math.max(normalRate||0, proc.ssdRate, 10);
+  const nW = normalRate!=null ? Math.round((normalRate/maxVal)*maxBar) : 0;
+  const sW = Math.round((proc.ssdRate/maxVal)*maxBar);
+  return `<div style="margin-top:8px;padding:8px 10px;background:#fafaf8;border-radius:7px;border-left:3px solid #fed7aa">
+    <div style="font-size:10px;font-weight:600;color:#92400e;margin-bottom:5px">SSD 兒童對比（5–6 歲組）${proc.ssdSig ? '　<span style="color:#9a3412">★ 差異顯著 p&lt;.05</span>' : ''}</div>
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:9px;color:#6b7280;width:54px;flex-shrink:0">普通同齡</span>
+        <div style="width:${nW}px;height:8px;background:#d1d5db;border-radius:3px;min-width:2px"></div>
+        <span style="font-size:10px;color:#6b7280">${normalRate!=null ? normalRate+'%' : '─'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:9px;color:#ea580c;width:54px;flex-shrink:0">SSD 兒童</span>
+        <div style="width:${sW}px;height:8px;background:#fed7aa;border:1px solid #f97316;border-radius:3px;min-width:2px"></div>
+        <span style="font-size:10px;color:#ea580c">${proc.ssdRate}%</span>
+      </div>
+    </div>
+    <div style="font-size:9px;color:#aaa;margin-top:4px">來源：鄭靜宜（2011）表 8、圖 5，SSD 兒童 N＝55（5–6 歲）</div>
+  </div>`;
+}
+
+// ════════ Build grid ════════
+let ppBuilt = false;
+function buildPPGrid() {
+  if(ppBuilt) return;
+  ppBuilt = true;
+  const grid = document.getElementById('pp-grid');
+  PROCESSES.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.id = 'pp-'+i;
+    d.className = 'pp-card';
+    d.onclick = ()=>{
+      const n = document.getElementById('ppn-'+i);
+      n.classList.toggle('show');
+    };
+    grid.appendChild(d);
+  });
+}
+
+// ════════ Update phono tab ════════
+function updatePhono() {
+  const age = +document.getElementById('pp-age-slider').value;
+  const label = age===Math.floor(age) ? age+'歲' : age+'歲半';
+  document.getElementById('pp-age-val').textContent = label;
+  const ORDER = {concern:0,transitional:1,expected:2,rising:3,special:4,rare:5};
+  const sorted = PROCESSES.map((p,i)=>{
+    const rate = getRateAtAge(p,age);
+    const status = getStatus(p,rate);
+    return {p,i,rate,status};
+  }).sort((a,b)=>ORDER[a.status]-ORDER[b.status]);
+  const grid = document.getElementById('pp-grid');
+  sorted.forEach(({p,i,rate,status})=>{
+    const card = document.getElementById('pp-'+i);
+    card.className = 'pp-card pp-'+status;
+    const spark = makeSpark(p, age);
+    const rateDisplay = p.noData ? '─' : rate+'%';
+    let clinicalLine = '';
+    if(p.noData)                    clinicalLine = `<div style="font-size:10px;color:#6b7280;margin-top:3px">2011 年論文未單獨統計出現率（詳見說明）</div>`;
+    else if(status==='concern')     clinicalLine = `<div style="font-size:10px;color:#991b1b;margin-top:3px">同齡普通兒童出現率 ${rate}%，若個案頻繁出現需關注</div>`;
+    else if(status==='transitional')clinicalLine = `<div style="font-size:10px;color:#92400e;margin-top:3px">同齡普通兒童出現率 ${rate}%，消退中，持續觀察</div>`;
+    else if(status==='expected')    clinicalLine = `<div style="font-size:10px;color:#6b7280;margin-top:3px">同齡普通兒童出現率 ${rate}%，此年齡正常</div>`;
+    else if(status==='special')     clinicalLine = `<div style="font-size:10px;color:#5b21b6;margin-top:3px">台灣各年齡均高達 64–91%，方言性變異，非臨床指標</div>`;
+    else if(status==='rising')      clinicalLine = `<div style="font-size:10px;color:#1e40af;margin-top:3px">此歷程出現率隨年齡上升（${rate}%），屬過度類化，不宜介入</div>`;
+    else if(status==='rare')        clinicalLine = `<div style="font-size:10px;color:#9ca3af;margin-top:3px">罕見歷程，若出現需排除器質性或偏異性問題</div>`;
+    const ssdBar = makeSSDBar(p, rate);
+    card.innerHTML = `
+      <div class="pp-head">
+        <div><div class="pp-name">${p.name}</div><div class="pp-eng">${p.eng}</div></div>
+        <span class="pp-status-badge">${STATUS_LABEL[status]}</span>
+      </div>
+      <div class="pp-rate-row">
+        <div class="pp-rate-big">${rateDisplay}</div>
+        <div class="pp-spark">${spark}</div>
+      </div>
+      ${clinicalLine}
+      <div class="pp-example" style="margin-top:6px"><b>錯誤型態：</b>${p.errorType}</div>
+      <div class="pp-example"><b>範例：</b>${p.examples.slice(0,2).join('　')}</div>
+      <div class="pp-toggle">▾ 點選查看臨床說明與 SSD 對比</div>
+      <div class="pp-note" id="ppn-${i}">${p.note}${ssdBar}<div style="font-size:10px;color:#bbb;margin-top:5px">影響音素：${p.targets}</div></div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+
 </script>
 </body>
 </html>
