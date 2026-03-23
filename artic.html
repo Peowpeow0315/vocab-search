@@ -159,6 +159,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 .stim-result.stim-yes{background:#dff0d6;color:#14532d}
 .stim-result.stim-no{background:#fce0e0;color:#7f1d1d}
 
+/* ── Consistency panel ── */
+.consist-panel{margin-top:12px;padding:10px 12px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px}
+.consist-title{font-size:11px;font-weight:600;color:#15803d;margin-bottom:8px}
+.consist-btn{padding:5px 14px;border-radius:99px;font-size:11px;font-weight:500;border:1.5px solid #86efac;background:#fff;color:#15803d;cursor:pointer;transition:all .15s;line-height:1.5;text-align:center}
+.consist-btn:hover{background:#dcfce7}
+.consist-btn.consist-selected-yes{background:#16a34a;color:#fff;border-color:#16a34a}
+.consist-btn.consist-selected-no{background:#d97706;color:#fff;border-color:#d97706}
+.consist-result{margin-top:8px;font-size:11px;line-height:1.75;padding:9px 12px;border-radius:8px}
+.consist-result.consist-consistent{background:#dcfce7;color:#14532d}
+.consist-result.consist-inconsistent{background:#fef3c7;color:#78350f}
+
 /* ── Method tooltips ── */
 .method-link{color:#1d4ed8;text-decoration:underline dotted;cursor:pointer;font-weight:600;position:relative;white-space:nowrap}
 .method-link:hover{color:#1e40af}
@@ -461,6 +472,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
       </div>
       <div class="stim-result" id="stim-result" style="display:none"></div>
     </div>
+
+    <!-- ③ Consistency assessment (Dodd 2014) -->
+    <div class="consist-panel" id="consist-panel" style="display:none">
+      <div class="consist-title">🔄 錯誤一致性評估（Dodd, 2014）</div>
+      <div style="font-size:10px;color:#15803d;margin-bottom:9px;line-height:1.7">
+        說同一個詞多次時，每次的錯誤是否相同？<br>
+        <span style="color:#6b7280">標準做法：請個案命名同一組詞三次，計算「不同次出現不同產出」的詞之比例；≥40% → 判定為「不一致」（Dodd, 2014）。</span>
+      </div>
+      <div class="stim-options">
+        <button class="consist-btn" id="consist-yes" onclick="selectConsistency('consistent')">✓ 一致<br><span style="font-size:9px;font-weight:400">每次說同一詞時錯誤相同</span></button>
+        <button class="consist-btn" id="consist-no" onclick="selectConsistency('inconsistent')">✕ 不一致<br><span style="font-size:9px;font-weight:400">同一詞不同次有不同錯誤</span></button>
+        <button class="consist-btn" id="consist-unknown" onclick="selectConsistency('unknown')" style="border-color:#d1d5db;color:#6b7280">? 未評估<br><span style="font-size:9px;font-weight:400">尚未收集多次樣本</span></button>
+      </div>
+      <div class="consist-result" id="consist-result" style="display:none"></div>
+    </div>
   </div>
 
   <!-- Legend -->
@@ -685,7 +711,7 @@ const PROCESSES = [
     name: '不送氣化', eng: 'Deaspiration',
     type: 'developmental',
     rates: [47, 39, 16, 10, 9, 2],
-    ssdRate: 15, ssdSig: true,
+    ssdRate: 15, ssdSig: true,  // 引用鄭靜宜（2011）圖5估計值（5–6歲SSD組），非表中精確數字
     errorType: '送氣音 → 同部位不送氣音',
     examples: ['ㄆ→ㄅ（「葡萄」→「布桃」）', 'ㄊ→ㄉ（「頭髮」→「豆髮」）', 'ㄎ→ㄍ、ㄑ→ㄐ'],
     targets: 'ㄆ ㄊ ㄎ ㄑ ㄘ ㄔ',
@@ -723,7 +749,7 @@ const PROCESSES = [
   },
   {
     name: '邊音化', eng: 'Lateralization',
-    type: 'developmental',
+    type: 'deviant',
     rates: [6, 10, 4, 3, 4, 2],
     ssdRate: 30, ssdSig: true,
     errorType: '非邊音 → ㄌ（邊音）',
@@ -801,6 +827,17 @@ const PROCESSES = [
     examples: ['「恐怖」→「恐木」（ㄅ→ㄇ）'],
     targets: '非鼻音',
     note: '出現率極低，2.5–3 歲組僅 2%。多見於顎咽結構或功能異常者（如唇顎裂），在一般學前兒童屬罕見歷程。若出現需排除器質性因素（鄭靜宜，2011）。'
+  },
+  {
+    name: '去鼻音化', eng: 'Denasalization',
+    type: 'developmental',
+    rates: [null, null, null, null, null, null],
+    ssdRate: null, ssdSig: false,
+    errorType: '鼻音 → 同部位非鼻音（無鼻音共鳴）',
+    examples: ['ㄇ→ㄅ（「媽」→「巴」）', 'ㄋ→ㄉ（「你」→「地」）'],
+    targets: 'ㄇ ㄋ',
+    note: '以同部位的塞音或其他非鼻音取代鼻音，反映鼻音共鳴控制仍在發展中。鄭靜宜（2011）論文表 3 未單獨統計此歷程出現率。臨床上在年幼兒童偶可見到，多在 3 歲前消退。若持續出現需排除顎咽功能不全（VPI）等器質性因素。',
+    noData: true
   },
 ];
 
@@ -1059,26 +1096,33 @@ const PROCESS_INFO = {
     def:'塞音發音時口道未完全閉合，帶摩擦音質'},
   '不送氣化': {suppressAge:5,    type:'developmental', priority:'med',
     def:'以不送氣音取代送氣音，省略送氣動作'},
-  '送氣化':   {suppressAge:3,    type:'rare',    priority:'high',
+  '送氣化':   {suppressAge:2.5,  type:'rare',    priority:'high',
     def:'以送氣音取代不送氣音（少見反向歷程），出現率極低，若出現需評估'},
-  '鼻音化':   {suppressAge:3,    type:'rare',    priority:'high',
+  '鼻音化':   {suppressAge:2.5,  type:'rare',    priority:'high',
     def:'以鼻音取代非鼻音，出現率極低，多與顎咽結構或功能異常有關，需轉介評估'},
   '邊音化':   {suppressAge:null, type:'deviant', priority:'highest',
     def:'以邊音ㄌ取代其他非邊音，SSD兒童出現率遠高於普通兒童（30% vs 3%），偏異性歷程'},
   '唇音化':   {suppressAge:2.5,  type:'rare',    priority:'high',
     def:'以唇音取代非唇音，出現率極低，2.5歲後出現屬偏異性（deviant）語音發展'},
-  '齒槽音化': {suppressAge:3,    type:'rare',    priority:'high',
+  '齒槽音化': {suppressAge:2.5,  type:'rare',    priority:'high',
     def:'以齒槽音取代唇音或唇齒音，出現率極低，若出現需排除器質性因素並評估介入'},
   '顎音化':   {suppressAge:4,    type:'developmental', priority:'med',
     def:'以硬顎音取代齒槽音，構音部位後移至硬顎（ㄙ→ㄒ、ㄉ→ㄐ）'},
   '聲母省略': {suppressAge:4,    type:'developmental', priority:'high',
     def:'完全省略音節首聲母，對語音清晰度影響最大，4歲後出現需關注'},
+  '去鼻音化': {suppressAge:3,    type:'developmental', priority:'med',
+    def:'以同部位非鼻音取代鼻音（ㄇ→ㄅ/ㄆ、ㄋ→ㄉ/ㄊ），反映鼻音共鳴控制仍在發展中'},
 };
 
 function detectProcesses(target, errorSound) {
   // Handle omission
   if(errorSound === '省' || errorSound === '省略' || errorSound === '') {
     return ['聲母省略'];
+  }
+
+  // ㄕ↔ㄖ 特殊情況：兩者均為捲舌摩擦音，差異僅在聲帶振動，本系統特徵無法區分
+  if((target === 'ㄕ' && errorSound === 'ㄖ') || (target === 'ㄖ' && errorSound === 'ㄕ')) {
+    return ['_retroflex_pair_'];
   }
 
   const tF = CONS_FEATURES[target];
@@ -1101,9 +1145,17 @@ function detectProcesses(target, errorSound) {
   if(tF.place !== 'velar' && tF.place !== 'retroflex' && eF.place === 'velar') {
     procs.push('後置化');
   }
-  // 前置化: velar/palatal → alveolar/bilabial
+  // 後置化補充：labiodental → palatal（同構音方式，如 ㄈ→ㄒ，唇齒音移至舌面位置）
+  if(tF.place === 'labiodental' && eF.place === 'palatal' && tF.manner === eF.manner) {
+    procs.push('後置化');
+  }
+  // 前置化: velar/palatal → alveolar/bilabial/labiodental
   if((tF.place === 'velar' || tF.place === 'palatal') &&
      (eF.place === 'alveolar' || eF.place === 'bilabial' || eF.place === 'labiodental')) {
+    procs.push('前置化');
+  }
+  // 前置化補充：velar → palatal（同構音方式，如 ㄏ→ㄒ，舌根移至舌面位置）
+  if(tF.place === 'velar' && eF.place === 'palatal' && tF.manner === eF.manner) {
     procs.push('前置化');
   }
   // 顎音化: alveolar → palatal
@@ -1129,14 +1181,31 @@ function detectProcesses(target, errorSound) {
   }
 
   // — Manner —
-  if((tF.manner === 'fricative' || tF.manner === 'affricate') && eF.manner === 'stop') {
+  // 塞音化: 摩擦音/塞擦音/邊音/鼻音 → 塞音（構音方式簡化）
+  if((tF.manner === 'fricative' || tF.manner === 'affricate' ||
+      tF.manner === 'lateral'   || tF.manner === 'nasal') && eF.manner === 'stop') {
     procs.push('塞音化');
   }
-  if((tF.manner === 'fricative' || tF.manner === 'stop') && eF.manner === 'affricate') {
+  // 塞擦音化: 摩擦音/塞音/邊音/鼻音 → 塞擦音
+  if((tF.manner === 'fricative' || tF.manner === 'stop' ||
+      tF.manner === 'lateral'   || tF.manner === 'nasal') && eF.manner === 'affricate') {
     procs.push('塞擦音化');
   }
-  if((tF.manner === 'stop' || tF.manner === 'affricate') && eF.manner === 'fricative') {
+  // 摩擦音化: 塞音/塞擦音/邊音 → 摩擦音（鼻音→摩擦音另由去鼻音化處理）
+  if((tF.manner === 'stop' || tF.manner === 'affricate' ||
+      tF.manner === 'lateral') && eF.manner === 'fricative') {
     procs.push('摩擦音化');
+  }
+  // 去鼻音化: 鼻音 → 非鼻音（同部位或不同部位）
+  if(tF.manner === 'nasal' && eF.manner !== 'nasal') {
+    procs.push('去鼻音化');
+    // 同時偵測構音位置改變
+    if(PLACE_ORDER[tF.place] < PLACE_ORDER[eF.place]) procs.push('後置化');
+    else if(PLACE_ORDER[tF.place] > PLACE_ORDER[eF.place]) procs.push('前置化');
+  }
+  // 去邊音化（邊音→非邊音，同部位）
+  if(tF.manner === 'lateral' && eF.manner !== 'lateral' && tF.place === eF.place) {
+    // manner change already handled above; no extra tag needed
   }
   if(tF.manner !== 'nasal' && eF.manner === 'nasal') {
     procs.push('鼻音化');
@@ -1144,23 +1213,33 @@ function detectProcesses(target, errorSound) {
   if(tF.manner !== 'lateral' && eF.manner === 'lateral') {
     procs.push('邊音化');
   }
+  // ㄕ↔ㄖ: 同部位捲舌摩擦音，差異為有聲/無聲，系統無法自動區分
+  // 偵測為不捲舌化（視覺標記），讓臨床人員知道有輸入
+  // (no extra rule needed - both are retroflex so 不捲舌化 won't fire; leave as-is)
 
   return [...new Set(procs)]; // deduplicate
 }
 
+// Helper: look up process by exact name OR by name that starts with procName + '（'
+// Needed because PROCESSES uses display names like '後置化（舌根音化）' while
+// detectProcesses pushes short names like '後置化'.
+function findProcess(procName) {
+  return PROCESSES.find(x => x.name === procName || x.name.startsWith(procName + '（'));
+}
+
 function getProcessRate(procName, age) {
-  const p = PROCESSES.find(x => x.name === procName);
+  const p = findProcess(procName);
   if(!p) return null;
   return getRateAtAge(p, age);
 }
 
 function getProcessSSD(procName) {
-  const p = PROCESSES.find(x => x.name === procName);
+  const p = findProcess(procName);
   return p ? p.ssdRate : null;
 }
 
 function getProcessSSDSig(procName) {
-  const p = PROCESSES.find(x => x.name === procName);
+  const p = findProcess(procName);
   return p ? p.ssdSig : false;
 }
 
@@ -1275,6 +1354,11 @@ function clearAnalysis() {
   ['stim-yes','stim-no','stim-unknown'].forEach(id=>{
     document.getElementById(id).className = 'stim-btn';
   });
+  document.getElementById('consist-panel').style.display = 'none';
+  document.getElementById('consist-result').style.display = 'none';
+  ['consist-yes','consist-no','consist-unknown'].forEach(id=>{
+    document.getElementById(id).className = 'consist-btn';
+  });
 }
 
 function selectStim(choice) {
@@ -1355,6 +1439,7 @@ function runAnalysis() {
   if(!valid) {
     res.innerHTML = `<div style="font-size:11px;color:#991b1b;padding:8px 10px;background:#fce0e0;border-radius:7px">請輸入有效的注音聲母（ㄅ～ㄙ），省略請輸入「省」</div>`;
     document.getElementById('stim-panel').style.display = 'none';
+    document.getElementById('consist-panel').style.display = 'none';
     return;
   }
 
@@ -1362,6 +1447,7 @@ function runAnalysis() {
   if(target === errorInput) {
     res.innerHTML = `<div class="anlz-correct">✓ 目標音與實際音相同，構音正確，無音韻歷程</div>`;
     document.getElementById('stim-panel').style.display = 'none';
+    document.getElementById('consist-panel').style.display = 'none';
     return;
   }
 
@@ -1370,6 +1456,18 @@ function runAnalysis() {
   if(procs.length === 0) {
     res.innerHTML = `<div style="font-size:11px;color:#92400e;padding:8px 10px;background:#fef3c7;border-radius:7px">⚠ 無法自動辨識音韻歷程分類（可能為同化歷程或複合錯誤），建議人工判斷</div>`;
     document.getElementById('stim-panel').style.display = 'none';
+    document.getElementById('consist-panel').style.display = 'none';
+    return;
+  }
+
+  // ㄕ↔ㄖ 特殊提示
+  if(procs[0] === '_retroflex_pair_') {
+    res.innerHTML = `<div style="font-size:11px;color:#5b21b6;padding:8px 10px;background:#ede9fe;border-radius:7px">
+      ⓘ <b>ㄕ↔ㄖ 捲舌音有聲/無聲替代</b>：兩者均為捲舌摩擦音，差異僅在聲帶振動（ㄖ有聲、ㄕ無聲），本系統特徵定義相同，無法以規則自動分類。<br>
+      臨床判斷：若為 ㄖ→ㄕ（有聲→無聲），屬無聲化（devoicing），較常見；若為 ㄕ→ㄖ（無聲→有聲），屬有聲化，較罕見。建議人工記錄並結合語音樣本判斷。
+    </div>`;
+    document.getElementById('stim-panel').style.display = 'none';
+    document.getElementById('consist-panel').style.display = 'none';
     return;
   }
 
@@ -1393,6 +1491,10 @@ function runAnalysis() {
     document.getElementById('stim-panel').style.display = 'block';
     ['stim-yes','stim-no','stim-unknown'].forEach(id=>{ document.getElementById(id).className='stim-btn'; });
     document.getElementById('stim-result').style.display = 'none';
+    // Show consistency panel
+    document.getElementById('consist-panel').style.display = 'block';
+    ['consist-yes','consist-no','consist-unknown'].forEach(id=>{ document.getElementById(id).className='consist-btn'; });
+    document.getElementById('consist-result').style.display = 'none';
     return;
   }
 
@@ -1476,6 +1578,96 @@ function runAnalysis() {
     document.getElementById(id).className = 'stim-btn';
   });
   document.getElementById('stim-result').style.display = 'none';
+  // Show consistency panel
+  document.getElementById('consist-panel').style.display = 'block';
+  ['consist-yes','consist-no','consist-unknown'].forEach(id=>{
+    document.getElementById(id).className = 'consist-btn';
+  });
+  document.getElementById('consist-result').style.display = 'none';
+}
+
+// ════════ Consistency Assessment (Dodd 2014) ════════
+function selectConsistency(choice) {
+  document.getElementById('consist-yes').className     = 'consist-btn' + (choice==='consistent'   ? ' consist-selected-yes' : '');
+  document.getElementById('consist-no').className      = 'consist-btn' + (choice==='inconsistent' ? ' consist-selected-no'  : '');
+  document.getElementById('consist-unknown').className = 'consist-btn' + (choice==='unknown'       ? ' consist-selected-yes' : '');
+
+  const age   = +document.getElementById('pp-age-slider').value;
+  const procs = window._lastDetectedProcs || [];
+  const res   = document.getElementById('consist-result');
+  res.style.background = '';
+  res.style.color = '';
+
+  const hasDeviant = procs.some(n => {
+    const info = PROCESS_INFO[n];
+    return info && (info.type === 'deviant' || info.type === 'rare');
+  });
+  const hasConcern = procs.some(n => {
+    const info = PROCESS_INFO[n];
+    if (!info || info.type === 'deviant' || info.type === 'rare') return false;
+    const r = getProcessRate(n, age);
+    return r !== null && r < 10;
+  });
+  const allNormal = procs.every(n => {
+    const info = PROCESS_INFO[n];
+    if (!info) return true;
+    if (info.type === 'special' || info.type === 'rising') return true;
+    const r = getProcessRate(n, age);
+    return r !== null && r >= 10;
+  });
+
+  let html = '';
+
+  if (choice === 'consistent') {
+    res.className = 'consist-result consist-consistent';
+
+    if (hasDeviant) {
+      html = `<b>✓ 錯誤一致 + 偏異性歷程 → 錯誤一致的音韻異常（Consistent Phonological Disorder）</b><br>
+個案的錯誤具規則性與一致性，但包含在普通兒童中不應出現的偏異性歷程（如邊音化）。根據 Dodd（2014）分類模型，此型態屬「錯誤一致的音韻異常」（佔 SSD 約 21%），反映深層音韻系統缺陷，而非單純發展遲緩。<br>
+<b>介入方向：</b>採音韻取向為主，以${methodLink('minimal_pairs','最小配對詞彙訓練')}建立音素對比性。
+<br><span style="font-size:9px;opacity:.65">Dodd (2014). Differential diagnosis and treatment of children with speech disorder.</span>`;
+
+    } else if (hasConcern) {
+      html = `<b>✓ 錯誤一致 + 發展性歷程超齡 → 音韻發展遲緩（Phonological Delay）</b><br>
+個案的錯誤具規則性，使用的歷程是普通兒童較小時也有的型態，但在此年齡已應消失。根據 Dodd（2014），此型態屬「音韻發展遲緩」（佔 SSD 約 57%），發展路徑與普通兒童相同，只是進度較慢。<br>
+<b>介入方向：</b>音韻取向為主（${methodLink('minimal_pairs','最小配對詞彙訓練')}），若個案無法誘發目標音可先輔以構音取向。
+<br><span style="font-size:9px;opacity:.65">Dodd (2014).</span>`;
+
+    } else if (allNormal) {
+      html = `<b>✓ 錯誤一致 + 歷程仍屬此年齡正常範圍</b><br>
+個案錯誤具一致性，且偵測到的歷程在此年齡出現率仍屬正常（≥10%），目前暫不符合語音障礙診斷標準。建議持續觀察；若整體語音清晰度明顯低於同齡，可進一步評估音素庫存與功能性影響。
+<br><span style="font-size:9px;opacity:.65">Dodd (2014)；鄭靜宜（2011）</span>`;
+
+    } else {
+      html = `<b>✓ 錯誤一致 → 系統性錯誤型態</b><br>
+個案音韻錯誤具一致性，可依歷程類型與嚴重度進一步分類。請結合年齡出現率及上方分析結果，判斷屬「音韻發展遲緩」或「錯誤一致的音韻異常」。
+<br><span style="font-size:9px;opacity:.65">Dodd (2014)</span>`;
+    }
+
+  } else if (choice === 'inconsistent') {
+    res.className = 'consist-result consist-inconsistent';
+    html = `<b>✕ 錯誤不一致 → 錯誤不一致的音韻異常（Inconsistent Phonological Disorder）</b><br>
+個案說同一個詞時每次產出不同（整體比例 ≥40% 的詞彙有不同發音型態）。根據 Dodd（2014），此型態（佔 SSD 約 9%）反映音韻計畫（phonological planning）層次的缺陷，而非音韻表徵本身。<br><br>
+<b>建議介入：Core Vocabulary Approach（Dodd &amp; Bradford, 2000）</b><br>
+① 與家長共同選定個案最需要的 50–70 個核心詞彙（功能性高、日常使用頻率高）<br>
+② 每週選 5–10 個目標詞，訂出每個詞的「最佳產出」（best production）作為練習目標<br>
+③ 大量集中練習（每節 100–150 次），目標是對同一詞產出穩定一致，<b>先求一致，不急於求正確</b><br>
+④ 每天在家練習同一組目標詞，建立動作記憶<br><br>
+<span style="color:#78350f">⚠ ${methodLink('minimal_pairs','最小配對詞彙訓練')}對此類型效果有限——需先以 Core Vocabulary Approach 建立產出穩定性後，才考慮切換為音韻取向介入。</span>
+<br><span style="font-size:9px;opacity:.65">Dodd, B. &amp; Bradford, A. (2000). Int. J. Lang. Comm. Dis., 35(2), 189–209.</span>`;
+
+  } else {
+    res.className = 'consist-result';
+    res.style.background = '#f8f8f6';
+    res.style.color = '#555';
+    html = `<b>尚未評估一致性</b> — 此結果直接影響治療方向，建議儘早評估。<br>
+<b>如何評估：</b>選定約 25 個詞（可使用標準工具），請個案於三個不同時間點分別命名，計算有多少比例的詞在不同時間點出現不同發音型態。≥40% → 判定「不一致」（Dodd, 2014）。<br>
+此結果可區分「音韻發展遲緩／錯誤一致的音韻異常」（適合${methodLink('minimal_pairs','最小配對詞彙訓練')}）與「錯誤不一致的音韻異常」（適合 Core Vocabulary Approach），兩者治療方法不同，不可混用。
+<br><span style="font-size:9px;opacity:.65">Dodd (2014)；Dodd &amp; Bradford (2000)</span>`;
+  }
+
+  res.innerHTML = html;
+  res.style.display = 'block';
 }
 
 // ════════ Method Tooltip System ════════
