@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>治療計畫產生器</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+
+/* ── Nav ── */
+.site-nav{display:flex;align-items:center;gap:8px;background:#1a1a1a;padding:10px 20px;position:sticky;top:0;z-index:100}
+.site-nav-title{font-size:12px;color:#666;letter-spacing:.04em;flex:1}
+.site-nav a{font-size:12px;padding:5px 14px;border-radius:7px;text-decoration:none;font-weight:500;transition:all .15s}
+.nav-active{background:#fff;color:#1a1a1a}
+.nav-inactive{color:#aaa;border:1px solid #444}
+.nav-inactive:hover{color:#fff;border-color:#888}
+
+.page{max-width:820px;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+
+/* ── Section card ── */
+.section-card{background:#fff;border:1px solid #e8e8e6;border-radius:14px;margin-bottom:1rem;overflow:hidden}
+.section-header{padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;transition:background .15s}
+.section-header:hover{background:#fafaf8}
+.section-icon{font-size:18px}
+.section-title{font-size:14px;font-weight:700;flex:1}
+.section-status{font-size:11px;padding:2px 9px;border-radius:99px;font-weight:600}
+.status-active{background:#dff0d6;color:#166534}
+.status-coming{background:#f3f4f6;color:#9ca3af}
+.status-filled{background:#deeef9;color:#0a4070}
+.chevron{font-size:11px;color:#bbb;transition:transform .2s}
+.chevron.open{transform:rotate(180deg)}
+.section-body{padding:0 18px 18px;border-top:1px solid #f0f0ee;display:none}
+.section-body.open{display:block}
+
+/* ── Case info ── */
+.case-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-top:14px}
+@media(max-width:560px){.case-grid{grid-template-columns:1fr}}
+.field-label{font-size:11px;font-weight:600;color:#888;letter-spacing:.04em;margin-bottom:5px}
+.age-row{display:flex;align-items:center;gap:12px}
+.age-row input[type=range]{flex:1;accent-color:#1a1a1a;height:4px}
+.age-display{font-size:22px;font-weight:700;min-width:60px;text-align:right}
+.field-note{font-size:10px;color:#bbb;margin-top:3px}
+.consist-row{display:flex;gap:6px;flex-wrap:wrap}
+.consist-btn{padding:5px 12px;border-radius:8px;border:1.5px solid #e5e7eb;background:#fff;font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit}
+.consist-btn:hover{border-color:#999}
+.consist-sel-yes{background:#d1fae5;border-color:#34d399;color:#065f46;font-weight:600}
+.consist-sel-no{background:#fee2e2;border-color:#f87171;color:#991b1b;font-weight:600}
+.consist-sel-unk{background:#fef3c7;border-color:#fcd34d;color:#92400e;font-weight:600}
+.chief-input{width:100%;padding:7px 10px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:inherit;resize:none;height:60px}
+.chief-input:focus{outline:none;border-color:#1a1a1a}
+
+/* ── Error table ── */
+.error-table-wrap{overflow-x:auto;margin-top:14px}
+table.error-tbl{width:100%;border-collapse:collapse;font-size:12px}
+table.error-tbl th{background:#f5f5f3;padding:7px 8px;text-align:left;font-weight:600;font-size:10px;color:#888;letter-spacing:.04em;white-space:nowrap;border-bottom:2px solid #e8e8e6}
+table.error-tbl td{padding:5px 5px;border-bottom:1px solid #f0f0ee;vertical-align:middle}
+.tbl-input{width:100%;padding:5px 7px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:13px;font-family:inherit;background:#fff}
+.tbl-input:focus{outline:none;border-color:#1a1a1a}
+.tbl-input.has-val{background:#fafff8}
+.tbl-select{width:100%;padding:5px 4px;border:1.5px solid #e5e7eb;border-radius:7px;font-size:12px;font-family:inherit;background:#fff;cursor:pointer}
+.tbl-select:focus{outline:none;border-color:#1a1a1a}
+.stim-mini{display:flex;gap:3px}
+.stim-mini button{flex:1;padding:4px 2px;border-radius:6px;border:1.5px solid #e5e7eb;background:#fff;font-size:11px;cursor:pointer;transition:all .12s;white-space:nowrap}
+.stim-mini button:hover{border-color:#999}
+.stim-mini button.sm-yes{background:#d1fae5;border-color:#34d399;color:#065f46;font-weight:600}
+.stim-mini button.sm-no{background:#fee2e2;border-color:#f87171;color:#991b1b;font-weight:600}
+.stim-mini button.sm-unk{background:#fef3c7;border-color:#fcd34d;color:#92400e;font-weight:600}
+.del-row-btn{background:none;border:none;cursor:pointer;font-size:16px;color:#ccc;padding:2px 5px;border-radius:5px;transition:color .15s}
+.del-row-btn:hover{color:#ef4444}
+.detected-proc{font-size:10px;color:#6b7280;font-style:italic;line-height:1.4;margin-top:2px}
+.add-row-btn{margin-top:10px;padding:7px 16px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.add-row-btn:hover{opacity:.8}
+
+/* ── Generate button ── */
+.gen-wrap{margin:1.5rem 0;text-align:center}
+.gen-btn{padding:13px 36px;background:#1a1a1a;color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.02em}
+.gen-btn:hover{background:#333;transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.gen-btn:active{transform:translateY(0)}
+
+/* ── Output report ── */
+#plan-output{display:none}
+.report-header{background:#1a1a1a;color:#fff;border-radius:14px;padding:18px 20px;margin-bottom:1rem}
+.report-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.report-meta{font-size:12px;color:#aaa;line-height:1.8}
+.report-meta b{color:#fff}
+
+.domain-summary{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:14px 18px;margin-bottom:1rem}
+.domain-summary-title{font-size:11px;font-weight:700;color:#999;letter-spacing:.05em;margin-bottom:10px}
+.summary-chips{display:flex;flex-wrap:wrap;gap:6px}
+.schip{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:600}
+.schip-red{background:#fee2e2;color:#991b1b}
+.schip-amber{background:#fef3c7;color:#92400e}
+.schip-green{background:#d1fae5;color:#065f46}
+.schip-gray{background:#f3f4f6;color:#6b7280}
+.schip-blue{background:#deeef9;color:#0a4070}
+.schip-purple{background:#f3e8ff;color:#6b21a8}
+
+.priority-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1rem}
+.goal-card{background:#fff;border:1px solid #e8e8e6;border-radius:12px;overflow:hidden}
+.goal-header{display:flex;align-items:center;gap:10px;padding:12px 16px}
+.priority-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.pb-1{background:#fee2e2;color:#991b1b}
+.pb-2{background:#fef3c7;color:#92400e}
+.pb-3{background:#fef9c3;color:#854d0e}
+.pb-4{background:#f0fdf4;color:#166534}
+.pb-obs{background:#f3f4f6;color:#6b7280}
+.pb-skip{background:#f3e8ff;color:#6b21a8}
+.goal-proc{font-size:14px;font-weight:700;flex:1}
+.goal-affected{font-size:12px;color:#666}
+.goal-body{padding:0 16px 14px;border-top:1px solid #f5f5f3}
+.goal-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:flex-start}
+.goal-tag{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;white-space:nowrap}
+.tag-phono{background:#deeef9;color:#0a4070}
+.tag-artic{background:#fde8d8;color:#9a3412}
+.tag-mixed{background:#f3e8ff;color:#6b21a8}
+.goal-text{font-size:12px;color:#374151;line-height:1.7}
+.goal-score-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.score-chip{font-size:10px;padding:2px 8px;border-radius:6px;background:#f5f5f3;color:#6b7280}
+.score-chip b{color:#1a1a1a}
+.method-link{color:#2563eb;cursor:pointer;text-decoration:underline dotted;font-size:11px}
+.method-tip{font-size:11px;padding:8px 10px;background:#f0f4ff;border-radius:7px;border-left:3px solid #2563eb;margin-top:5px;color:#374151;line-height:1.6;display:none}
+
+.overall-rec{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:14px 18px;margin-bottom:1rem}
+.overall-title{font-size:11px;font-weight:700;color:#999;letter-spacing:.05em;margin-bottom:8px}
+.overall-text{font-size:12px;color:#374151;line-height:1.8}
+
+/* ── Coming soon ── */
+.coming-soon{padding:14px 0;text-align:center;color:#bbb;font-size:12px}
+
+/* ── Tooltip ── */
+.tooltip{position:relative;display:inline}
+.tooltip-body{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;font-size:11px;padding:6px 10px;border-radius:7px;white-space:nowrap;z-index:99;line-height:1.5;max-width:260px;white-space:normal;text-align:left}
+.tooltip:hover .tooltip-body{display:block}
+
+/* ── Help text ── */
+.help-note{font-size:11px;color:#9ca3af;margin-top:8px;line-height:1.6;padding:8px 10px;background:#fafaf8;border-radius:7px}
+.section-top-note{font-size:11px;color:#6b7280;margin-top:14px;line-height:1.7;padding:8px 12px;background:#fafaf8;border-radius:8px;border-left:3px solid #e0e0de}
+
+/* ── Plan output ── */
+.plan-overview{background:#1a1a1a;color:#fff;border-radius:14px;padding:18px 20px;margin-bottom:1.25rem}
+.plan-ov-title{font-size:16px;font-weight:800;margin-bottom:10px}
+.plan-ov-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.plan-ov-chip{font-size:12px;padding:4px 12px;border-radius:8px;background:rgba(255,255,255,.12);color:#fff}
+.plan-ov-chip b{color:#facc15}
+.plan-strategy{margin-top:10px;font-size:12px;color:#d1d5db;line-height:1.7;padding:10px 12px;background:rgba(255,255,255,.07);border-radius:8px;border-left:3px solid #facc15}
+.plan-strategy b{color:#fef08a}
+
+.precond-alert{background:#fef3c7;border:1.5px solid #fde68a;border-radius:12px;padding:14px 18px;margin-bottom:1rem;font-size:12px;color:#78350f;line-height:1.7}
+.precond-alert strong{font-size:13px;display:block;margin-bottom:4px}
+
+/* Stage blocks */
+.stage-block{margin-bottom:1.25rem}
+.stage-label{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.stage-badge{font-size:11px;font-weight:700;padding:3px 12px;border-radius:99px;white-space:nowrap}
+.sb-1{background:#dc2626;color:#fff}
+.sb-2{background:#d97706;color:#fff}
+.sb-obs{background:#e5e7eb;color:#374151}
+.sb-skip{background:#ede9fe;color:#6d28d9}
+.stage-title{font-size:15px;font-weight:700}
+.stage-subtitle{font-size:11px;color:#9ca3af}
+.stage-divider{height:2px;background:linear-gradient(90deg,#dc2626 0%,transparent 100%);border-radius:2px;margin-bottom:12px;opacity:.3}
+.stage-divider-2{background:linear-gradient(90deg,#d97706 0%,transparent 100%)}
+.stage-divider-obs{background:linear-gradient(90deg,#9ca3af 0%,transparent 100%)}
+
+/* Concurrent group */
+.concurrent-group{background:#fff;border:1.5px solid #e8e8e6;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.concurrent-header{padding:8px 14px;background:#f9fafb;border-bottom:1px solid #f0f0ee;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:#6b7280}
+.concurrent-icon{font-size:14px}
+.conc-items{padding:0}
+
+/* Goal item within concurrent group */
+.goal-item{padding:12px 16px;border-bottom:1px solid #f5f5f3;display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.goal-item:last-child{border-bottom:none}
+.gi-left{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:52px}
+.gi-sound{font-size:22px;font-weight:700;line-height:1;text-align:center}
+.gi-sounds-multi{font-size:13px;font-weight:700;line-height:1.2;text-align:center;color:#374151}
+.gi-type{font-size:9px;padding:2px 6px;border-radius:99px;font-weight:700;text-align:center}
+.git-phono{background:#deeef9;color:#0a4070}
+.git-artic{background:#fde8d8;color:#9a3412}
+.git-special{background:#ede9fe;color:#6d28d9}
+.gi-right{}
+.gi-proc{font-size:13px;font-weight:700;margin-bottom:4px;color:#1a1a1a}
+.gi-proc-note{font-size:11px;color:#6b7280;margin-bottom:6px;line-height:1.5}
+.gi-method-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px;align-items:center}
+.gi-method-label{font-size:10px;color:#9ca3af}
+.gi-rationale{font-size:11px;color:#374151;line-height:1.6;margin-top:4px;padding:6px 9px;background:#fafaf8;border-radius:6px;border-left:2.5px solid #e0e0de}
+.gi-rationale.deviant-rat{border-left-color:#dc2626;background:#fef2f2}
+.gi-rationale.warn-rat{border-left-color:#f59e0b;background:#fffbeb}
+.gi-meta{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.gi-chip{font-size:10px;padding:2px 7px;border-radius:5px;background:#f3f4f6;color:#6b7280}
+.gi-chip b{color:#374151}
+.gi-stim{font-size:10px;padding:2px 7px;border-radius:5px}
+.stim-yes{background:#d1fae5;color:#065f46}
+.stim-no{background:#fee2e2;color:#991b1b}
+.stim-unk{background:#fef3c7;color:#92400e}
+
+/* Transition note between stages */
+.transition-note{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;background:#f0fdf4;border-radius:9px;border:1px solid #bbf7d0;margin-bottom:1.25rem;font-size:11px;color:#166534;line-height:1.6}
+.transition-arrow{font-size:20px;flex-shrink:0;margin-top:-2px}
+
+/* Monitor grid */
+.monitor-grid{display:flex;flex-wrap:wrap;gap:7px}
+.monitor-chip{font-size:12px;padding:5px 12px;border-radius:8px;background:#f3f4f6;color:#374151}
+.monitor-chip small{display:block;font-size:10px;color:#9ca3af;margin-top:1px}
+
+/* Tooltip tweak */
+.method-link{color:#2563eb;cursor:pointer;text-decoration:underline dotted}
+.method-tip{font-size:11px;padding:7px 10px;background:#f0f4ff;border-radius:7px;border-left:3px solid #2563eb;margin-top:4px;color:#374151;line-height:1.6;display:none}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="site-nav-title">語言治療臨床工具</span>
+  <a href="index.html" class="nav-inactive">🏠 詞彙</a>
+  <a href="artic.html" class="nav-inactive">🗣 構音音韻</a>
+  <a href="plan.html" class="nav-active">📋 治療計畫</a>
+</nav>
+
+<div class="page">
+  <div style="margin-bottom:1.25rem">
+    <h1 style="font-size:18px;font-weight:800;margin-bottom:4px">📋 治療計畫產生器</h1>
+    <p style="font-size:11px;color:#999;line-height:1.6">輸入各領域評估結果，自動整合優先順序與治療手法建議。<br>各領域可單獨使用，也可跨領域整合輸出完整計畫。</p>
+  </div>
+
+  <!-- ① 個案基本資料 -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('case-section')">
+      <span class="section-icon">👤</span>
+      <span class="section-title">個案基本資料</span>
+      <span class="section-status status-active">必填</span>
+      <span class="chevron open" id="chevron-case-section">▼</span>
+    </div>
+    <div class="section-body open" id="body-case-section">
+      <div class="case-grid">
+        <div>
+          <div class="field-label">個案年齡</div>
+          <div class="age-row">
+            <input type="range" id="case-age" min="2" max="7" step="0.5" value="4"
+              oninput="updateAgeDisplay()">
+            <span class="age-display" id="case-age-display">4歲</span>
+          </div>
+          <div class="field-note">2 – 7 歲，每 0.5 歲一格</div>
+        </div>
+        <div>
+          <div class="field-label">主訴／轉介原因（選填）</div>
+          <textarea class="chief-input" id="case-chief" placeholder="例：說話不清楚，家長難以理解..."></textarea>
+        </div>
+        <div>
+          <div class="field-label">錯誤一致性（Dodd, 2014）</div>
+          <div class="consist-row">
+            <button class="consist-btn" id="consist-yes" onclick="selectConsist('yes')">✓ 一致</button>
+            <button class="consist-btn" id="consist-no"  onclick="selectConsist('no')">✕ 不一致</button>
+            <button class="consist-btn" id="consist-unk" onclick="selectConsist('unk')">? 未評估</button>
+          </div>
+          <div class="field-note">影響治療取向建議（核心詞彙療法 vs 音韻取向）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 構音／音韻 SSD -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('ssd-section')">
+      <span class="section-icon">🗣</span>
+      <span class="section-title">構音／音韻 (SSD)</span>
+      <span class="section-status status-active" id="ssd-status">可使用</span>
+      <span class="chevron open" id="chevron-ssd-section">▼</span>
+    </div>
+    <div class="section-body open" id="body-ssd-section">
+      <div class="section-top-note">
+        輸入個案在構音測驗或語音樣本中觀察到的每一個錯誤。
+        替代類型請同時填入個案實際說出的聲母；省略/扭曲/添加留空即可。
+      </div>
+      <div class="error-table-wrap">
+        <table class="error-tbl" id="error-table">
+          <thead>
+            <tr>
+              <th style="width:64px">目標音<br><span style="font-weight:400;color:#bbb">注音聲母</span></th>
+              <th style="width:90px">錯誤類型</th>
+              <th style="width:64px">說出音<br><span style="font-weight:400;color:#bbb">替代時填</span></th>
+              <th style="width:100px">Stimulability</th>
+              <th>偵測到的歷程</th>
+              <th style="width:28px"></th>
+            </tr>
+          </thead>
+          <tbody id="error-tbody">
+          </tbody>
+        </table>
+      </div>
+      <button class="add-row-btn" onclick="addErrorRow()">＋ 新增錯誤</button>
+      <div class="help-note">
+        📌 <b>注意事項：</b>同一目標音若在不同詞語的表現不同，可分開輸入多列。<br>
+        資料來源：歷程偵測根據鄭靜宜（2011）附錄 2，年齡常模根據鄭靜宜（2011）表 3。
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 語言發展里程碑（佔位） -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('lang-section')">
+      <span class="section-icon">📚</span>
+      <span class="section-title">語言發展里程碑</span>
+      <span class="section-status status-coming">開發中</span>
+      <span class="chevron" id="chevron-lang-section">▼</span>
+    </div>
+    <div class="section-body" id="body-lang-section">
+      <div class="coming-soon">🚧 此領域功能開發中，敬請期待</div>
+    </div>
+  </div>
+
+  <!-- ④ 語用發展（佔位） -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('prag-section')">
+      <span class="section-icon">💬</span>
+      <span class="section-title">語用發展</span>
+      <span class="section-status status-coming">開發中</span>
+      <span class="chevron" id="chevron-prag-section">▼</span>
+    </div>
+    <div class="section-body" id="body-prag-section">
+      <div class="coming-soon">🚧 此領域功能開發中，敬請期待</div>
+    </div>
+  </div>
+
+  <!-- ⑤ 敘事能力（佔位） -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('narr-section')">
+      <span class="section-icon">📖</span>
+      <span class="section-title">敘事能力</span>
+      <span class="section-status status-coming">開發中</span>
+      <span class="chevron" id="chevron-narr-section">▼</span>
+    </div>
+    <div class="section-body" id="body-narr-section">
+      <div class="coming-soon">🚧 此領域功能開發中，敬請期待</div>
+    </div>
+  </div>
+
+  <!-- ⑥ Piaget 認知（佔位） -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('cog-section')">
+      <span class="section-icon">🧠</span>
+      <span class="section-title">Piaget 認知發展</span>
+      <span class="section-status status-coming">開發中</span>
+      <span class="chevron" id="chevron-cog-section">▼</span>
+    </div>
+    <div class="section-body" id="body-cog-section">
+      <div class="coming-soon">🚧 此領域功能開發中，敬請期待</div>
+    </div>
+  </div>
+
+  <!-- ⑦ 口功能/吞嚥（佔位） -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('oral-section')">
+      <span class="section-icon">🌬️</span>
+      <span class="section-title">口功能／吞嚥／餵食</span>
+      <span class="section-status status-coming">開發中</span>
+      <span class="chevron" id="chevron-oral-section">▼</span>
+    </div>
+    <div class="section-body" id="body-oral-section">
+      <div class="coming-soon">🚧 此領域功能開發中，敬請期待</div>
+    </div>
+  </div>
+
+  <!-- ⑧ 嗓音（佔位） -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('voice-section')">
+      <span class="section-icon">🎵</span>
+      <span class="section-title">嗓音</span>
+      <span class="section-status status-coming">開發中</span>
+      <span class="chevron" id="chevron-voice-section">▼</span>
+    </div>
+    <div class="section-body" id="body-voice-section">
+      <div class="coming-soon">🚧 此領域功能開發中，敬請期待</div>
+    </div>
+  </div>
+
+  <!-- ⑨ 語暢（佔位） -->
+  <div class="section-card">
+    <div class="section-header" onclick="toggleSection('fluency-section')">
+      <span class="section-icon">🔄</span>
+      <span class="section-title">語暢</span>
+      <span class="section-status status-coming">開發中</span>
+      <span class="chevron" id="chevron-fluency-section">▼</span>
+    </div>
+    <div class="section-body" id="body-fluency-section">
+      <div class="coming-soon">🚧 此領域功能開發中，敬請期待</div>
+    </div>
+  </div>
+
+  <!-- Generate button -->
+  <div class="gen-wrap">
+    <button class="gen-btn" onclick="generatePlan()">▶ 產生治療計畫</button>
+  </div>
+
+  <!-- Output -->
+  <div id="plan-output"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// PHONOLOGICAL ENGINE (from 鄭靜宜 2011)
+// ═══════════════════════════════════════════
+const CONS_FEATURES = {
+  'ㄅ':{manner:'stop',     place:'bilabial',    asp:'unaspirated'},
+  'ㄆ':{manner:'stop',     place:'bilabial',    asp:'aspirated'},
+  'ㄇ':{manner:'nasal',    place:'bilabial',    asp:null},
+  'ㄈ':{manner:'fricative',place:'labiodental', asp:null},
+  'ㄉ':{manner:'stop',     place:'alveolar',    asp:'unaspirated'},
+  'ㄊ':{manner:'stop',     place:'alveolar',    asp:'aspirated'},
+  'ㄋ':{manner:'nasal',    place:'alveolar',    asp:null},
+  'ㄌ':{manner:'lateral',  place:'alveolar',    asp:null},
+  'ㄍ':{manner:'stop',     place:'velar',       asp:'unaspirated'},
+  'ㄎ':{manner:'stop',     place:'velar',       asp:'aspirated'},
+  'ㄏ':{manner:'fricative',place:'velar',       asp:null},
+  'ㄐ':{manner:'affricate',place:'palatal',     asp:'unaspirated'},
+  'ㄑ':{manner:'affricate',place:'palatal',     asp:'aspirated'},
+  'ㄒ':{manner:'fricative',place:'palatal',     asp:null},
+  'ㄓ':{manner:'affricate',place:'retroflex',   asp:'unaspirated'},
+  'ㄔ':{manner:'affricate',place:'retroflex',   asp:'aspirated'},
+  'ㄕ':{manner:'fricative',place:'retroflex',   asp:null},
+  'ㄖ':{manner:'fricative',place:'retroflex',   asp:null},
+  'ㄗ':{manner:'affricate',place:'alveolar',    asp:'unaspirated'},
+  'ㄘ':{manner:'affricate',place:'alveolar',    asp:'aspirated'},
+  'ㄙ':{manner:'fricative',place:'alveolar',    asp:null},
+};
+const PLACE_ORDER={bilabial:1,labiodental:2,alveolar:3,palatal:4,retroflex:5,velar:6};
+
+// ── 功能負載分層（臨床估算，非實證數據）──────────────────────────────
+// 基準來源：Jun Da, Chinese Text Computing (lingua.mtsu.edu/chinese-computing)
+//   → 以現代漢語高頻字為語料，非台灣語料，僅作分層參考
+// 台灣口語調整：台灣華語普遍存在「去捲舌化」現象（de-retroflexion）：
+//   ㄓ→ㄗ、ㄔ→ㄘ、ㄕ→ㄙ、ㄖ→ㄌ 為台灣口語常態（中研院台灣華語社會語音語料庫）
+//   捲舌音在台灣作為獨立音素的功能負載低於中國語料所示
+// ⚠ 此分層為臨床估算，未經台灣本土語料庫直接驗證，僅供優先順序參考
+const FUNC_LOAD = {
+  'ㄉ':3,'ㄐ':3,'ㄅ':3,'ㄒ':3,'ㄗ':3,'ㄏ':3,'ㄌ':3,'ㄇ':3,
+  'ㄓ':2,  // 台灣調整：去捲舌化後使用率降低
+  'ㄊ':2,'ㄋ':2,'ㄍ':2,'ㄑ':2,'ㄎ':2,'ㄙ':2,'ㄈ':2,
+  'ㄕ':1,  // 台灣調整：與ㄙ合流，獨立音素負載低
+  'ㄔ':1,'ㄖ':1,'ㄘ':1,'ㄆ':1,
+};
+const FUNC_LOAD_LABEL = {3:'高（台灣常用聲母）',2:'中',1:'低（少用或捲舌）'};
+
+const PROCESS_INFO = {
+  '不捲舌化':{suppressAge:null,type:'special', priority:'special', def:'捲舌音（ㄓㄔㄕㄖ）發成非捲舌音，台灣普遍方言現象，通常不列為介入目標'},
+  '捲舌化':  {suppressAge:null,type:'rising',  priority:'special', def:'非捲舌音被過度類化發成捲舌音，隨年齡上升，不宜介入'},
+  '後置化':  {suppressAge:6,  type:'developmental',priority:'high',def:'構音部位後移，以舌根音（ㄍㄎㄏ）取代前位音，晚至6歲才完全消退'},
+  '前置化':  {suppressAge:3,  type:'developmental',priority:'med', def:'構音部位前移，以齒槽音取代後位音（ㄍㄎ→ㄉㄊ）'},
+  '塞音化':  {suppressAge:6,  type:'developmental',priority:'high',def:'以塞音取代摩擦音或塞擦音，構音方式簡化，影響廣、持續晚'},
+  '塞擦音化':{suppressAge:5,  type:'developmental',priority:'med', def:'以塞擦音取代摩擦音或塞音'},
+  '摩擦音化':{suppressAge:4,  type:'developmental',priority:'med', def:'塞音口道未完全閉合，帶摩擦音質'},
+  '不送氣化':{suppressAge:5,  type:'developmental',priority:'med', def:'以不送氣音取代送氣音，省略送氣動作'},
+  '送氣化':  {suppressAge:2.5,type:'rare',         priority:'high',def:'以送氣音取代不送氣音（反向歷程），出現率極低'},
+  '鼻音化':  {suppressAge:2.5,type:'rare',         priority:'high',def:'以鼻音取代非鼻音，出現率極低，多與顎咽結構或功能異常有關'},
+  '邊音化':  {suppressAge:null,type:'deviant',      priority:'highest',def:'以邊音ㄌ取代其他非邊音，SSD兒童出現率30% vs 普通兒童3%，偏異性歷程'},
+  '唇音化':  {suppressAge:2.5,type:'rare',          priority:'high',def:'以唇音取代非唇音，2.5歲後出現屬偏異性語音發展'},
+  '齒槽音化':{suppressAge:2.5,type:'rare',          priority:'high',def:'以齒槽音取代唇音或唇齒音，出現率極低'},
+  '顎音化':  {suppressAge:4,  type:'developmental', priority:'med',def:'以硬顎音取代齒槽音（ㄙ→ㄒ、ㄉ→ㄐ）'},
+  '聲母省略':{suppressAge:4,  type:'developmental', priority:'high',def:'完全省略音節首聲母，對語音清晰度影響最大，4歲後出現需關注'},
+  '去鼻音化':{suppressAge:3,  type:'developmental', priority:'med',def:'以同部位非鼻音取代鼻音（ㄇ→ㄅ、ㄋ→ㄉ），反映鼻音共鳴控制仍在發展中'},
+};
+
+const PP_AGE_POINTS = [2.5, 3, 3.5, 4, 5, 6];
+const PROCESSES_RATES = {
+  '不捲舌化':[91,86,88,80,72,64],
+  '後置化':  [81,73,53,31,11,3],
+  '塞音化':  [68,59,45,27,11,2],
+  '塞擦音化':[51,39,37,22,6,3],
+  '不送氣化':[47,39,16,10,9,2],
+  '聲母省略':[30,24,10,3,2,0],
+  '摩擦音化':[19,14,10,5,0,0],
+  '前置化':  [19,4,8,2,2,0],
+  '捲舌化':  [2,10,8,15,19,23],
+  '邊音化':  [6,10,4,3,4,2],
+  '唇音化':  [2,0,0,0,0,0],
+  '鼻音化':  [2,2,0,0,0,0],
+  '齒槽音化':[0,2,0,0,0,0],
+  '送氣化':  [0,2,0,0,0,0],
+  '顎音化':  [0,0,0,0,0,0],
+  '去鼻音化':[null,null,null,null,null,null],
+};
+
+function getRateAtAge(procName, age) {
+  const rates = PROCESSES_RATES[procName];
+  if(!rates) return null;
+  const pts = PP_AGE_POINTS;
+  if(rates.every(r=>r===null)) return null;
+  if(age <= pts[0]) return rates[0];
+  if(age >= pts[pts.length-1]) return rates[pts.length-1];
+  for(let i=0;i<pts.length-1;i++){
+    if(age>=pts[i] && age<=pts[i+1]){
+      const r0=rates[i], r1=rates[i+1];
+      if(r0===null || r1===null) return r0!==null?r0:r1;
+      const t=(age-pts[i])/(pts[i+1]-pts[i]);
+      return Math.round(r0+t*(r1-r0));
+    }
+  }
+  return 0;
+}
+
+function detectProcesses(target, errorSound) {
+  if(!errorSound || errorSound==='省' || errorSound==='省略') return ['聲母省略'];
+  if((target==='ㄕ'&&errorSound==='ㄖ')||(target==='ㄖ'&&errorSound==='ㄕ')) return ['_retroflex_pair_'];
+  const tF=CONS_FEATURES[target], eF=CONS_FEATURES[errorSound];
+  if(!tF||!eF||target===errorSound) return [];
+  const procs=[];
+  if(tF.place==='retroflex'&&eF.place!=='retroflex') procs.push('不捲舌化');
+  if(tF.place!=='retroflex'&&eF.place==='retroflex') procs.push('捲舌化');
+  if(tF.place!=='velar'&&tF.place!=='retroflex'&&eF.place==='velar') procs.push('後置化');
+  if(tF.place==='labiodental'&&eF.place==='palatal'&&tF.manner===eF.manner) procs.push('後置化');
+  if((tF.place==='velar'||tF.place==='palatal')&&(eF.place==='alveolar'||eF.place==='bilabial'||eF.place==='labiodental')) procs.push('前置化');
+  if(tF.place==='velar'&&eF.place==='palatal'&&tF.manner===eF.manner) procs.push('前置化');
+  if(tF.place==='alveolar'&&eF.place==='palatal') procs.push('顎音化');
+  if(tF.place!=='bilabial'&&tF.place!=='labiodental'&&(eF.place==='bilabial'||eF.place==='labiodental')) procs.push('唇音化');
+  if((tF.place==='bilabial'||tF.place==='labiodental')&&eF.place==='alveolar') procs.push('齒槽音化');
+  if(tF.asp==='aspirated'&&eF.asp==='unaspirated'&&tF.place===eF.place) procs.push('不送氣化');
+  if(tF.asp==='unaspirated'&&eF.asp==='aspirated'&&tF.place===eF.place) procs.push('送氣化');
+  // 塞音化：fricative/affricate/lateral → stop（不含鼻音，鼻音→止音為「去鼻音化」）
+  if((tF.manner==='fricative'||tF.manner==='affricate'||tF.manner==='lateral')&&eF.manner==='stop') procs.push('塞音化');
+  if((tF.manner==='fricative'||tF.manner==='stop'||tF.manner==='lateral')&&eF.manner==='affricate') procs.push('塞擦音化');
+  if((tF.manner==='stop'||tF.manner==='affricate'||tF.manner==='lateral')&&eF.manner==='fricative') procs.push('摩擦音化');
+  if(tF.manner==='nasal'&&eF.manner!=='nasal'){
+    procs.push('去鼻音化');
+    if(PLACE_ORDER[tF.place]<PLACE_ORDER[eF.place]) procs.push('後置化');
+    else if(PLACE_ORDER[tF.place]>PLACE_ORDER[eF.place]) procs.push('前置化');
+  }
+  if(tF.manner!=='nasal'&&eF.manner==='nasal') procs.push('鼻音化');
+  if(tF.manner!=='lateral'&&eF.manner==='lateral') procs.push('邊音化');
+  return [...new Set(procs)];
+}
+
+// ═══════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════
+let rowCount = 0;
+let consistChoice = null;
+
+function toggleSection(id) {
+  const body = document.getElementById('body-'+id);
+  const chev = document.getElementById('chevron-'+id);
+  const open = body.classList.toggle('open');
+  chev.classList.toggle('open', open);
+}
+
+function updateAgeDisplay() {
+  const v = +document.getElementById('case-age').value;
+  document.getElementById('case-age-display').textContent =
+    v===Math.floor(v) ? v+'歲' : v+'歲半';
+  // re-detect all rows
+  document.querySelectorAll('.error-row').forEach(row => updateRowDetect(row.dataset.rid));
+}
+
+function selectConsist(c) {
+  consistChoice = c;
+  ['yes','no','unk'].forEach(x => {
+    const btn = document.getElementById('consist-'+x);
+    btn.className = 'consist-btn' + (c===x ? (x==='yes'?' consist-sel-yes':x==='no'?' consist-sel-no':' consist-sel-unk') : '');
+  });
+}
+
+function addErrorRow() {
+  const rid = ++rowCount;
+  const tbody = document.getElementById('error-tbody');
+  const tr = document.createElement('tr');
+  tr.className = 'error-row';
+  tr.dataset.rid = rid;
+  tr.innerHTML = `
+    <td>
+      <input class="tbl-input" id="tgt-${rid}" maxlength="1" placeholder="ㄉ"
+        oninput="onTgtInput(${rid})" onchange="onTgtInput(${rid})" style="text-align:center;font-size:18px;font-weight:700">
+    </td>
+    <td>
+      <select class="tbl-select" id="etype-${rid}" onchange="onEtypeChange(${rid})">
+        <option value="sub">替代</option>
+        <option value="omit">省略</option>
+        <option value="dist">扭曲</option>
+        <option value="add">添加</option>
+      </select>
+    </td>
+    <td>
+      <input class="tbl-input" id="err-${rid}" maxlength="1" placeholder="ㄊ"
+        oninput="updateRowDetect(${rid})" onchange="updateRowDetect(${rid})" style="text-align:center;font-size:18px;font-weight:700">
+    </td>
+    <td>
+      <div class="stim-mini">
+        <button id="sm-yes-${rid}" onclick="setStim(${rid},'yes')">✓</button>
+        <button id="sm-no-${rid}"  onclick="setStim(${rid},'no')">✕</button>
+        <button id="sm-unk-${rid}" onclick="setStim(${rid},'unk')">?</button>
+      </div>
+    </td>
+    <td>
+      <div id="proc-${rid}" class="detected-proc" style="color:#ccc">─</div>
+    </td>
+    <td>
+      <button class="del-row-btn" onclick="deleteRow(${rid})">✕</button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+}
+
+function deleteRow(rid) {
+  const tr = document.querySelector(`tr[data-rid="${rid}"]`);
+  if(tr) tr.remove();
+}
+
+function onTgtInput(rid) {
+  const el = document.getElementById('tgt-'+rid);
+  el.classList.toggle('has-val', !!el.value);
+  updateRowDetect(rid);
+}
+
+function onEtypeChange(rid) {
+  const et = document.getElementById('etype-'+rid).value;
+  const errEl = document.getElementById('err-'+rid);
+  errEl.disabled = (et !== 'sub');
+  errEl.style.opacity = (et !== 'sub') ? '0.3' : '1';
+  if(et !== 'sub') errEl.value = '';
+  updateRowDetect(rid);
+}
+
+function setStim(rid, val) {
+  ['yes','no','unk'].forEach(x => {
+    const btn = document.getElementById('sm-'+x+'-'+rid);
+    btn.className = (x===val) ? (x==='yes'?'sm-yes':x==='no'?'sm-no':'sm-unk') : '';
+  });
+}
+
+function getStim(rid) {
+  if(document.getElementById('sm-yes-'+rid)?.className==='sm-yes') return 'yes';
+  if(document.getElementById('sm-no-'+rid)?.className==='sm-no')  return 'no';
+  if(document.getElementById('sm-unk-'+rid)?.className==='sm-unk') return 'unk';
+  return null;
+}
+
+function updateRowDetect(rid) {
+  const tgt  = (document.getElementById('tgt-'+rid)?.value||'').trim();
+  const et   = document.getElementById('etype-'+rid)?.value;
+  const err  = (document.getElementById('err-'+rid)?.value||'').trim();
+  const cell = document.getElementById('proc-'+rid);
+  if(!cell) return;
+
+  if(!tgt || !CONS_FEATURES[tgt]) { cell.textContent='─'; cell.style.color='#ccc'; return; }
+
+  if(et === 'dist') {
+    cell.innerHTML = '<span style="color:#b45309;font-weight:600">構音問題</span> → 構音取向';
+    return;
+  }
+  if(et === 'add') {
+    cell.innerHTML = '<span style="color:#7c3aed;font-weight:600">添加音</span> → 需臨床判斷';
+    return;
+  }
+  if(et === 'omit') {
+    cell.innerHTML = '<span style="color:#dc2626;font-weight:600">聲母省略</span>';
+    return;
+  }
+  // sub
+  if(!err || !CONS_FEATURES[err]) { cell.textContent='待輸入錯誤音'; cell.style.color='#ccc'; return; }
+  if(tgt === err) { cell.innerHTML='<span style="color:#22c55e">✓ 正確</span>'; return; }
+
+  const age = +document.getElementById('case-age').value;
+  const procs = detectProcesses(tgt, err);
+  if(procs.includes('_retroflex_pair_')) {
+    cell.innerHTML = '<span style="color:#7c3aed">ㄕ↔ㄖ 特殊（有聲/無聲）</span>';
+    return;
+  }
+  if(procs.length === 0) {
+    cell.innerHTML = '<span style="color:#f97316">無法自動分類</span>';
+    return;
+  }
+  cell.style.color = '';
+  cell.innerHTML = procs.map(p => {
+    const info = PROCESS_INFO[p];
+    if(!info) return `<b>${p}</b>`;
+    const rate = getRateAtAge(p, age);
+    let col = '#6b7280';
+    if(info.type==='deviant' || info.type==='rare') col='#dc2626';
+    else if(rate!==null && rate<10) col='#ea580c';
+    else if(rate!==null && rate<20) col='#d97706';
+    else if(info.type==='special'||info.type==='rising') col='#7c3aed';
+    return `<span style="color:${col};font-weight:600">${p}</span>${rate!==null ? ` <span style="color:#bbb">(${rate}%)</span>` : ''}`;
+  }).join('、');
+}
+
+// ═══════════════════════════════════════════
+// PRIORITY SCORING ENGINE
+// ═══════════════════════════════════════════
+function scoreProcess(procName, targets, errorType, stimVals, age) {
+  const info = PROCESS_INFO[procName];
+  if(!info) return 0;
+
+  // Factor A: developmental deviation (0-4)
+  let scoreA = 0;
+  if(info.type==='deviant') scoreA = 4;
+  else if(info.type==='rare') scoreA = 3;
+  else if(info.type==='rising'||info.type==='special') scoreA = -99; // skip
+  else {
+    const rate = getRateAtAge(procName, age);
+    if(rate===null) scoreA = 1;
+    else if(rate < 10)  scoreA = 3;
+    else if(rate < 20)  scoreA = 2;
+    else                scoreA = 0; // normal range
+  }
+  if(scoreA === -99) return -99; // skip special/rising
+
+  // Factor B: functional load of affected sounds (0-3)
+  // Average functional load of the target sounds
+  let flSum = 0, flCnt = 0;
+  targets.forEach(t => {
+    const fl = FUNC_LOAD[t] || 1;
+    flSum += fl; flCnt++;
+  });
+  const scoreB = flCnt > 0 ? flSum/flCnt : 1;
+
+  // Omission bonus: omission always worse for intelligibility
+  const omisBonus = errorType === 'omit' ? 1 : 0;
+
+  // Factor C: process breadth (number of sounds affected)
+  const scoreC = Math.min(targets.length, 3);
+
+  // Factor D: stimulability modifier
+  // If any target is not-stimulable: priority up; if stimulable: slightly down
+  let hasNo = false, hasYes = false;
+  stimVals.forEach(s => { if(s==='no') hasNo=true; if(s==='yes') hasYes=true; });
+  let scoreD = 0;
+  if(hasNo && !hasYes) scoreD = 1;
+  else if(hasYes && !hasNo) scoreD = -0.5;
+
+  const total = scoreA * 2 + (scoreB + omisBonus) * 1 + scoreC * 1 + scoreD;
+  return total;
+}
+
+// ═══════════════════════════════════════════
+// METHODS DATA
+// ═══════════════════════════════════════════
+const METHODS = {
+  minimal_pairs:{name:'最小配對詞彙訓練',tip:'選目標音與錯誤音的最小配對詞（如「刀 vs 高」），透過詞義對比建立音韻區別。適合系統性歷程，一次可處理多個受影響音素，促進類化。'},
+  phonetic_place:{name:'語音位置治療法',tip:'透過描述構音位置（舌頭放哪裡、嘴巴形狀）引導正確構音動作。適合無法自行誘發目標音的個案作為起始。'},
+  sound_mod:{name:'語音改變法',tip:'從個案已能發出的相近音，系統性調整（如加送氣、改舌位）引導產生目標音。適合構音動作接近但尚未正確的情況。'},
+  auditory_stim:{name:'聽覺刺激模仿法',tip:'大量提供目標音的聽覺轟炸（auditory bombardment），讓兒童反覆接收目標音而不要求立即產出。適合可刺激性低時作為預備階段。'},
+  core_vocab:{name:'核心詞彙療法',tip:'Dodd（2014）針對不一致性語音異常設計。選取日常高頻詞彙，每週建立穩定、一致的詞語產出，而非糾正個別音素。適應症：Dodd 分類之不一致性語音異常。'},
+  complexity:{name:'複雜度取向',tip:'選擇語言學複雜度高（有標記性、晚期習得）的語音介入，可引發更廣泛的系統性類化效應（Gierut, 2001; 2007）。研究顯示教導複雜特徵的語音，可同時帶動未訓練語音的改善（鄭靜宜，2020 Ch.9）。適用：無聽覺、口腔結構或神經系統問題、認知功能正常，年齡 3–7 歲、最佳 4–5 歲（Baker &amp; Williams, 2010）。'},
+  cycles:{name:'Cycles Approach',tip:'Hodson &amp; Paden（1983）設計。<b>適用對象：語音清晰度較低的嚴重個案（非輕微型）</b>，多個歷程並存、多音受影響。各歷程以循環方式輪流訓練，每個目標每輪至少 60 分鐘（可分節進行），<b>不設正確率精熟標準</b>，以時間/小時數推進（鄭靜宜，2020 Ch.9）。可刺激者優先納入；不可刺激者暫跳，下一輪再評估。'},
+};
+
+let _tipCounter = 0;
+function mlink(key, context) {
+  const m = METHODS[key];
+  if(!m) return key;
+  const uid = key + '_' + (context||'') + '_' + (++_tipCounter);
+  return `<span class="method-link" onclick="toggleTip('tip-${uid}')">${m.name}</span><div id="tip-${uid}" class="method-tip">${m.tip}</div>`;
+}
+function toggleTip(id) {
+  const el = document.getElementById(id);
+  if(el) el.style.display = el.style.display==='block' ? 'none' : 'block';
+}
+
+// ═══════════════════════════════════════════
+// STAGE ASSIGNMENT LOGIC
+// stage1 = 立即介入（最高優先）
+// stage2 = 接續介入（完成 stage1 再進）
+// obs    = 觀察（此年齡正常）
+// skip   = 不介入（台灣特殊/上升型）
+// ═══════════════════════════════════════════
+function assignStage(procName, data, age) {
+  const info = PROCESS_INFO[procName];
+  if(!info) return 'stage2';
+  if(info.type==='special' || info.type==='rising') return 'skip';
+
+  const rate = getRateAtAge(procName, age);
+  const isNormal = (rate!==null && rate>=20) && info.type!=='deviant' && info.type!=='rare';
+  if(isNormal) return 'obs';
+
+  // Deviant/rare → always stage1
+  if(info.type==='deviant' || info.type==='rare') return 'stage1';
+
+  // Omission past suppression age → stage1 (biggest intelligibility impact)
+  if(data.errTypes.includes('omit') && info.suppressAge && age > info.suppressAge) return 'stage1';
+
+  // Developmental: rate < 10 (past suppression) = stage1 if high priority, else stage2
+  if(rate!==null && rate < 10) {
+    return (info.priority==='high' || info.priority==='highest') ? 'stage1' : 'stage2';
+  }
+  // rate 10-19 = transitional
+  if(rate!==null && rate < 20) return 'stage2';
+
+  // Null-rate developmental: use suppressAge as fallback
+  // (e.g. 去鼻音化 has no normative rate data but has a known suppression age)
+  if(rate===null && info.type==='developmental') {
+    if(info.suppressAge && age > info.suppressAge) {
+      return (info.priority==='high' || info.priority==='highest') ? 'stage1' : 'stage2';
+    }
+    return 'obs'; // still within expected developmental window
+  }
+
+  return 'obs';
+}
+
+// Build one goal-item HTML for a process target
+function buildGoalItem(procName, data, age, isCycles, tipSuffix) {
+  const info = PROCESS_INFO[procName] || {};
+  const stims = data.stims || [];
+  const hasNo  = stims.includes('no');
+  const hasYes = stims.includes('yes');
+  const rate   = getRateAtAge(procName, age);
+  const rateStr = rate!==null ? `出現率 ${rate}%` : '無常模數據';
+  const fl = data.targets.length > 0
+    ? Math.round(data.targets.reduce((s,t)=>s+(FUNC_LOAD[t]||1),0)/data.targets.length)
+    : 1;
+  const flLabel = FUNC_LOAD_LABEL[fl] || '中';
+  const stimLabel = hasNo && !hasYes ? `<span class="gi-stim stim-no">✕ 不可刺激</span>`
+                  : hasYes && !hasNo ? `<span class="gi-stim stim-yes">✓ 可刺激</span>`
+                  : stims.length>0   ? `<span class="gi-stim stim-unk">? 混合</span>`
+                  :                    `<span class="gi-stim stim-unk">? 未測試</span>`;
+
+  // Determine approach label + rationale
+  let typeLabel, typeClass, methods_html, rationale, rationaleClass='';
+
+  if(info.type==='deviant') {
+    typeLabel='音韻取向'; typeClass='git-phono';
+    if(hasNo && !hasYes) {
+      methods_html = `${mlink('phonetic_place',tipSuffix)} → 建立可刺激性後 → ${mlink('minimal_pairs',tipSuffix)}`;
+      rationale = `偏異性歷程：SSD 兒童出現率 30% vs 普通兒童 3%，反映深層音韻系統問題。個案不可刺激，先以語音位置法誘發基礎動作，再進入音韻訓練。（鄭靜宜，2011）`;
+      rationaleClass = 'deviant-rat';
+    } else {
+      methods_html = mlink('minimal_pairs',tipSuffix);
+      rationale = `偏異性歷程：SSD 兒童出現率顯著高於普通兒童，反映深層音韻系統缺陷，優先以詞義對比建立音韻區別概念。（鄭靜宜，2011）`;
+      rationaleClass = 'deviant-rat';
+    }
+  } else if(info.type==='rare') {
+    typeLabel='音韻取向'; typeClass='git-phono';
+    methods_html = hasNo ? `${mlink('phonetic_place',tipSuffix)} → ${mlink('minimal_pairs',tipSuffix)}` : mlink('minimal_pairs',tipSuffix);
+    rationale = `罕見歷程：出現率極低，2.5 歲後出現屬偏異性語音發展，需排除器質性因素（鄭靜宜，2011）。`;
+    rationaleClass = 'deviant-rat';
+  } else if(data.isDistortion) {
+    typeLabel='構音取向'; typeClass='git-artic';
+    methods_html = `${mlink('phonetic_place',tipSuffix)}${hasYes ? '（可直接進入）' : ''}`;
+    rationale = `扭曲屬構音動作問題，非音韻歷程，應評估舌位、送氣控制或顎咽功能等動作層面原因。`;
+  } else {
+    // developmental
+    if(hasNo && !hasYes) {
+      typeLabel='音韻取向'; typeClass='git-phono';
+      if(isCycles) {
+        methods_html = `${mlink('auditory_stim',tipSuffix)}（聽覺轟炸）＋ ${mlink('cycles',tipSuffix)}（與其他歷程輪流）`;
+        rationale = `個案不可刺激。Cycles 模式中，不可刺激的目標先透過聽覺轟炸暴露，若仍無法刺激則跳至下一輪再評估（鄭靜宜，2020 Ch.9）。`;
+      } else {
+        methods_html = `${mlink('auditory_stim',tipSuffix)}（建立可刺激性）→ ${mlink('phonetic_place',tipSuffix)} → ${mlink('minimal_pairs',tipSuffix)}`;
+        methods_html += `<br><span style="font-size:10px;color:#9ca3af">⚡ 或考慮複雜度取向（適合 4–5 歲、認知正常）：${mlink('complexity',tipSuffix)}</span>`;
+        rationale = `個案不可刺激。建議先以聽覺刺激建立可刺激性，再進入音韻訓練（Miccio, 2015）。若採複雜度取向，可選難度較高的語音介入，引發更廣泛的系統性類化（Gierut, 2001）。`;
+      }
+      rationaleClass = 'warn-rat';
+    } else if(hasYes && !hasNo) {
+      typeLabel='構音→音韻'; typeClass='git-special';
+      methods_html = `${mlink('auditory_stim',tipSuffix)} + ${mlink('phonetic_place',tipSuffix)} → 穩定後 ${mlink('minimal_pairs',tipSuffix)}`;
+      rationale = `個案可刺激，先建立動作基礎，再以最小配對促進類化。`;
+    } else {
+      typeLabel='音韻取向'; typeClass='git-phono';
+      methods_html = isCycles ? `${mlink('cycles',tipSuffix)}` : mlink('minimal_pairs',tipSuffix);
+      rationale = rate!==null && rate<10
+        ? `此歷程在 ${age} 歲出現率 ${rate}%，已超過同齡抑制標準，需納入介入。`
+        : `歷程消退中（出現率 ${rate}%），建議列入治療計畫。`;
+    }
+  }
+
+  const soundDisplay = data.targets.length===1
+    ? `<div class="gi-sound">${data.targets[0]}</div>`
+    : `<div class="gi-sounds-multi">${data.targets.join('　')}</div>`;
+
+  return `<div class="goal-item">
+    <div class="gi-left">
+      ${soundDisplay}
+      <span class="gi-type ${typeClass}">${typeLabel}</span>
+      ${stimLabel}
+    </div>
+    <div class="gi-right">
+      <div class="gi-proc">${procName}${info.def ? '' : ''}</div>
+      <div class="gi-proc-note">${info.def || ''}</div>
+      <div class="gi-method-row">
+        <span class="gi-method-label">手法：</span>
+        ${methods_html}
+      </div>
+      <div class="gi-rationale ${rationaleClass}">${rationale}</div>
+      <div class="gi-meta">
+        <span class="gi-chip">📊 ${rateStr}</span>
+        <span class="gi-chip" title="⚠ 臨床估算值，非台灣本土語料庫驗證數據。基準參考 Jun Da Chinese Text Computing，並依台灣去捲舌化現象調整。僅供參考。">📣 功能負載 <b>${flLabel}</b> <span style="color:#f59e0b;font-size:9px">⚠估算</span></span>
+        <span class="gi-chip">🎯 影響 <b>${data.targets.length}</b> 個聲母</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// GENERATE PLAN
+// ═══════════════════════════════════════════
+function generatePlan() {
+  _tipCounter = 0;
+  const age = +document.getElementById('case-age').value;
+  const ageLabel = age===Math.floor(age) ? age+'歲' : age+'歲半';
+  const chief = document.getElementById('case-chief').value.trim();
+
+  // Collect rows
+  const rows = [];
+  document.querySelectorAll('.error-row').forEach(tr => {
+    const rid = tr.dataset.rid;
+    const tgt  = (document.getElementById('tgt-'+rid)?.value||'').trim();
+    const et   = document.getElementById('etype-'+rid)?.value || 'sub';
+    const err  = (document.getElementById('err-'+rid)?.value||'').trim();
+    const stim = getStim(rid);
+    if(!tgt) return;
+    let procs = [];
+    if(et==='dist')  procs = ['_distortion_'];
+    else if(et==='add') procs = ['_addition_'];
+    else procs = detectProcesses(tgt, et==='omit'?'省':err);
+    rows.push({tgt, et, err, stim, procs});
+  });
+
+  if(rows.length===0) { alert('請先新增錯誤資料再產生計畫。'); return; }
+
+  // Group by process
+  const procMap = {};
+  const distortions = [];
+  const additions   = [];
+  const noProcSounds= [];
+
+  rows.forEach(r => {
+    if(r.procs.includes('_distortion_')) { distortions.push(r.tgt); return; }
+    if(r.procs.includes('_addition_'))   { additions.push(r.tgt); return; }
+    if(r.procs.includes('_retroflex_pair_')) { noProcSounds.push(r.tgt+' (ㄕ↔ㄖ)'); return; }
+    if(r.procs.length===0) { noProcSounds.push(r.tgt); return; }
+    r.procs.forEach(p => {
+      if(!procMap[p]) procMap[p]={targets:[],stims:[],errTypes:[]};
+      if(!procMap[p].targets.includes(r.tgt)) procMap[p].targets.push(r.tgt);
+      if(r.stim) procMap[p].stims.push(r.stim);
+      procMap[p].errTypes.push(r.et);
+    });
+  });
+
+  // Assign stages
+  const stage1=[],stage2=[],stageObs=[],stageSkip=[];
+  Object.entries(procMap).forEach(([name,data]) => {
+    const s = scoreProcess(name, data.targets, data.errTypes.includes('omit')?'omit':'sub', data.stims, age);
+    const stage = assignStage(name, data, age);
+    const item = {name, ...data, score:s};
+    if(stage==='stage1')  stage1.push(item);
+    else if(stage==='stage2') stage2.push(item);
+    else if(stage==='obs')    stageObs.push(item);
+    else stageSkip.push(item);
+  });
+
+  stage1.sort((a,b)=>b.score-a.score);
+  stage2.sort((a,b)=>b.score-a.score);
+
+  // Strategy determination
+  const totalInterventionProcs = stage1.length + stage2.length;
+  const hasManyProcs = totalInterventionProcs >= 3;
+  const useCycles = hasManyProcs && consistChoice !== 'no';
+  const isInconsistent = consistChoice === 'no';
+
+  // ── Build HTML ──────────────────────────────
+  let html = '';
+
+  // ① Overview banner
+  const allAffectedSounds = [...new Set(rows.map(r=>r.tgt))];
+  const phonoCount = stage1.length + stage2.length;
+  const layerDesc = (phonoCount>0 && distortions.length>0) ? '音韻層 ＋ 構音層'
+                  : phonoCount>0 ? '音韻層為主'
+                  : distortions.length>0 ? '構音層為主' : '─';
+
+  let strategyText = '';
+  if(isInconsistent) {
+    strategyText = `<b>⚠ 不一致性錯誤（Dodd, 2014）：</b>先進行 ${mlink('core_vocab','ov')}（建立穩定詞語產出），而非直接進入構音或音韻訓練。待一致性建立後，再依下方計畫介入。`;
+  } else if(useCycles) {
+    strategyText = `偵測到 <b>${totalInterventionProcs} 個</b>需介入的歷程，多歷程通常反映較高的語音異常嚴重程度，建議考慮採 <b>${mlink('cycles','ov')}</b>（<b>前提：臨床判斷語音清晰度低，非輕微型個案</b>）：各歷程依循環<b>輪流訓練</b>，每目標每輪至少 60 分鐘，<b>不設正確率精熟標準</b>，以時間/小時數推進（Hodson &amp; Paden, 1983；鄭靜宜，2020）。`;
+  } else if(totalInterventionProcs===1) {
+    strategyText = `只偵測到 1 個需介入歷程，建議<b>集中火力</b>處理，以傳統音韻或構音取向介入，精熟後再觀察是否有其他歷程浮現。`;
+  } else {
+    strategyText = `偵測到 ${totalInterventionProcs} 個需介入歷程，建議<b>階段一完成後再進入階段二</b>。同一階段內音韻目標可採<b>水平式策略</b>合併處理；構音取向（扭曲）可與音韻訓練<b>平行進行</b>（動作層 vs 音韻層，不互相干擾）。`;
+  }
+
+  html += `<div class="plan-overview">
+    <div class="plan-ov-title">📋 治療計畫全覽　<span style="font-size:13px;font-weight:400;color:#9ca3af">${ageLabel}</span></div>
+    <div class="plan-ov-row">
+      <span class="plan-ov-chip">受影響聲母 <b>${allAffectedSounds.length}</b> 個</span>
+      <span class="plan-ov-chip">偵測歷程 <b>${Object.keys(procMap).length}</b> 個</span>
+      <span class="plan-ov-chip">主要問題層 <b>${layerDesc}</b></span>
+      <span class="plan-ov-chip">立即介入 <b>${stage1.length}</b> 個　接續介入 <b>${stage2.length}</b> 個</span>
+      ${distortions.length>0 ? `<span class="plan-ov-chip">構音扭曲 <b>${distortions.length}</b> 個聲母</span>` : ''}
+      ${stageObs.length>0 ? `<span class="plan-ov-chip">觀察 <b>${stageObs.length}</b> 個</span>` : ''}
+      ${consistChoice ? `<span class="plan-ov-chip">一致性 <b>${consistChoice==='yes'?'✓ 一致':consistChoice==='no'?'✕ 不一致':'? 未評估'}</b></span>` : ''}
+    </div>
+    <div class="plan-strategy">
+      <b>整體策略建議：</b><br>${strategyText}
+    </div>
+  </div>`;
+
+  // ── Process summary table (全覽逐一說明) ────────
+  {
+    // Build all process rows for the summary
+    const summaryRows = [];
+
+    // Stage 1 & 2 phonological
+    [...stage1, ...stage2].forEach(item => {
+      const info = PROCESS_INFO[item.name] || {};
+      const rate = getRateAtAge(item.name, age);
+      const stageLabel = stage1.includes(item) ? '🔴 立即介入' : '🟠 接續介入';
+      const stageBg    = stage1.includes(item) ? '#fff0f0' : '#fff8ed';
+      const stageTc    = stage1.includes(item) ? '#991b1b' : '#92400e';
+
+      // Why intervene
+      let reason = '';
+      if(info.type==='deviant') reason = `偏異性歷程（SSD 出現率遠高於普通兒童）`;
+      else if(info.type==='rare') reason = `罕見歷程，${age}歲後出現屬偏異語音發展`;
+      else if(rate!==null && rate<10) reason = `出現率 ${rate}%，已超過同齡消退標準`;
+      else if(rate!==null && rate<20) reason = `出現率 ${rate}%，正在消退中，需觀察介入`;
+      else if(rate===null) reason = `無常模出現率數據；${age}歲已超過消退年齡（${info.suppressAge||'–'}歲）`;
+
+      // How: short version
+      const hasNo = item.stims.includes('no'), hasYes = item.stims.includes('yes');
+      let how = '';
+      if(info.type==='deviant'||info.type==='rare') {
+        how = hasNo ? '語音位置法 → 最小配對詞彙訓練' : '最小配對詞彙訓練';
+      } else if(useCycles) {
+        how = 'Cycles：聽覺轟炸 ＋ 循環輪替';
+      } else {
+        how = hasYes&&!hasNo ? '聽覺刺激 ＋ 語音位置法 → 最小配對'
+            : hasNo&&!hasYes ? '聽覺刺激建立可刺激性 → 語音位置法 → 最小配對'
+            : '最小配對詞彙訓練';
+      }
+
+      summaryRows.push({stageLabel, stageBg, stageTc,
+        name: item.name, targets: item.targets, reason, how, isPhono:true});
+    });
+
+    // Distortions
+    distortions.forEach(t => {
+      summaryRows.push({stageLabel:'🔴 立即介入', stageBg:'#fff0f0', stageTc:'#991b1b',
+        name:'扭曲音', targets:[t],
+        reason:'構音動作問題（非音韻歷程），影響語音清晰度',
+        how:'語音位置法（分析舌位、送氣、顎咽等動作層面）', isPhono:false});
+    });
+
+    // Obs
+    stageObs.forEach(item => {
+      const rate = getRateAtAge(item.name, age);
+      summaryRows.push({stageLabel:'🟢 觀察', stageBg:'#f0fdf4', stageTc:'#166534',
+        name: item.name, targets: item.targets,
+        reason: `出現率 ${rate}%，${age}歲仍屬正常範圍，持續追蹤`,
+        how:'暫不介入，下次評估再確認', isPhono:true});
+    });
+
+    // Skip
+    stageSkip.forEach(item => {
+      const info = PROCESS_INFO[item.name]||{};
+      summaryRows.push({stageLabel:'⚪ 不介入', stageBg:'#f5f3ff', stageTc:'#6d28d9',
+        name: item.name, targets: item.targets,
+        reason: info.type==='special' ? '台灣特殊語音現象，不列為介入目標'
+               : '上升型歷程（隨年齡增加），勿介入',
+        how:'─', isPhono:true});
+    });
+
+    if(summaryRows.length > 0) {
+      html += `<div style="background:#fff;border:1px solid #e8e8e6;border-radius:12px;overflow:hidden;margin-bottom:1rem">
+        <div style="padding:10px 16px;background:#f9fafb;border-bottom:1px solid #f0f0ee;font-size:11px;font-weight:700;color:#6b7280;letter-spacing:.04em">
+          偵測歷程一覽　─　每個歷程的介入階段、原因與方向
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          <thead>
+            <tr style="background:#f5f5f3">
+              <th style="padding:7px 10px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #e8e8e6;white-space:nowrap">歷程</th>
+              <th style="padding:7px 10px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #e8e8e6;white-space:nowrap">影響音</th>
+              <th style="padding:7px 10px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #e8e8e6">介入階段</th>
+              <th style="padding:7px 10px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #e8e8e6">為什麼介入 / 不介入</th>
+              <th style="padding:7px 10px;text-align:left;color:#888;font-weight:600;border-bottom:1px solid #e8e8e6">方向</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${summaryRows.map(r=>`<tr style="border-bottom:1px solid #f5f5f3">
+              <td style="padding:8px 10px;font-weight:700;color:#1a1a1a;white-space:nowrap">${r.name}</td>
+              <td style="padding:8px 10px;font-size:14px;font-weight:700;color:#374151">${r.targets.join('　')}</td>
+              <td style="padding:8px 10px">
+                <span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;background:${r.stageBg};color:${r.stageTc};white-space:nowrap">${r.stageLabel}</span>
+              </td>
+              <td style="padding:8px 10px;color:#374151;line-height:1.5">${r.reason}</td>
+              <td style="padding:8px 10px;color:#374151;line-height:1.5">${r.how}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        <div style="padding:8px 14px;font-size:10px;color:#bbb;border-top:1px solid #f0f0ee">
+          資料來源：鄭靜宜（2011）表 3 常模 ／ 介入建議：鄭靜宜（2020）Ch.8–10
+        </div>
+      </div>`;
+    }
+  }
+
+  // ── Functional load disclaimer ────────────────
+  html += `<div style="font-size:11px;color:#92400e;background:#fffbeb;border:1px solid #fde68a;border-radius:9px;padding:9px 14px;margin-bottom:1rem;line-height:1.6">
+    <b>⚠ 功能負載說明：</b>各目標音的「功能負載」為<b>臨床估算值，非台灣本土語料庫驗證數據</b>。
+    以 Jun Da Chinese Text Computing（中國普通話語料）為參考基準，並依台灣華語去捲舌化現象（中研院台灣華語社會語音語料庫）調整捲舌音分層。
+    僅作介入優先順序的輔助參考，<b>不應單獨作為介入決策依據</b>，請依個案實際溝通功能需求做臨床判斷。
+  </div>`;
+
+  // Pre-condition: inconsistent
+  if(isInconsistent) {
+    html += `<div class="precond-alert">
+      <strong>⚠ 前置條件：先進行核心詞彙療法（Core Vocabulary）</strong>
+      根據 Dodd（2014）分類，不一致性語音異常的適應症是 ${mlink('core_vocab','pre')}，而非傳統構音或音韻取向。
+      建議先穩定 10–15 個核心詞彙的產出一致性，再重新評估是否需進入下方音韻介入計畫。
+    </div>`;
+  }
+
+  // ── Stage 1 ─────────────────────────────────
+  if(stage1.length > 0 || distortions.length > 0) {
+    html += `<div class="stage-block">
+      <div class="stage-label">
+        <span class="stage-badge sb-1">階段一</span>
+        <div>
+          <div class="stage-title">立即介入</div>
+          <div class="stage-subtitle">現在就開始，這些目標最緊急或對清晰度影響最大</div>
+        </div>
+      </div>
+      <div class="stage-divider"></div>`;
+
+    // Phonological targets in stage1
+    if(stage1.length > 0) {
+      const concLabel = useCycles
+        ? `循環輪流訓練（Cycles：各歷程輪替，每歷程每輪 ≥ 60 分鐘；不設正確率標準）`
+        : stage1.length > 1
+          ? `可水平式合併處理（${stage1.length} 個歷程，如多重對比同時呈現；需依個案負荷量臨床決定）`
+          : `主要介入目標`;
+
+      html += `<div class="concurrent-group">
+        <div class="concurrent-header">
+          <span class="concurrent-icon">${stage1.length>1?'⟳':'▶'}</span>
+          ${concLabel}
+        </div>
+        <div class="conc-items">
+          ${stage1.map((item,i)=>buildGoalItem(item.name, item, age, useCycles, 's1_'+i)).join('')}
+        </div>
+      </div>`;
+    }
+
+    // Distortions can run parallel
+    if(distortions.length > 0) {
+      html += `<div class="concurrent-group">
+        <div class="concurrent-header">
+          <span class="concurrent-icon">⚡</span>
+          可與音韻訓練平行進行（不同層次，不互相干擾）
+        </div>
+        <div class="conc-items">
+          ${distortions.map((t,i)=>buildGoalItem('扭曲音', {
+            targets:[t], stims:[], errTypes:['dist'], isDistortion:true
+          }, age, false, 'dist_'+i)).join('')}
+        </div>
+      </div>`;
+    }
+
+    html += `</div>`; // end stage-block
+  }
+
+  // ── Transition note ─────────────────────────
+  if(stage1.length > 0 && stage2.length > 0) {
+    html += `<div class="transition-note">
+      <span class="transition-arrow">↓</span>
+      <div>
+        <b>進入階段二的條件：</b>
+        ${useCycles
+          ? `Cycles 以<b>時間/小時數</b>為推進依據，不設精熟正確率標準（鄭靜宜，2020 Ch.9）。完成一輪後（各歷程每輪至少 60 分鐘），評估每個歷程的可刺激性變化，並將階段二歷程逐步納入後續循環。`
+          : `<b>構音取向（垂直式）：</b>目標音在詞語層達 <b>80–90% 正確率</b>後推進（馬偕講義；鄭靜宜，2020 Ch.8）。<br><b>音韻取向：</b>主要歷程出現率明顯下降，或連續語音自發正確率達 <b>50–75%</b>（鄭靜宜，2020 Ch.8），可納入階段二。若 4–6 週無明顯改善，需檢討介入策略。`
+        }
+      </div>
+    </div>`;
+  }
+
+  // ── Stage 2 ─────────────────────────────────
+  if(stage2.length > 0) {
+    html += `<div class="stage-block">
+      <div class="stage-label">
+        <span class="stage-badge sb-2">階段二</span>
+        <div>
+          <div class="stage-title">接續介入</div>
+          <div class="stage-subtitle">等階段一有明顯進展後再開始；或加入 Cycles 下一輪</div>
+        </div>
+      </div>
+      <div class="stage-divider stage-divider-2"></div>`;
+
+    // Group by approach: phonological together, artic together
+    const s2Phono = stage2.filter(i=>!i.isDistortion && (PROCESS_INFO[i.name]?.type!=='special'));
+    const s2Artic = stage2.filter(i=>i.isDistortion);
+
+    if(s2Phono.length > 0) {
+      html += `<div class="concurrent-group">
+        <div class="concurrent-header">
+          <span class="concurrent-icon">⟳</span>
+          ${s2Phono.length>1 ? `可同時進行（音韻歷程可合併處理）` : '音韻介入目標'}
+        </div>
+        <div class="conc-items">
+          ${s2Phono.map((item,i)=>buildGoalItem(item.name, item, age, useCycles, 's2_'+i)).join('')}
+        </div>
+      </div>`;
+    }
+    if(s2Artic.length > 0) {
+      html += `<div class="concurrent-group">
+        <div class="concurrent-header">
+          <span class="concurrent-icon">⚡</span>
+          構音取向（可與音韻目標平行）
+        </div>
+        <div class="conc-items">
+          ${s2Artic.map((t,i)=>buildGoalItem('扭曲音', {targets:[t.name],stims:[],errTypes:['dist'],isDistortion:true}, age, false, 's2dist_'+i)).join('')}
+        </div>
+      </div>`;
+    }
+
+    html += `</div>`; // end stage-block
+  }
+
+  // ── Additions ───────────────────────────────
+  if(additions.length > 0) {
+    html += `<div class="stage-block">
+      <div class="stage-label">
+        <span class="stage-badge" style="background:#f3e8ff;color:#6d28d9">注意</span>
+        <div><div class="stage-title">添加音</div><div class="stage-subtitle">需臨床判斷是否為同化歷程</div></div>
+      </div>
+      <div class="concurrent-group">
+        <div class="concurrent-header"><span class="concurrent-icon">⚠</span>添加音（${additions.join('、')}）</div>
+        <div style="padding:12px 16px;font-size:12px;color:#374151;line-height:1.7">
+          添加音少見，建議先確認是否在特定語音環境系統性出現（→ 同化歷程）。若是系統性添加，可列入音韻介入計畫；若為偶發性錯誤，暫不列為目標。
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ── Monitor / skip ───────────────────────────
+  const allMonitor = [
+    ...stageObs.map(i=>({label:i.name, note:'此年齡正常', color:'#d1fae5', tc:'#065f46', targets:i.targets})),
+    ...stageSkip.map(i=>({
+      label:i.name,
+      note: (PROCESS_INFO[i.name]?.type==='special') ? '台灣特殊，不介入' : '上升型，不介入',
+      color:'#ede9fe', tc:'#6d28d9', targets:i.targets
+    })),
+    ...noProcSounds.map(s=>({label:s, note:'無法自動偵測歷程', color:'#fef3c7', tc:'#92400e', targets:[]})),
+  ];
+
+  if(allMonitor.length > 0) {
+    html += `<div class="stage-block">
+      <div class="stage-label">
+        <span class="stage-badge sb-obs">觀察 / 不介入</span>
+        <div><div class="stage-title">不需現在介入</div><div class="stage-subtitle">定期追蹤，或屬台灣特殊語音現象</div></div>
+      </div>
+      <div class="stage-divider stage-divider-obs"></div>
+      <div class="monitor-grid">
+        ${allMonitor.map(m=>`<div class="monitor-chip" style="background:${m.color};color:${m.tc}">
+          ${m.label}${m.targets.length>0 ? '　'+m.targets.join('、') : ''}
+          <small>${m.note}</small>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ── Data source note ─────────────────────────
+  html += `<div style="font-size:10px;color:#bbb;text-align:center;margin-top:1rem;line-height:1.8">
+    歷程常模：鄭靜宜（2011）表 3 ／ 歷程偵測：鄭靜宜（2011）附錄 2 ／
+    治療取向建議：鄭靜宜（2020）Ch.8–10 ／ 馬偕醫院語言治療課程講義 ／ Dodd（2014）<br>
+    <span style="color:#f59e0b">⚠ 功能負載（估算）：</span>以 Jun Da Chinese Text Computing（中國普通話語料）為分層基準，
+    並依台灣華語去捲舌化現象（中研院台灣華語社會語音語料庫）調整捲舌音分層。
+    未經台灣本土語料庫直接驗證，<b>僅供參考，不應單獨作為介入決策依據</b>。
+  </div>`;
+
+  const out = document.getElementById('plan-output');
+  out.innerHTML = html;
+  out.style.display = 'block';
+  out.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  updateAgeDisplay();
+  addErrorRow();
+  addErrorRow();
+  addErrorRow();
+});
+</script>
+</body>
+</html>
