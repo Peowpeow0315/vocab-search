@@ -134,6 +134,12 @@ table.error-tbl td{padding:5px 5px;border-bottom:1px solid #f0f0ee;vertical-alig
 .tooltip-body{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;font-size:11px;padding:6px 10px;border-radius:7px;white-space:nowrap;z-index:99;line-height:1.5;max-width:260px;white-space:normal;text-align:left}
 .tooltip:hover .tooltip-body{display:block}
 
+/* ── Manual proc select ── */
+.mproc-wrap{margin-top:5px}
+.mproc-select{width:100%;padding:4px 6px;border:1.5px dashed #d97706;border-radius:7px;font-size:11px;font-family:inherit;background:#fffbeb;color:#92400e;cursor:pointer}
+.mproc-select:focus{outline:none;border-color:#d97706}
+.mproc-label{font-size:9px;color:#b45309;font-weight:600;margin-bottom:2px;letter-spacing:.03em}
+
 /* ── Help text ── */
 .help-note{font-size:11px;color:#9ca3af;margin-top:8px;line-height:1.6;padding:8px 10px;background:#fafaf8;border-radius:7px}
 .section-top-note{font-size:11px;color:#6b7280;margin-top:14px;line-height:1.7;padding:8px 12px;background:#fafaf8;border-radius:8px;border-left:3px solid #e0e0de}
@@ -592,6 +598,28 @@ function addErrorRow() {
     </td>
     <td>
       <div id="proc-${rid}" class="detected-proc" style="color:#ccc">─</div>
+      <div id="mproc-wrap-${rid}" class="mproc-wrap" style="display:none">
+        <div class="mproc-label">✏️ 手動選填歷程</div>
+        <select class="mproc-select" id="mproc-${rid}" onchange="onManualProcChange(${rid})">
+          <option value="">─ 選擇歷程…</option>
+          <option value="聲母省略">聲母省略</option>
+          <option value="前置化">前置化</option>
+          <option value="後置化">後置化</option>
+          <option value="塞音化">塞音化</option>
+          <option value="塞擦音化">塞擦音化</option>
+          <option value="摩擦音化">摩擦音化</option>
+          <option value="不送氣化">不送氣化</option>
+          <option value="送氣化">送氣化</option>
+          <option value="鼻音化">鼻音化</option>
+          <option value="去鼻音化">去鼻音化</option>
+          <option value="邊音化">邊音化</option>
+          <option value="唇音化">唇音化</option>
+          <option value="齒槽音化">齒槽音化</option>
+          <option value="顎音化">顎音化</option>
+          <option value="不捲舌化">不捲舌化</option>
+          <option value="捲舌化">捲舌化</option>
+        </select>
+      </div>
     </td>
     <td>
       <button class="del-row-btn" onclick="deleteRow(${rid})">✕</button>
@@ -634,6 +662,38 @@ function getStim(rid) {
   return null;
 }
 
+// ─── Manual proc helpers ───────────────────
+function showManualProc(rid) {
+  const wrap = document.getElementById('mproc-wrap-'+rid);
+  if(wrap) wrap.style.display = 'block';
+}
+function hideManualProc(rid) {
+  const wrap = document.getElementById('mproc-wrap-'+rid);
+  const sel  = document.getElementById('mproc-'+rid);
+  if(wrap) wrap.style.display = 'none';
+  if(sel)  sel.value = '';
+}
+function getManualProc(rid) {
+  return document.getElementById('mproc-'+rid)?.value || '';
+}
+function onManualProcChange(rid) {
+  const val = getManualProc(rid);
+  const cell = document.getElementById('proc-'+rid);
+  if(!cell) return;
+  if(!val) return; // keep existing message visible
+  const info = PROCESS_INFO[val];
+  const age = +document.getElementById('case-age').value;
+  const rate = getRateAtAge(val, age);
+  let col = '#6b7280';
+  if(info?.type==='deviant'||info?.type==='rare') col='#dc2626';
+  else if(rate!==null && rate<10) col='#ea580c';
+  else if(rate!==null && rate<20) col='#d97706';
+  else if(info?.type==='special'||info?.type==='rising') col='#7c3aed';
+  // Update the proc cell display to show what was manually selected
+  const rateStr = rate!==null ? ` <span style="color:#bbb">(${rate}%)</span>` : '';
+  cell.innerHTML = `<span style="color:#b45309;font-size:10px">✏️ 手動</span> <span style="color:${col};font-weight:600">${val}</span>${rateStr}`;
+}
+
 function updateRowDetect(rid) {
   const tgt  = (document.getElementById('tgt-'+rid)?.value||'').trim();
   const et   = document.getElementById('etype-'+rid)?.value;
@@ -641,34 +701,46 @@ function updateRowDetect(rid) {
   const cell = document.getElementById('proc-'+rid);
   if(!cell) return;
 
-  if(!tgt || !CONS_FEATURES[tgt]) { cell.textContent='─'; cell.style.color='#ccc'; return; }
+  if(!tgt) { cell.textContent='─'; cell.style.color='#ccc'; hideManualProc(rid); return; }
+  if(!CONS_FEATURES[tgt]) {
+    cell.innerHTML = '<span style="color:#9ca3af;font-size:11px">非聲母輸入 — 請手動選填歷程 ↓</span>';
+    cell.style.color = '';
+    showManualProc(rid);
+    return;
+  }
 
   if(et === 'dist') {
     cell.innerHTML = '<span style="color:#b45309;font-weight:600">構音問題</span> → 構音取向';
+    hideManualProc(rid);
     return;
   }
   if(et === 'add') {
     cell.innerHTML = '<span style="color:#7c3aed;font-weight:600">添加音</span> → 需臨床判斷';
+    hideManualProc(rid);
     return;
   }
   if(et === 'omit') {
     cell.innerHTML = '<span style="color:#dc2626;font-weight:600">聲母省略</span>';
+    hideManualProc(rid);
     return;
   }
   // sub
-  if(!err || !CONS_FEATURES[err]) { cell.textContent='待輸入錯誤音'; cell.style.color='#ccc'; return; }
-  if(tgt === err) { cell.innerHTML='<span style="color:#22c55e">✓ 正確</span>'; return; }
+  if(!err || !CONS_FEATURES[err]) { cell.textContent='待輸入錯誤音'; cell.style.color='#ccc'; hideManualProc(rid); return; }
+  if(tgt === err) { cell.innerHTML='<span style="color:#22c55e">✓ 正確</span>'; hideManualProc(rid); return; }
 
   const age = +document.getElementById('case-age').value;
   const procs = detectProcesses(tgt, err);
   if(procs.includes('_retroflex_pair_')) {
-    cell.innerHTML = '<span style="color:#7c3aed">ㄕ↔ㄖ 特殊（有聲/無聲）</span>';
+    cell.innerHTML = '<span style="color:#7c3aed">ㄕ↔ㄖ 特殊（有聲/無聲）— 請手動選填歷程 ↓</span>';
+    showManualProc(rid);
     return;
   }
   if(procs.length === 0) {
-    cell.innerHTML = '<span style="color:#f97316">無法自動分類</span>';
+    cell.innerHTML = '<span style="color:#f97316">無法自動分類 — 請手動選填歷程 ↓</span>';
+    showManualProc(rid);
     return;
   }
+  hideManualProc(rid);
   cell.style.color = '';
   cell.innerHTML = procs.map(p => {
     const info = PROCESS_INFO[p];
@@ -809,10 +881,39 @@ function buildGoalItem(procName, data, age, isCycles, tipSuffix) {
     ? Math.round(data.targets.reduce((s,t)=>s+(FUNC_LOAD[t]||1),0)/data.targets.length)
     : 1;
   const flLabel = FUNC_LOAD_LABEL[fl] || '中';
-  const stimLabel = hasNo && !hasYes ? `<span class="gi-stim stim-no">✕ 不可刺激</span>`
-                  : hasYes && !hasNo ? `<span class="gi-stim stim-yes">✓ 可刺激</span>`
-                  : stims.length>0   ? `<span class="gi-stim stim-unk">? 混合</span>`
-                  :                    `<span class="gi-stim stim-unk">? 未測試</span>`;
+  const stimLabel = hasNo && !hasYes ? `<span class="gi-stim stim-no" title="個案在隔離音節層次無法模仿出目標音">✕ 不可刺激</span>`
+                  : hasYes && !hasNo ? `<span class="gi-stim stim-yes" title="個案在隔離音節層次能模仿出目標音">✓ 可刺激</span>`
+                  : stims.length>0   ? `<span class="gi-stim stim-unk" title="部分刺激情境可，部分不可，需進一步評估">? 混合</span>`
+                  :                    `<span class="gi-stim stim-unk" title="尚未進行 Stimulability 測試（請在輸入表格點選✓✕?）">? 尚未測試</span>`;
+
+  // ── Process type classification badge ──────────────────────────────
+  let procTypeBadge = '';
+  {
+    let ptLabel = '', ptColor = '', ptBg = '';
+    if(info.type==='deviant') {
+      ptLabel='偏異性歷程'; ptBg='#fef2f2'; ptColor='#991b1b';
+    } else if(info.type==='rare') {
+      ptLabel='罕見歷程'; ptBg='#fef2f2'; ptColor='#991b1b';
+    } else if(info.type==='special') {
+      ptLabel='台灣特殊現象'; ptBg='#f5f3ff'; ptColor='#6d28d9';
+    } else if(info.type==='rising') {
+      ptLabel='上升型（不介入）'; ptBg='#f5f3ff'; ptColor='#6d28d9';
+    } else if(info.type==='developmental') {
+      if(rate !== null) {
+        if(rate >= 20)       { ptLabel='發展性：此年齡正常'; ptBg='#f0fdf4'; ptColor='#166534'; }
+        else if(rate >= 10)  { ptLabel='發展性：消退中'; ptBg='#fef3c7'; ptColor='#92400e'; }
+        else                 { ptLabel='發展性：應已抑制'; ptBg='#fff0f0'; ptColor='#991b1b'; }
+      } else {
+        // null-rate: use suppressAge
+        if(info.suppressAge && age > info.suppressAge) {
+          ptLabel='發展性：應已抑制'; ptBg='#fff0f0'; ptColor='#991b1b';
+        } else {
+          ptLabel='發展性：此年齡正常'; ptBg='#f0fdf4'; ptColor='#166534';
+        }
+      }
+    }
+    if(ptLabel) procTypeBadge = `<span style="font-size:10px;padding:2px 8px;border-radius:99px;background:${ptBg};color:${ptColor};font-weight:600;white-space:nowrap">${ptLabel}</span>`;
+  }
 
   // Determine approach label + rationale
   let typeLabel, typeClass, methods_html, rationale, rationaleClass='';
@@ -857,9 +958,15 @@ function buildGoalItem(procName, data, age, isCycles, tipSuffix) {
     } else {
       typeLabel='音韻取向'; typeClass='git-phono';
       methods_html = isCycles ? `${mlink('cycles',tipSuffix)}` : mlink('minimal_pairs',tipSuffix);
-      rationale = rate!==null && rate<10
-        ? `此歷程在 ${age} 歲出現率 ${rate}%，已超過同齡抑制標準，需納入介入。`
-        : `歷程消退中（出現率 ${rate}%），建議列入治療計畫。`;
+      if(rate !== null && rate < 10) {
+        rationale = `此歷程在 ${age} 歲出現率 ${rate}%，已超過同齡抑制標準，需納入介入。`;
+      } else if(rate !== null) {
+        rationale = `歷程消退中（出現率 ${rate}%），建議列入治療計畫。`;
+      } else {
+        // null-rate: no normative data, use suppressAge
+        const saStr = info.suppressAge ? `${info.suppressAge} 歲` : '─';
+        rationale = `此歷程無鄭靜宜（2011）表 3 常模出現率數據。依消退年齡判斷（預期消退：${saStr}），個案 ${age} 歲仍出現，超過預期消退年齡，需納入介入。`;
+      }
     }
   }
 
@@ -870,6 +977,7 @@ function buildGoalItem(procName, data, age, isCycles, tipSuffix) {
   return `<div class="goal-item">
     <div class="gi-left">
       ${soundDisplay}
+      <div style="font-size:9px;color:#9ca3af;text-align:center;margin-top:1px;letter-spacing:.02em">影響聲母</div>
       <span class="gi-type ${typeClass}">${typeLabel}</span>
       ${stimLabel}
     </div>
@@ -880,11 +988,12 @@ function buildGoalItem(procName, data, age, isCycles, tipSuffix) {
         <span class="gi-method-label">手法：</span>
         ${methods_html}
       </div>
-      <div class="gi-rationale ${rationaleClass}">${rationale}</div>
+      <div class="gi-rationale ${rationaleClass}"><b style="font-size:10px;opacity:.7">【手法依據】</b> ${rationale}</div>
       <div class="gi-meta">
+        ${procTypeBadge}
         <span class="gi-chip">📊 ${rateStr}</span>
         <span class="gi-chip" title="⚠ 臨床估算值，非台灣本土語料庫驗證數據。基準參考 Jun Da Chinese Text Computing，並依台灣去捲舌化現象調整。僅供參考。">📣 功能負載 <b>${flLabel}</b> <span style="color:#f59e0b;font-size:9px">⚠估算</span></span>
-        <span class="gi-chip">🎯 影響 <b>${data.targets.length}</b> 個聲母</span>
+        <span class="gi-chip">🎯 影響聲母 <b>${data.targets.join('　')}</b>${data.targets.length > 1 ? `（${data.targets.length} 個）` : ''}</span>
       </div>
     </div>
   </div>`;
@@ -912,6 +1021,18 @@ function generatePlan() {
     if(et==='dist')  procs = ['_distortion_'];
     else if(et==='add') procs = ['_addition_'];
     else procs = detectProcesses(tgt, et==='omit'?'省':err);
+
+    // ── Manual proc override ────────────────
+    // If auto-detect failed (non-consonant, unclassifiable, retroflex pair),
+    // and user has manually selected a process, use that instead.
+    const manualProc = getManualProc(rid);
+    if(manualProc && PROCESS_INFO[manualProc]) {
+      const autoFailed = !CONS_FEATURES[tgt]
+        || procs.includes('_retroflex_pair_')
+        || (procs.length === 0 && et === 'sub');
+      if(autoFailed) procs = [manualProc];
+    }
+
     rows.push({tgt, et, err, stim, procs});
   });
 
@@ -984,7 +1105,16 @@ function generatePlan() {
       <span class="plan-ov-chip">受影響聲母 <b>${allAffectedSounds.length}</b> 個</span>
       <span class="plan-ov-chip">偵測歷程 <b>${Object.keys(procMap).length}</b> 個</span>
       <span class="plan-ov-chip">主要問題層 <b>${layerDesc}</b></span>
-      <span class="plan-ov-chip">立即介入 <b>${stage1.length}</b> 個　接續介入 <b>${stage2.length}</b> 個</span>
+      ${(() => {
+        const hasStage1 = stage1.length > 0 || distortions.length > 0;
+        if(stage1.length > 0 && stage2.length > 0)
+          return `<span class="plan-ov-chip">立即介入 <b>${stage1.length}</b> 個　接續介入 <b>${stage2.length}</b> 個</span>`;
+        if(stage1.length > 0)
+          return `<span class="plan-ov-chip">立即介入 <b>${stage1.length}</b> 個</span>`;
+        if(stage2.length > 0)
+          return `<span class="plan-ov-chip">介入目標 <b>${stage2.length}</b> 個</span>`;
+        return '';
+      })()}
       ${distortions.length>0 ? `<span class="plan-ov-chip">構音扭曲 <b>${distortions.length}</b> 個聲母</span>` : ''}
       ${stageObs.length>0 ? `<span class="plan-ov-chip">觀察 <b>${stageObs.length}</b> 個</span>` : ''}
       ${consistChoice ? `<span class="plan-ov-chip">一致性 <b>${consistChoice==='yes'?'✓ 一致':consistChoice==='no'?'✕ 不一致':'? 未評估'}</b></span>` : ''}
@@ -1043,9 +1173,10 @@ function generatePlan() {
     // Obs
     stageObs.forEach(item => {
       const rate = getRateAtAge(item.name, age);
+      const rateStr = rate !== null ? `出現率 ${rate}%` : '無常模數據（依消退年齡判斷）';
       summaryRows.push({stageLabel:'🟢 觀察', stageBg:'#f0fdf4', stageTc:'#166534',
         name: item.name, targets: item.targets,
-        reason: `出現率 ${rate}%，${age}歲仍屬正常範圍，持續追蹤`,
+        reason: `${rateStr}，${age}歲仍屬正常範圍，持續追蹤`,
         how:'暫不介入，下次評估再確認', isPhono:true});
     });
 
@@ -1174,15 +1305,17 @@ function generatePlan() {
 
   // ── Stage 2 ─────────────────────────────────
   if(stage2.length > 0) {
+    const hasStage1Content = stage1.length > 0 || distortions.length > 0;
+    const s2IsFirst = !hasStage1Content; // stage2 is actually the first/only stage
     html += `<div class="stage-block">
       <div class="stage-label">
-        <span class="stage-badge sb-2">階段二</span>
+        <span class="stage-badge ${s2IsFirst ? 'sb-1' : 'sb-2'}">${s2IsFirst ? '階段一' : '階段二'}</span>
         <div>
-          <div class="stage-title">接續介入</div>
-          <div class="stage-subtitle">等階段一有明顯進展後再開始；或加入 Cycles 下一輪</div>
+          <div class="stage-title">${s2IsFirst ? '立即介入' : '接續介入'}</div>
+          <div class="stage-subtitle">${s2IsFirst ? '目前主要介入目標（現在就開始）' : '等階段一有明顯進展後再開始；或加入 Cycles 下一輪'}</div>
         </div>
       </div>
-      <div class="stage-divider stage-divider-2"></div>`;
+      <div class="stage-divider ${s2IsFirst ? '' : 'stage-divider-2'}"></div>`;
 
     // Group by approach: phonological together, artic together
     const s2Phono = stage2.filter(i=>!i.isDistortion && (PROCESS_INFO[i.name]?.type!=='special'));
