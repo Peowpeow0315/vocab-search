@@ -43,6 +43,7 @@ sup.src-2{color:#f59e0b}  /* Hung & Chang — amber */
 sup.src-3{color:#6ee7b7}  /* Wu & Lin — green */
 sup.src-4{color:#fb923c}  /* notes — orange */
 sup.src-5{color:#a78bfa}  /* Paul & Norbury — violet */
+sup.src-6{color:#22d3ee}  /* 陳欣希等 — cyan */
 
 /* ⚠ items: left accent border */
 .ms-item.is-warn{border-left:2px solid #fde68a;padding-left:8px;margin-left:-2px}
@@ -101,6 +102,36 @@ sup.src-5{color:#a78bfa}  /* Paul & Norbury — violet */
 .rf-item{display:flex;align-items:flex-start;gap:8px;padding:4.5px 0;border-bottom:1px solid #fee2e2;font-size:12.5px;line-height:1.5;color:#7f1d1d}
 .rf-item:last-child{border-bottom:none}
 .rf-age{font-size:10.5px;font-weight:700;color:#dc2626;min-width:58px;flex-shrink:0;padding-top:2px}
+
+/* ── Narrative module ── */
+.narr-tabs{display:flex;gap:6px;margin-bottom:10px}
+.narr-tab{flex:1;text-align:center;padding:5px 4px;border-radius:8px;font-size:12px;font-weight:600;border:1.5px solid #e0e0de;color:#bbb;background:#fafaf8}
+.narr-tab.act{background:#ecfeff;border-color:#22d3ee;color:#0e7490}
+.narr-struct-sub{font-size:10px;font-weight:700;color:#999;letter-spacing:.07em;text-transform:uppercase;margin:10px 0 5px}
+.narr-type-row{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.narr-type-name{font-size:10px;width:68px;flex-shrink:0}
+.narr-type-bar{flex:1;height:13px;background:#f0f0ee;border-radius:3px;overflow:hidden}
+.narr-type-fill{height:100%;border-radius:3px}
+.narr-type-pct{font-size:10.5px;font-weight:600;width:36px;text-align:right;flex-shrink:0}
+.narr-complete-sum{font-size:11px;color:#0e7490;background:#ecfeff;border:1px solid #a5f3fc;border-radius:6px;padding:5px 10px;margin:8px 0 10px;display:flex;justify-content:space-between;align-items:center}
+.narr-legend{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 8px;font-size:10px;color:#666}
+.narr-legend-item{display:flex;align-items:center;gap:3px}
+.narr-legend-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.narr-elem-tbl{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:4px}
+.narr-elem-tbl th{font-size:10px;color:#888;font-weight:600;padding:4px 5px;text-align:center;border-bottom:1px solid #e8e8e6;background:#fafaf8}
+.narr-elem-tbl th:first-child{text-align:left}
+.narr-elem-tbl td{padding:4px 5px;text-align:center;border-bottom:1px solid #f5f5f3}
+.narr-elem-tbl td:first-child{text-align:left;color:#555}
+.narr-total td{font-weight:700;border-top:1.5px solid #e0e0de!important}
+.narr-hi{color:#0e7490;font-weight:700}
+.narr-callout{background:#ecfeff;border:1px solid #a5f3fc;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:11.5px;color:#155e75;line-height:1.7}
+.narr-above5{background:#fef9c3;border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:8px;font-size:11px;color:#92400e}
+.narr-warn-box{background:#fff8f0;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;margin-bottom:.875rem}
+.narr-warn-title{font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.narr-warn-item{font-size:11.5px;color:#78350f;padding:3.5px 0;line-height:1.65;border-bottom:1px solid #fde68a}
+.narr-warn-item:last-child{border-bottom:none}
+.narr-warn-item strong{color:#92400e}
+
 .cite-box{font-size:10.5px;color:#aaa;background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:12px 16px;line-height:1.75}
 .cite-box strong{color:#888}
 .cite-entry{margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f0f0ee}
@@ -122,7 +153,7 @@ sup.src-5{color:#a78bfa}  /* Paul & Norbury — violet */
     0–18 歲語言發展參考里程碑。0–36 個月數據引自 MCDI-T（劉惠美 & 曹峰銘，2010，台灣 n=2,654）；
     1;8–3;0 詞彙組成引自 Hung & Chang（2024，⚠ 見提示）；3–6 歲詞類使用引自 Wu & Lin（2024，台灣 n=209）；
     3–6 歲語用及 5–18 歲學齡期里程碑引自 Paul & Norbury（2012）⚠英語常模（底層資料：Chapman 2000 等）；
-    部分語用項目以 ⚠ 課程講義標記。
+    部分語用項目以 ⚠ 課程講義標記；3–5 歲敘事巨結構引自陳欣希等（2011，台灣 n=208，⚠ 重述任務）。
   </p>
 
   <div class="age-bar">
@@ -173,6 +204,25 @@ sup.src-5{color:#a78bfa}  /* Paul & Norbury — violet */
     </p>
   </div>
 
+  <!-- Narrative macro-structure — shown 36-83m -->
+  <div class="section-box" id="narrativeSection" style="display:none">
+    <div class="s-title">📖 敘事巨結構發展<sup class="src-num src-6" style="font-size:10px;vertical-align:super">⁶</sup></div>
+    <div id="narrativeContent"></div>
+    <p style="font-size:10.5px;color:#aaa;margin-top:10px;line-height:1.6">
+      來源：陳欣希、張鑑如、陳秀芬（2011），教育心理學報，42(3)，359–378。台灣 n=208（3 歲 n=59，4 歲 n=75，5 歲 n=74），台北縣市。任務：重述圖畫書《螞蟻和西瓜》。框架：Stein &amp; Glenn（1979）故事文法。⚠ 見限制說明。
+    </p>
+  </div>
+
+  <!-- Narrative constraints box — shown 36-83m -->
+  <div class="narr-warn-box" id="narrativeWarnBox" style="display:none">
+    <div class="narr-warn-title">⚠️ 陳欣希等（2011）臨床應用限制</div>
+    <div class="narr-warn-item"><strong>年齡範圍：</strong>資料僅涵蓋 3–5 歲，<strong>不得外推至 6 歲以上。</strong>6 歲以上可作趨勢參考，不宜直接對照為常模。</div>
+    <div class="narr-warn-item"><strong>任務限制：</strong>語料為重述任務（重述《螞蟻和西瓜》），非自發性敘事。自發性敘事能力通常低於重述表現，臨床蒐集自發性敘事時不宜直接比對。</div>
+    <div class="narr-warn-item"><strong>文本效應（「縮簡式情節」）：</strong>台灣 5 歲組「縮簡式情節」比例未隨年齡消退（與國外研究相反），研究者推論係台灣文化（不習慣明指主角目標）或《螞蟻和西瓜》文本特性所致，<strong>不宜直接詮釋為敘事落後。</strong></div>
+    <div class="narr-warn-item"><strong>「背景」元素：</strong>三組在「背景」元素無顯著差異，研究者推論係文本本身背景訊息少所致，不代表此元素本身無年齡發展性。</div>
+    <div class="narr-warn-item"><strong>樣本：</strong>台北縣市，已確認母親教育程度對故事結構表現無顯著影響。但仍為特定地區樣本，推論至其他族群時應謹慎。</div>
+  </div>
+
   <!-- Red flags -->
   <div class="rf-box">
     <div class="rf-title">🚩 轉介參考指標（Red Flags）</div>
@@ -208,18 +258,23 @@ sup.src-5{color:#a78bfa}  /* Paul & Norbury — violet */
         底層數據引自 Chapman, R.（2000）. Children's language learning: An interactionist perspective. <em>Journal of Child Psychology and Psychiatry, 41</em>, 33–54；Miller, J.（1981）；Weiss et al.（1987）。<br>
         ⚠ <strong>重要限制：</strong>此為英語兒童常模。語用溝通功能發展（如請求策略、敘事結構）具相對跨語言適用性，但月齡時間點可能因語言與文化差異而有所不同。語法語音欄之英語特定內容（Brown's Stages、英語音素）不得直接套用於華語兒童。本頁僅引用語用領域之概念性里程碑，標記 ⁵⚠。
       </div>
+      <div class="cite-entry">
+        <strong>⑥ 陳欣希、張鑑如、陳秀芬（2011）</strong>：學齡前幼兒的故事結構發展：故事文法之分析。教育心理學報，42(3)，359–378。<br>
+        台灣 n=208（3 歲 n=59，4 歲 n=75，5 歲 n=74），台北縣市。任務：重述圖畫書《螞蟻和西瓜》；框架：Stein &amp; Glenn（1979）故事文法。⚠ 適用限制見橙色提示框。用於本頁 3–5 歲敘事巨結構模組。
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-const SRC_NUM={mcdi:'1',hung:'2',wu:'3',notes:'4',paul:'5'};
-const SRC_LABEL_SHORT={mcdi:'¹ MCDI-T (劉惠美 & 曹峰銘, 2010)', hung:'² Hung & Chang (2024) ⚠', wu:'³ Wu & Lin (2024)', notes:'⁴ ⚠ 課程講義', paul:'⁵ Paul & Norbury (2012) ⚠英語'};
+const SRC_NUM={mcdi:'1',hung:'2',wu:'3',notes:'4',paul:'5',chen2011:'6'};
+const SRC_LABEL_SHORT={mcdi:'¹ MCDI-T (劉惠美 & 曹峰銘, 2010)', hung:'² Hung & Chang (2024) ⚠', wu:'³ Wu & Lin (2024)', notes:'⁴ ⚠ 課程講義', paul:'⁵ Paul & Norbury (2012) ⚠英語', chen2011:'⁶ 陳欣希等（2011）'};
 
 function srcNum(s){
   const n=SRC_NUM[s]||'';
   const cls=`src-${n}`;
-  const sup={'1':'¹','2':'²','3':'³','4':'⁴'}[n]||n;
+  const supMap={'1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶'};
+  const sup=supMap[n]||n;
   return `<sup class="src-num ${cls}">${sup}</sup>`;
 }
 function isWarn(s){return s==='notes'||s==='hung'||s==='paul';}
@@ -251,7 +306,7 @@ const MS=[
    w:'⚠ 3 歲以上詞彙量絕對數值：目前無 MCDI-T 台灣常模，此項引自課程講義估算', src:'notes'},
 
   // ── 語法 ──
-  {aS:18, aE:22, d:'grammar', t:'雙詞組合出現（約累積 50 個詞後）', src:'mcdi'},
+  {aS:18, aE:22, d:'grammar', t:'雙詞結合出現（約累積 50 個詞後）', src:'mcdi'},
   {aS:19, aE:22, d:'grammar', t:'MLU 約 1.4（玩具遊戲情境，中位數）', src:'hung',
    w:'⚠ Hung & Chang (2024)：n=40，台灣北部，玩具情境；不得外推至 3 歲以上'},
   {aS:20, aE:24, d:'grammar', t:'53% 幼兒開始使用語詞連結（word combination）', src:'mcdi'},
@@ -285,7 +340,6 @@ const MS=[
   {aS:60, aE:68, d:'pragmatics', t:'清楚用語言表達情感與想法；能講述有結構的故事', src:'notes', w:'⚠ 課程講義'},
   {aS:66, aE:72, d:'pragmatics', t:'理解並使用時間概念（昨天、今天、明天）；遵循多步驟指令', src:'notes', w:'⚠ 課程講義'},
   // Paul & Norbury (2012) Inside front cover & back cover — data from Chapman (2000); ⚠ 英語常模
-  // 語用發展功能具跨語言適用性，但絕對月齡可能因語言文化而異
   {aS:36, aE:42, d:'pragmatics', t:'請求方式更具彈性：許可式「你可以...？」與間接請求「你願意...？」出現；直接命令逐漸減少', src:'paul'},
   {aS:36, aE:42, d:'pragmatics', t:'敘事（Narrative）發展：「原始式」敘事—有主題與部分時序組織，尚無完整情節', src:'paul'},
   {aS:42, aE:48, d:'pragmatics', t:'新溝通功能出現：回報過去事件、推理、預測、表達同理心、維持對話互動', src:'paul'},
@@ -295,8 +349,6 @@ const MS=[
   {aS:60, aE:72, d:'pragmatics', t:'敘事達「真實故事」結構：有中心焦點、高潮、結局（5–7 歲）', src:'paul'},
 
   // ── 學齡期（Paul & Norbury 2012, inside back cover）⚠ 英語常模 ──
-  // Data from Chapman (2000), Nippold (1998), Westby (1999)
-
   // 5–7 歲（60–84 mo）
   {aS:60, aE:84, d:'vocab',     t:'詞彙量約 3,000–5,000 個；詞彙知識從情境聯想（syntagmatic）重組為語意網絡（paradigmatic）', src:'paul'},
   {aS:60, aE:84, d:'grammar',   t:'被動句理解與使用出現；基本語法規則的例外形式開始習得', src:'paul'},
@@ -305,22 +357,22 @@ const MS=[
 
   // 7–9 歲（84–108 mo）
   {aS:84, aE:108, d:'vocab',    t:'學校與閱讀帶來大量新詞；詞語定義包含同義詞與語意範疇；多義詞理解；比喻語言能力增加', src:'paul'},
-  {aS:84, aE:108, d:'grammar',  t:'學術語言句法發展（代詞照應、複雜子句）；少數名詞片語錯誤仍持續（如 "much bricks"）；構音大多無誤；音韻知識用於拼字', src:'paul'},
-  {aS:84, aE:108, d:'pragmatics',t:'故事插曲完整（含人物目標、動機、反應）；語言用於建立與維繫社會關係；觀點採取（perspective-taking）增強；能以定義或背景說明修復溝通失敗；能完成簡單參考式溝通任務', src:'paul'},
+  {aS:84, aE:108, d:'grammar',  t:'學術語言句法發展（代詞照應、複雜子句）；少數名詞片語錯誤仍持續；構音大多無誤；音韻知識用於拼字', src:'paul'},
+  {aS:84, aE:108, d:'pragmatics',t:'故事插曲完整（含人物目標、動機、反應）；語言用於建立與維繫社會關係；觀點採取（perspective-taking）增強；能以定義或背景說明修復溝通失敗', src:'paul'},
 
   // 9–12 歲（108–144 mo）
   {aS:108, aE:144, d:'vocab',   t:'學術詞彙抽象度提升；副詞連接詞開始使用（約佔 4% 語句）；常見慣用語（idioms）理解完成', src:'paul'},
-  {aS:108, aE:144, d:'grammar', t:'書面語句法複雜度高於口語；詞序變化（書寫）增加；形態音韻知識（morphophonological）發展並用於拼寫；後設認知（metacognition）能力出現', src:'paul'},
+  {aS:108, aE:144, d:'grammar', t:'書面語句法複雜度高於口語；詞序變化（書寫）增加；形態音韻知識發展並用於拼寫；後設認知（metacognition）能力出現', src:'paul'},
   {aS:108, aE:144, d:'pragmatics',t:'能理解複雜嵌入式故事插曲；能理解詞彙歧義（lexical ambiguity）的笑話與謎語', src:'paul'},
 
   // 12–14 歲（144–168 mo）
   {aS:144, aE:168, d:'vocab',   t:'能給出抽象字典式定義；副詞連接詞使用率升至約 85%；能在語境中解釋諺語', src:'paul'},
-  {aS:144, aE:168, d:'grammar', t:'完成式（have + 過去分詞）使用增加；書面語複雜度高於口語；重音規則習得（複合詞 vs. 詞組之重音區分）', src:'paul'},
-  {aS:144, aE:168, d:'pragmatics',t:'說明文體（expository texts）用於學校書寫；能理解深層結構歧義（deep structure ambiguity）的笑話', src:'paul'},
+  {aS:144, aE:168, d:'grammar', t:'完成式使用增加；書面語複雜度高於口語；重音規則習得（複合詞 vs. 詞組之重音區分）', src:'paul'},
+  {aS:144, aE:168, d:'pragmatics',t:'說明文體（expository texts）用於學校書寫；能理解深層結構歧義的笑話', src:'paul'},
 
   // 15–18 歲（180–216 mo）
   {aS:180, aE:216, d:'vocab',   t:'高中畢業生詞彙量約 10,000 個', src:'paul'},
-  {aS:180, aE:216, d:'grammar', t:'完整成人句法範圍達成；書面語句子長度與複雜度持續高於口語；情態助動詞使用增加；形態音韻規則達成人水準', src:'paul'},
+  {aS:180, aE:216, d:'grammar', t:'完整成人句法範圍達成；書面語句子長度與複雜度持續高於口語；情態助動詞使用增加', src:'paul'},
   {aS:180, aE:216, d:'pragmatics',t:'語言用於維繫社交關係（「就是聊天」功能）；說服與辯論能力接近成人水準', src:'paul'},
 ];
 
@@ -355,13 +407,133 @@ const POS_DATA={
 };
 const POS_N={3:40,4:80,5:54,6:35};
 
+// ── Narrative data — 陳欣希等（2011）表3、表5 ──
+// Source: 陳欣希、張鑑如、陳秀芬（2011）教育心理學報 42(3), 359-378
+// N=208; 3歲 n=59, 4歲 n=75, 5歲 n=74; 台北縣市; 重述《螞蟻和西瓜》
+const CHEN2011_STRUCT={
+  3:[
+    {name:'描述式序列',pct:55.9,grp:'i',color:'#f87171'},
+    {name:'行動式序列',pct:11.9,grp:'i',color:'#fb923c'},
+    {name:'反應式序列',pct:22.0,grp:'i',color:'#fbbf24'},
+    {name:'縮簡式情節',pct:1.7, grp:'c',color:'#86efac'},
+    {name:'完整式情節',pct:5.1, grp:'c',color:'#34d399'},
+    {name:'複雜式情節',pct:3.4, grp:'c',color:'#059669'},
+  ],
+  4:[
+    {name:'描述式序列',pct:32.0,grp:'i',color:'#f87171'},
+    {name:'行動式序列',pct:9.3, grp:'i',color:'#fb923c'},
+    {name:'反應式序列',pct:25.3,grp:'i',color:'#fbbf24'},
+    {name:'縮簡式情節',pct:16.0,grp:'c',color:'#86efac'},
+    {name:'完整式情節',pct:12.0,grp:'c',color:'#34d399'},
+    {name:'複雜式情節',pct:5.3, grp:'c',color:'#059669'},
+  ],
+  5:[
+    {name:'描述式序列',pct:10.8,grp:'i',color:'#f87171'},
+    {name:'行動式序列',pct:2.7, grp:'i',color:'#fb923c'},
+    {name:'反應式序列',pct:8.1, grp:'i',color:'#fbbf24'},
+    {name:'縮簡式情節',pct:33.8,grp:'c',color:'#86efac'},
+    {name:'完整式情節',pct:18.9,grp:'c',color:'#34d399'},
+    {name:'複雜式情節',pct:25.7,grp:'c',color:'#059669'},
+  ],
+};
+// 完整類別合計（完整式＋複雜式）— 表5 計算值
+const CHEN2011_COMPLETE={3:8.5,4:17.3,5:44.6};
+// 故事結構元素均分 — 表3; n各組不同; max分值不同(背景/引發/內在計畫/回應 max=1; 內在反應/嘗試/結果 max=2)
+const CHEN2011_ELEM=[
+  {name:'背景',    a3:.32, a4:.39, a5:.41, sig:'ns（文本效應）'},
+  {name:'引發事件',a3:.17, a4:.35, a5:.69, sig:'5>4, 5>3 ***'},
+  {name:'內在反應',a3:.47, a4:.69, a5:1.22,sig:'5>4, 5>3 ***'},
+  {name:'內在計畫',a3:.02, a4:.07, a5:.18, sig:'5>3 **'},
+  {name:'嘗試',    a3:1.63,a4:1.71,a5:1.97,sig:'5>4, 5>3 **'},
+  {name:'結果',    a3:1.39,a4:1.57,a5:1.86,sig:'5>3 **'},
+  {name:'回應',    a3:.34, a4:.57, a5:.76, sig:'5>3 ***'},
+  {name:'元素總分',a3:4.34,a4:5.35,a5:7.08,sig:'5>4>3 ***',isTotal:true},
+];
+const CHEN2011_CALLOUT={
+  3:'<strong>3 歲典型（55.9% 描述式序列）：</strong>能描述場景、角色與動作，但缺乏因果連結。「嘗試」（1.63）與「結果」（1.39）均分最高；「引發事件」（.17）與「內在反應」（.47）使用率低。完整類別敘事僅 8.5%。<br><span style="font-weight:600;color:#0369a1">→ 臨床方向：</span>引導識別問題起源（引發事件）；以提問「為什麼螞蟻要那樣做？」建立因果語言基礎（「因為…所以…」）。',
+  4:'<strong>4 歲典型（縮簡式情節出現）：</strong>「描述式序列」降至 32%；「縮簡式情節」首次顯著增加（16%）；完整類別達 17.3%；「引發事件」均分明顯提升（.35）。部分兒童已能說出有目標的情節，但目標常未明指。<br><span style="font-weight:600;color:#0369a1">→ 臨床方向：</span>引導明確表達主角目標（縮簡式→完整式的關鍵）；支持因果連詞「因為」「所以」「結果」。',
+  5:'<strong>5 歲典型（完整類別達 44.6%）：</strong>「縮簡式情節」最多（33.8%），完整類別大幅增加，「複雜式情節」達 25.7%；「引發事件」（.69）與「內在反應」（1.22）均顯著高於低年齡組。⚠ 台灣 5 歲兒童「縮簡式情節」仍高（不明指目標），研究者推論為文化現象，<strong>不宜直接詮釋為敘事落後</strong>。<br><span style="font-weight:600;color:#0369a1">→ 臨床方向：</span>支持完整情節敘說（引發事件→目標→嘗試→結果→回應）；挑戰至「複雜式情節」（嵌套情節、完整因果鏈）。',
+};
+
+function buildElemTable(ageGrp){
+  let h=`<table class="narr-elem-tbl"><thead><tr>
+    <th style="text-align:left">故事元素</th>
+    <th${ageGrp===3?' style="color:#0e7490"':''}>3 歲</th>
+    <th${ageGrp===4?' style="color:#0e7490"':''}>4 歲</th>
+    <th${ageGrp===5?' style="color:#0e7490"':''}>5 歲</th>
+    <th style="min-width:70px">顯著性</th>
+  </tr></thead><tbody>`;
+  CHEN2011_ELEM.forEach(e=>{
+    const rowCls=e.isTotal?' class="narr-total"':'';
+    h+=`<tr${rowCls}>
+      <td>${e.name}</td>
+      <td${ageGrp===3?' class="narr-hi"':''}>${e.a3}</td>
+      <td${ageGrp===4?' class="narr-hi"':''}>${e.a4}</td>
+      <td${ageGrp===5?' class="narr-hi"':''}>${e.a5}</td>
+      <td style="font-size:9.5px;color:#bbb">${e.sig}</td>
+    </tr>`;
+  });
+  h+='</tbody></table>';
+  return h;
+}
+
+function renderNarrative(age){
+  const ageGrp=age<48?3:age<60?4:5;
+  const isAbove5=age>=72;
+  let h='';
+
+  if(isAbove5){
+    h+=`<div class="narr-above5">⚠ 目前月齡（${age} 個月）超出本研究資料範圍（最高至 5 歲）。以下顯示 5 歲組數據供趨勢參考，不得直接詮釋為當前年齡常模。</div>`;
+  }
+
+  // Age group tabs
+  h+='<div class="narr-tabs">';
+  [3,4,5].forEach(g=>{h+=`<div class="narr-tab${g===ageGrp?' act':''}">${g} 歲組</div>`;});
+  h+='</div>';
+
+  const struct=CHEN2011_STRUCT[ageGrp];
+  const completePct=CHEN2011_COMPLETE[ageGrp];
+
+  // Story structure type bars
+  h+='<div class="narr-struct-sub">故事結構類型分佈</div>';
+  h+='<div style="display:flex;flex-direction:column;gap:3px;margin-bottom:6px">';
+  struct.forEach(s=>{
+    const isC=s.grp==='c';
+    h+=`<div class="narr-type-row">
+      <div class="narr-type-name" style="color:${isC?'#0e7490':'#9ca3af'};font-weight:${isC?'600':'400'}">${s.name}</div>
+      <div class="narr-type-bar"><div class="narr-type-fill" style="width:${s.pct}%;background:${s.color}"></div></div>
+      <div class="narr-type-pct" style="color:${isC?'#059669':'#9ca3af'}">${s.pct}%</div>
+    </div>`;
+  });
+  h+='</div>';
+
+  // Legend
+  h+='<div class="narr-legend">';
+  [{color:'#f87171',label:'描述式序列'},{color:'#fb923c',label:'行動式序列'},{color:'#fbbf24',label:'反應式序列'},
+   {color:'#86efac',label:'縮簡式情節'},{color:'#34d399',label:'完整式情節'},{color:'#059669',label:'複雜式情節'}]
+  .forEach(l=>{h+=`<div class="narr-legend-item"><div class="narr-legend-dot" style="background:${l.color}"></div>${l.label}</div>`;});
+  h+='</div>';
+
+  // Complete category summary
+  h+=`<div class="narr-complete-sum"><span>★ 完整類別（完整式＋複雜式）合計</span><strong>${completePct}%</strong></div>`;
+
+  // Elements table
+  h+='<div class="narr-struct-sub">故事結構元素均分（各元素最高分值不同）</div>';
+  h+=buildElemTable(ageGrp);
+  h+='<p style="font-size:9.5px;color:#bbb;margin-top:4px;line-height:1.5">背景/引發事件/內在計畫/回應：max=1；內在反應/嘗試/結果：max=2；總分：max=10。粗體＝當前年齡組數值。</p>';
+
+  // Clinical callout
+  h+=`<div class="narr-callout">${CHEN2011_CALLOUT[ageGrp]}</div>`;
+  return h;
+}
+
 // Red flags — sourced
 const RED_FLAGS=[
   {age:'6 個月',   text:'對聲音持續無反應；無社交微笑', src:'MCDI-T'},
   {age:'12 個月',  text:'無牙牙學語（babbling）；無溝通手勢；無有意義詞彙', src:'MCDI-T'},
   {age:'16 個月',  text:'無任何口語詞彙', src:'MCDI-T'},
   {age:'20 個月',  text:'表達性詞彙少於 50 個（≈PR10，MCDI-T 台灣常模）', src:'MCDI-T'},
-  {age:'24 個月',  text:'無雙詞組合（如「媽媽去」「要牛奶」）', src:'MCDI-T'},
+  {age:'24 個月',  text:'無雙詞結合（如「媽媽去」「要牛奶」）', src:'MCDI-T'},
   {age:'28 個月',  text:'尚未開始語詞連結者，語法發展速率明顯偏低', src:'MCDI-T'},
   {age:'36 個月',  text:'陌生人難以理解其大多數話語；無完整句表達', src:'⚠ 課程講義'},
   {age:'任何年齡', text:'已習得語言技能出現退步（regression）', src:'通用臨床指標'},
@@ -397,11 +569,11 @@ function msRow(m, stateClass, ic, ageStr){
 
 function cardLegend(allItems){
   const srcs=[...new Set(allItems.map(m=>m.src))];
-  const order=['mcdi','hung','wu','notes','paul'];
+  const order=['mcdi','hung','wu','notes','paul','chen2011'];
   const present=order.filter(s=>srcs.includes(s));
   if(present.length===0) return '';
   const parts=present.map(s=>{
-    const warn=s==='notes'||s==='hung';
+    const warn=s==='notes'||s==='hung'||s==='paul';
     return `<span class="${warn?'leg-warn':''}">${SRC_LABEL_SHORT[s]||s}</span>`;
   });
   return `<div class="card-legend">${parts.join('')}</div>`;
@@ -416,7 +588,6 @@ function renderCard(domainKey,age){
   const upcoming=items.filter(m=>m.aS>age+CURR_FWD&&m.aS<=age+12).slice(0,4);
   const past    =items.filter(m=>m.aE<age-CURR_BACK-RECENT_SPAN);
 
-  // Collect all visible items for legend
   const visible=[...recent,...current,...upcoming];
 
   let h=`<div class="d-title">${dom.icon} ${dom.title}</div>`;
@@ -427,9 +598,8 @@ function renderCard(domainKey,age){
 <div class="past-list">
 <div class="g-label">更早達成</div>`;
     past.forEach(m=>{h+=msRow(m,'ms-past','✓',`≤${fmtAge(m.aE)}`);});
-    // legend for past items
-    const pastPresent=['mcdi','hung','wu','notes','paul'].filter(s=>pastSrcs.includes(s));
-    if(pastPresent.length>0) h+=`<div class="card-legend">${pastPresent.map(s=>`<span class="${(s==='notes'||s==='hung')?'leg-warn':''}">${SRC_LABEL_SHORT[s]}</span>`).join('')}</div>`;
+    const pastPresent=['mcdi','hung','wu','notes','paul','chen2011'].filter(s=>pastSrcs.includes(s));
+    if(pastPresent.length>0) h+=`<div class="card-legend">${pastPresent.map(s=>`<span class="${(s==='notes'||s==='hung'||s==='paul')?'leg-warn':''}">${SRC_LABEL_SHORT[s]}</span>`).join('')}</div>`;
     h+=`</div>`;
   }
 
@@ -451,7 +621,6 @@ function renderCard(domainKey,age){
     else h+=`<div class="no-ms">此年齡範圍暫無資料</div>`;
   }
 
-  // Legend for visible items
   if(visible.length>0) h+=cardLegend(visible);
 
   return h;
@@ -501,6 +670,10 @@ function update(){
   document.getElementById('posSection').style.display=showPOS?'':'none';
   if(showPOS) document.getElementById('posContent').innerHTML=renderPOS(age);
   document.getElementById('hcBox').style.display=(age>=18&&age<=42)?'':'none';
+  const showNarr=age>=36&&age<=83;
+  document.getElementById('narrativeSection').style.display=showNarr?'':'none';
+  document.getElementById('narrativeWarnBox').style.display=showNarr?'':'none';
+  if(showNarr) document.getElementById('narrativeContent').innerHTML=renderNarrative(age);
   document.getElementById('rfList').innerHTML=renderRedFlags();
 }
 
