@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>語言發展里程碑</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+.site-nav{display:flex;align-items:center;gap:6px;background:#1a1a1a;padding:10px 16px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.site-nav-title{font-size:12px;color:#666;letter-spacing:.04em;flex:1;min-width:60px}
+.site-nav a{font-size:12px;padding:5px 12px;border-radius:7px;text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.nav-active{background:#fff;color:#1a1a1a}
+.nav-inactive{color:#aaa;border:1px solid #444}
+.nav-inactive:hover{color:#fff;border-color:#888}
+.page{max-width:820px;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+.age-bar{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:14px 18px;margin-bottom:.75rem;display:flex;align-items:center;gap:14px}
+.age-label{font-size:13px;color:#888;white-space:nowrap}
+.age-bar input[type=range]{flex:1;accent-color:#1a1a1a;height:4px;cursor:pointer}
+.age-display-wrap{text-align:right;min-width:80px;flex-shrink:0}
+.age-val{font-size:24px;font-weight:700;color:#1a1a1a;line-height:1.2;white-space:nowrap}
+.age-sub{font-size:11px;color:#999;margin-top:1px}
+.stage-pill{display:inline-block;padding:3px 13px;border-radius:12px;font-size:11px;font-weight:600;margin-bottom:.875rem}
+.domain-grid{display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:.875rem}
+@media(max-width:560px){.domain-grid{grid-template-columns:1fr}}
+.domain-card{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:15px 16px}
+.d-title{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:5px;letter-spacing:-.01em}
+.g-label{font-size:9px;font-weight:700;letter-spacing:.08em;color:#d0d0cc;margin:10px 0 4px;text-transform:uppercase}
+
+/* ── Milestone row ── */
+.ms-item{display:flex;align-items:baseline;gap:0;padding:5px 0 5px 0;font-size:12.5px;line-height:1.45;border-bottom:1px solid #f5f5f3;position:relative}
+.ms-item:last-child{border-bottom:none}
+.ms-ic{flex-shrink:0;font-size:10px;width:18px;padding-top:1px}
+.ms-body{flex:1;min-width:0}
+.ms-txt{display:block;color:#2a2a2a}
+.ms-age{font-size:10px;color:#c0c0be;white-space:nowrap;padding-left:2px;flex-shrink:0;align-self:center}
+
+/* Source superscript */
+sup.src-num{font-size:8px;vertical-align:super;line-height:0;margin-left:2px;font-style:normal;font-weight:600}
+sup.src-1{color:#93c5fd}  /* MCDI-T — blue */
+sup.src-2{color:#f59e0b}  /* Hung & Chang — amber */
+sup.src-3{color:#6ee7b7}  /* Wu & Lin — green */
+sup.src-4{color:#fb923c}  /* notes — orange */
+
+/* ⚠ items: left accent border */
+.ms-item.is-warn{border-left:2px solid #fde68a;padding-left:8px;margin-left:-2px}
+.ms-item.is-warn .ms-txt{color:#57534e}
+
+/* State variants */
+.ms-item.ms-past .ms-txt{color:#c8c8c6;font-size:12px}
+.ms-item.ms-past .ms-ic{opacity:.4}
+.ms-item.ms-recent .ms-txt{color:#b0b0ae;font-size:12px}
+
+/* Current: prominent highlight */
+.ms-item.ms-current{background:#fffbeb;border-radius:8px;margin:2px -8px;padding:6px 8px;border-bottom:none;border-left:3px solid #f59e0b}
+.ms-item.ms-current .ms-txt{color:#1a1a1a;font-weight:600;font-size:13px}
+.ms-item.ms-current .ms-age{color:#9ca3af}
+.ms-item.ms-current.is-warn{border-left:3px solid #fb923c}
+
+.ms-item.ms-upcoming .ms-txt{color:#d1d5db}
+.ms-item.ms-upcoming .ms-ic{opacity:.3}
+
+/* Card-bottom legend */
+.card-legend{font-size:9.5px;color:#c0c0be;margin-top:10px;padding-top:7px;border-top:1px solid #f0f0ee;line-height:1.8}
+.card-legend span{margin-right:8px;white-space:nowrap}
+.leg-warn{color:#fb923c}
+
+/* Past toggle */
+.past-btn{font-size:10px;color:#c8c8c6;background:none;border:none;cursor:pointer;padding:3px 0 3px 18px;text-decoration:none;display:block;margin-top:2px}
+.past-btn:hover{color:#999}
+.past-list{display:none}
+.past-list.open{display:block}
+
+.no-ms{font-size:11.5px;color:#d0d0ce;font-style:italic;padding:10px 0;text-align:center}
+.all-done-msg{font-size:12px;color:#059669;padding:8px 0;display:flex;align-items:center;gap:5px;font-weight:500}
+.section-box{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:15px 16px;margin-bottom:.875rem}
+.s-title{font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.v-row{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-radius:8px;font-size:12.5px;margin:1px 0}
+.v-row.hi{background:#fffbeb}
+.v-label{color:#555}
+.v-right{text-align:right}
+.v-num{font-size:13px;font-weight:700;color:#1a1a1a}
+.v-sub{font-size:10px;color:#aaa;margin-top:1px}
+.v-note{font-size:10px;color:#d97706;display:block;margin-top:1px}
+.pos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+@media(max-width:480px){.pos-grid{grid-template-columns:repeat(2,1fr)}}
+.pos-cell{background:#f8f8f6;border-radius:8px;padding:7px 8px;text-align:center}
+.pos-cell.hi{background:#fffbeb;border:1px solid #fde68a}
+.pos-name{font-size:11px;color:#555;margin-bottom:3px}
+.pos-mean{font-size:14px;font-weight:700;color:#1a1a1a}
+.pos-unit{font-size:9px;color:#bbb}
+.hc-box{background:#fff8ee;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;margin-bottom:.875rem}
+.hc-title{font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.hc-item{font-size:11.5px;color:#78350f;padding:3.5px 0;line-height:1.65;border-bottom:1px solid #fde68a}
+.hc-item:last-child{border-bottom:none}
+.hc-item strong{color:#92400e}
+.rf-box{background:#fff8f8;border:1px solid #fecaca;border-radius:12px;padding:15px 16px;margin-bottom:.875rem}
+.rf-title{font-size:12.5px;font-weight:700;color:#b91c1c;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.rf-item{display:flex;align-items:flex-start;gap:8px;padding:4.5px 0;border-bottom:1px solid #fee2e2;font-size:12.5px;line-height:1.5;color:#7f1d1d}
+.rf-item:last-child{border-bottom:none}
+.rf-age{font-size:10.5px;font-weight:700;color:#dc2626;min-width:58px;flex-shrink:0;padding-top:2px}
+.cite-box{font-size:10.5px;color:#aaa;background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:12px 16px;line-height:1.75}
+.cite-box strong{color:#888}
+.cite-entry{margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f0f0ee}
+.cite-entry:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <span class="site-nav-title">語言治療臨床工具</span>
+  <a href="index.html" class="nav-inactive">🏠 詞彙</a>
+  <a href="artic.html" class="nav-inactive">🗣 構音音韻</a>
+  <a href="plan.html" class="nav-inactive">📋 治療計畫</a>
+  <a href="lang.html" class="nav-active">🌱 語言發展</a>
+</nav>
+
+<div class="page">
+  <h1 style="font-size:18px;font-weight:800;margin-bottom:4px">🌱 語言發展里程碑</h1>
+  <p style="font-size:11px;color:#999;margin-bottom:1.1rem;line-height:1.7">
+    0–6 歲習華語兒童語言發展參考里程碑。8–36 個月數據引自 MCDI-T（劉惠美 & 曹峰銘，2010，台灣 n=2,654）；
+    1;8–3;0 詞彙組成引自 Hung & Chang（2024，⚠ 見提示）；3–6 歲詞類使用引自 Wu & Lin（2024，台灣 n=209）；
+    3–6 歲語用里程碑目前無台灣已發表常模，以 ⚠ 課程講義標記。
+  </p>
+
+  <div class="age-bar">
+    <span class="age-label">月齡</span>
+    <input type="range" min="1" max="72" value="24" id="ageSlider">
+    <div class="age-display-wrap">
+      <div class="age-val" id="ageValEl">24 個月</div>
+      <div class="age-sub" id="ageSubEl">2 歲</div>
+    </div>
+  </div>
+
+  <div id="stagePillWrap" style="margin-bottom:.875rem"></div>
+
+  <div class="domain-grid">
+    <div class="domain-card" id="card-vocab"></div>
+    <div class="domain-card" id="card-grammar"></div>
+    <div class="domain-card" id="card-pragmatics"></div>
+    <div class="domain-card" id="card-pre"></div>
+  </div>
+
+  <!-- Hung & Chang warning — shown for ages 18-42m -->
+  <div class="hc-box" id="hcBox" style="display:none">
+    <div class="hc-title">⚠️ Hung & Chang（2024）臨床應用限制</div>
+    <div class="hc-item"><strong>適用族群：</strong>台灣北部、中產階級、普通話為唯一第一語言、無雙語教育的一般發展兒童。不得直接套用於台語/客語家庭、雙語環境、低SES或台灣中南部兒童。</div>
+    <div class="hc-item"><strong>年齡範圍：</strong>資料僅涵蓋 1;8、2;2、3;0 三個時間點，<strong>不得外推至 3 歲以上。</strong></div>
+    <div class="hc-item"><strong>情境限制：</strong>語料均來自玩具遊戲情境（約 15 分鐘）。動詞比例偏高可能部分反映情境，而非兒童整體詞彙能力。臨床語料若非玩具遊戲情境，不宜直接比對。</div>
+    <div class="hc-item"><strong>名詞 vs. 動詞：</strong>結果受三項混淆因素影響（自發語料、玩具情境、普通話語言特性），不得單獨作為診斷依據。名詞比例偏高≠語言發展落後。</div>
+    <div class="hc-item"><strong>數值說明：</strong>比例為 word types（不同詞彙種類），非 tokens（使用頻次）。個體差異大，n=40，統計穩健性有限。1;8 無核心詞彙≠無詞彙，而是個體差異尚未收斂。</div>
+  </div>
+
+  <!-- Vocab reference -->
+  <div class="section-box">
+    <div class="s-title">📊 詞彙量發展參考（MCDI-T 台灣常模，中位數估算）</div>
+    <div id="vocabRows"></div>
+    <p style="font-size:10.5px;color:#aaa;margin-top:8px;line-height:1.6">
+      來源：劉惠美 & 曹峰銘（2010），中華心理衛生學刊，23(4)，503–534。台灣分層隨機抽樣 n=2,654，以月齡建立百分等級常模。
+      數值為各月齡中位數（PR50）估算；同一月齡個別差異大，臨床建議以百分等級常模對照為佳。
+    </p>
+  </div>
+
+  <!-- POS reference — shown 36m+ -->
+  <div class="section-box" id="posSection" style="display:none">
+    <div class="s-title">📝 詞類使用發展（3–6 歲，每句平均使用次數）</div>
+    <div id="posContent"></div>
+    <p style="font-size:10.5px;color:#aaa;margin-top:8px;line-height:1.6">
+      來源：Wu & Lin（2024），SAGE Open. DOI: 10.1177/21582440241290066。台灣典型發展兒童 n=209（苗栗市、新北市、台北市）。
+      ↑ = 句子長度正向預測因子（preposition P、conjunction C）；感嘆詞（I）為負向預測因子。
+    </p>
+  </div>
+
+  <!-- Red flags -->
+  <div class="rf-box">
+    <div class="rf-title">🚩 轉介參考指標（Red Flags）</div>
+    <div id="rfList"></div>
+    <p style="font-size:10.5px;color:#f87171;margin-top:8px;line-height:1.6">
+      8–36 個月指標主要依據 MCDI-T（劉惠美 & 曹峰銘，2010）常模推衍；36 個月以上指標源自課程講義（⚠ 未出版）。
+      建議結合 CLST / MCDI-T 及整體臨床觀察綜合判斷。
+    </p>
+  </div>
+
+  <!-- Citation -->
+  <div class="cite-box">
+    <strong>資料來源</strong>
+    <div style="margin-top:8px">
+      <div class="cite-entry">
+        <strong>① 劉惠美 & 曹峰銘（2010）</strong>：華語嬰幼兒溝通發展量表之編製與應用。中華心理衛生學刊，23(4)，503–534。DOI: 10.30074/FJMH.201012_23<br>
+        台灣分層隨機抽樣 n=2,654（8–36 個月），月齡百分等級常模。用於本頁詞彙量表及 8–36 個月語意、語用、前語言里程碑。
+      </div>
+      <div class="cite-entry">
+        <strong>② Hung, Y.-F. & Chang, C.-J.（2024）</strong>：Developing early lexical composition in Mandarin-speaking children: A longitudinal study. Journal of Child Language, 51(4), 903–924. DOI: 10.1017/S0305000922000654<br>
+        台灣北部，n=40，玩具遊戲情境，三個時間點（1;8、2;2、3;0）。⚠ 適用限制見橙色提示框。用於本頁 1;8–3;0 MLU 及語法詞類里程碑。
+      </div>
+      <div class="cite-entry">
+        <strong>③ Wu, S.-Y. & Lin, H.-C.（2024）</strong>：Role of parts of speech in utterance length for Mandarin-speaking children aged 3–6 years. SAGE Open. DOI: 10.1177/21582440241290066<br>
+        台灣典型發展兒童 n=209（苗栗市、新北市、台北市）。用於本頁 3–6 歲詞類使用頻率表及語法發展里程碑。
+      </div>
+      <div class="cite-entry">
+        <strong>④ 臨床手冊（三上編輯，未出版）</strong>：「溝通障礙導論」課程講義（頁 635）。<br>
+        ⚠ 台灣目前無已發表系統性 3–6 歲語用里程碑常模，本頁 3–6 歲語用部分暫以此課程講義為來源，並全部標記 ⚠。使用時請搭配標準化評估工具（CLST 等）。
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SRC_NUM={mcdi:'1',hung:'2',wu:'3',notes:'4'};
+const SRC_LABEL_SHORT={mcdi:'¹ MCDI-T (劉惠美 & 曹峰銘, 2010)', hung:'² Hung & Chang (2024) ⚠', wu:'³ Wu & Lin (2024)', notes:'⁴ ⚠ 課程講義'};
+
+function srcNum(s){
+  const n=SRC_NUM[s]||'';
+  const cls=`src-${n}`;
+  const sup={'1':'¹','2':'²','3':'³','4':'⁴'}[n]||n;
+  return `<sup class="src-num ${cls}">${sup}</sup>`;
+}
+function isWarn(s){return s==='notes'||s==='hung';}
+
+// Source: 劉惠美 & 曹峰銘 (2010) 圖二、圖三、圖五、表六、表七
+// Source: Hung & Chang (2024) Tables 4-6, median MLU
+// Source: Wu & Lin (2024) narrative text, Tables 2-5
+// Source: 臨床手冊（三上編輯）頁635
+const MS=[
+  // ── 前語言期 ──
+  {aS:1, aE:3, d:'pre', t:'發出自然嗓音（哭聲、嘆息）；Cooing（愉悅長母音串）', src:'mcdi'},
+  {aS:3, aE:6, d:'pre', t:'牙牙學語（Babbling）開始；根據需求發出不同哭聲', src:'mcdi'},
+  {aS:6, aE:9, d:'pre', t:'認識自己名字，叫名有反應；開始社交性微笑', src:'mcdi'},
+  {aS:8, aE:12, d:'pre', t:'使用溝通手勢（指認、揮手、搖頭）', src:'mcdi'},
+  {aS:9, aE:13, d:'pre', t:'模仿他人聲音與手勢', src:'mcdi'},
+  {aS:10, aE:14, d:'pre', t:'模仿簡單語音；遵循簡單一步驟指令', src:'mcdi'},
+
+  // ── 語意（詞彙）──
+  {aS:9, aE:11, d:'vocab', t:'詞彙理解量約 50 個詞', src:'mcdi'},
+  {aS:10, aE:13, d:'vocab', t:'說出第一個有意義詞彙（約 10–12 個月）', src:'mcdi'},
+  {aS:14, aE:16, d:'vocab', t:'詞彙理解量增至約 150 個', src:'mcdi'},
+  {aS:16, aE:18, d:'vocab', t:'詞彙表達量約 40 個（嬰兒版上限）', src:'mcdi'},
+  {aS:17, aE:20, d:'vocab', t:'詞彙表達量約 50 個；詞彙爆發前期', src:'mcdi'},
+  {aS:18, aE:22, d:'vocab', t:'詞彙快速增加（Word spurt）；開始命名熟悉物品與人物', src:'mcdi'},
+  {aS:20, aE:22, d:'vocab', t:'詞彙表達量約 100 個', src:'mcdi'},
+  {aS:24, aE:27, d:'vocab', t:'詞彙表達量約 200 個；fast mapping 顯著', src:'mcdi'},
+  {aS:26, aE:29, d:'vocab', t:'詞彙表達量約 300 個', src:'mcdi'},
+  {aS:36, aE:72, d:'vocab', t:'3 歲後詞彙持續快速增加（MCDI-T 常模僅至 36 個月）',
+   w:'⚠ 3 歲以上詞彙量絕對數值：目前無 MCDI-T 台灣常模，此項引自課程講義估算', src:'notes'},
+
+  // ── 語法 ──
+  {aS:18, aE:22, d:'grammar', t:'雙詞組合出現（約累積 50 個詞後）', src:'mcdi'},
+  {aS:19, aE:22, d:'grammar', t:'MLU 約 1.4（玩具遊戲情境，中位數）', src:'hung',
+   w:'⚠ Hung & Chang (2024)：n=40，台灣北部，玩具情境；不得外推至 3 歲以上'},
+  {aS:20, aE:24, d:'grammar', t:'53% 幼兒開始使用語詞連結（word combination）', src:'mcdi'},
+  {aS:22, aE:28, d:'grammar', t:'MLU 約 2.0；介系詞、連接詞、量詞、疑問詞已出現', src:'hung',
+   w:'⚠ Hung & Chang (2024)：玩具情境，動詞比例偏高受情境影響'},
+  {aS:27, aE:30, d:'grammar', t:'90%+ 幼兒已使用語詞連結；未達到者語法發展明顯偏低', src:'mcdi'},
+  {aS:34, aE:38, d:'grammar', t:'MLU 約 3.0；功能詞（連接詞、語氣詞 le/a、介系詞）穩定使用', src:'hung',
+   w:'⚠ Hung & Chang (2024)：資料僅至 3;0，不得外推至 3 歲以上'},
+  {aS:36, aE:48, d:'grammar', t:'連接詞（C）使用顯著增加；每句平均約 0.16–0.27 次（3–4 歲）', src:'wu'},
+  {aS:42, aE:60, d:'grammar', t:'複雜句快速發展（4–5 歲）；介系詞（P）與連接詞（C）為句子長度正向預測因子', src:'wu'},
+  {aS:60, aE:72, d:'grammar', t:'連接詞每句平均約 0.42 次；連接詞至 6 歲趨於成熟使用', src:'wu'},
+
+  // ── 語用 ──
+  {aS:6, aE:10, d:'pragmatics', t:'社交微笑；以發聲表達快樂與不開心', src:'mcdi'},
+  {aS:8, aE:13, d:'pragmatics', t:'溝通意圖表現：以手勢指示、展示、給予', src:'mcdi'},
+  {aS:12, aE:17, d:'pragmatics', t:'使用手勢（搖頭、揮手再見）；遵循簡單指令', src:'mcdi'},
+  {aS:16, aE:19, d:'pragmatics', t:'約 50% 幼兒能開啟話題', src:'mcdi'},
+  {aS:18, aE:22, d:'pragmatics', t:'指物表達想要；去情境化語言增加', src:'mcdi'},
+  {aS:19, aE:22, d:'pragmatics', t:'約 50% 幼兒能談論「過去」；約 50% 能談論「未來」', src:'mcdi'},
+  {aS:22, aE:26, d:'pragmatics', t:'約 82% 能產出去情境化語句（談及不在眼前的事物）', src:'mcdi'},
+  {aS:23, aE:26, d:'pragmatics', t:'約 50% 幼兒能維持話題主題；約 50% 能修補對話', src:'mcdi'},
+  {aS:28, aE:33, d:'pragmatics', t:'94%+ 能談論過去；89%+ 能談論未來', src:'mcdi'},
+  {aS:36, aE:43, d:'pragmatics', t:'依情緒與情境改變語調；說話偶爾不流暢（正常範圍）',
+   w:'⚠ 3 歲以上：台灣無已發表語用常模，以下引自課程講義（⚠），請謹慎使用', src:'notes'},
+  {aS:36, aE:49, d:'pragmatics', t:'能持續平均 2–3 次對話輪替', src:'notes', w:'⚠ 課程講義'},
+  {aS:42, aE:50, d:'pragmatics', t:'可講述簡短故事', src:'notes', w:'⚠ 課程講義'},
+  {aS:48, aE:56, d:'pragmatics', t:'可詳細描述事件與活動；提出許多問題', src:'notes', w:'⚠ 課程講義'},
+  {aS:60, aE:68, d:'pragmatics', t:'清楚用語言表達情感與想法；能講述有結構的故事', src:'notes', w:'⚠ 課程講義'},
+  {aS:66, aE:72, d:'pragmatics', t:'理解並使用時間概念（昨天、今天、明天）；遵循多步驟指令', src:'notes', w:'⚠ 課程講義'},
+];
+
+const DOMAINS=[
+  {key:'vocab',     icon:'🔤', title:'語意（詞彙）',      card:'card-vocab'},
+  {key:'grammar',   icon:'📝', title:'語法（句法／構詞）', card:'card-grammar'},
+  {key:'pragmatics',icon:'💬', title:'語用（溝通功能）',   card:'card-pragmatics'},
+  {key:'pre',       icon:'🎙', title:'前語言期',           card:'card-pre'},
+];
+
+// Source: 劉惠美 & 曹峰銘 (2010) 圖三、圖五；數值為 PR50 估算
+const VOCAB_REFS=[
+  {aS:8,  aE:9,  label:'8–9 個月',   expr:'< 5 個詞（表達）', comp:'約 5–20 個詞（理解）'},
+  {aS:9,  aE:11, label:'9–10 個月',  expr:'< 5 個詞（表達）', comp:'約 50 個詞（理解）'},
+  {aS:12, aE:13, label:'12 個月',     expr:'約 1–5 個詞（第一詞）', comp:'—'},
+  {aS:14, aE:16, label:'14–15 個月', expr:'約 10–20 個詞（表達）', comp:'約 150 個詞（理解）'},
+  {aS:16, aE:17, label:'16 個月',     expr:'約 40 個詞（表達）', comp:'—'},
+  {aS:17, aE:19, label:'17 個月',     expr:'約 50 個詞（表達）', comp:'—'},
+  {aS:20, aE:21, label:'20 個月',     expr:'約 100 個詞（表達）', comp:'—'},
+  {aS:24, aE:25, label:'24 個月',     expr:'約 200 個詞（表達）', comp:'—'},
+  {aS:26, aE:27, label:'26 個月',     expr:'約 300 個詞（表達）', comp:'—'},
+  {aS:28, aE:36, label:'28+ 個月',    expr:'90%+ 已使用語詞連結', comp:'—',
+   note:'⚠ 未使用語詞連結者語法發展速率明顯偏低（劉惠美 & 曹峰銘, 2010）'},
+];
+
+// Source: Wu & Lin (2024) Tables 2-5, mean per utterance
+const POS_DATA={
+  3:{V:1.20,N:1.01,Nh:0.57,D:0.31,C:0.16,T:0.26,P:0.04},
+  4:{V:1.43,N:1.13,Nh:0.70,D:0.54,C:0.27,T:0.31,P:0.07},
+  5:{V:1.63,N:1.29,Nh:0.74,D:0.66,C:0.37,T:0.34,P:0.08},
+  6:{V:1.75,N:1.33,Nh:0.86,D:0.78,C:0.42,T:0.38,P:0.10},
+};
+const POS_N={3:40,4:80,5:54,6:35};
+
+// Red flags — sourced
+const RED_FLAGS=[
+  {age:'6 個月',   text:'對聲音持續無反應；無社交微笑', src:'MCDI-T'},
+  {age:'12 個月',  text:'無牙牙學語（babbling）；無溝通手勢；無有意義詞彙', src:'MCDI-T'},
+  {age:'16 個月',  text:'無任何口語詞彙', src:'MCDI-T'},
+  {age:'20 個月',  text:'表達性詞彙少於 50 個（≈PR10，MCDI-T 台灣常模）', src:'MCDI-T'},
+  {age:'24 個月',  text:'無雙詞組合（如「媽媽去」「要牛奶」）', src:'MCDI-T'},
+  {age:'28 個月',  text:'尚未開始語詞連結者，語法發展速率明顯偏低', src:'MCDI-T'},
+  {age:'36 個月',  text:'陌生人難以理解其大多數話語；無完整句表達', src:'⚠ 課程講義'},
+  {age:'任何年齡', text:'已習得語言技能出現退步（regression）', src:'通用臨床指標'},
+  {age:'任何年齡', text:'對他人呼喚或說話持續無反應（建議轉介聽力評估）', src:'通用臨床指標'},
+];
+
+const STAGES=[
+  {min:1,  max:11, label:'前語言期',    bg:'#e0f2fe', fg:'#0369a1'},
+  {min:12, max:35, label:'幼兒語言期',  bg:'#dcfce7', fg:'#15803d'},
+  {min:36, max:72, label:'學齡前語言期',bg:'#fef9c3', fg:'#a16207'},
+];
+
+function fmtAge(m){
+  if(m<12) return `${m} 個月`;
+  const y=Math.floor(m/12),mo=m%12;
+  if(mo===0) return `${y} 歲`;
+  return `${y} 歲 ${mo} 個月`;
+}
+function getStage(m){return STAGES.find(s=>m>=s.min&&m<=s.max)||STAGES[STAGES.length-1]}
+
+function msRow(m, stateClass, ic, ageStr){
+  const warn = isWarn(m.src);
+  const warnClass = warn ? ' is-warn' : '';
+  return `<div class="ms-item ${stateClass}${warnClass}">
+<span class="ms-ic">${ic}</span>
+<div class="ms-body"><span class="ms-txt">${m.t}${srcNum(m.src)}</span></div>
+<span class="ms-age">${ageStr}</span>
+</div>`;
+}
+
+function cardLegend(allItems){
+  const srcs=[...new Set(allItems.map(m=>m.src))];
+  const order=['mcdi','hung','wu','notes'];
+  const present=order.filter(s=>srcs.includes(s));
+  if(present.length===0) return '';
+  const parts=present.map(s=>{
+    const warn=s==='notes'||s==='hung';
+    return `<span class="${warn?'leg-warn':''}">${SRC_LABEL_SHORT[s]||s}</span>`;
+  });
+  return `<div class="card-legend">${parts.join('')}</div>`;
+}
+
+function renderCard(domainKey,age){
+  const dom=DOMAINS.find(d=>d.key===domainKey);
+  const items=MS.filter(m=>m.d===domainKey);
+  const CURR_FWD=2,CURR_BACK=1,RECENT_SPAN=10;
+  const current =items.filter(m=>m.aS<=age+CURR_FWD&&m.aE>=age-CURR_BACK);
+  const recent  =items.filter(m=>m.aE<age-CURR_BACK&&m.aE>=age-CURR_BACK-RECENT_SPAN).slice(-4);
+  const upcoming=items.filter(m=>m.aS>age+CURR_FWD&&m.aS<=age+12).slice(0,4);
+  const past    =items.filter(m=>m.aE<age-CURR_BACK-RECENT_SPAN);
+
+  // Collect all visible items for legend
+  const visible=[...recent,...current,...upcoming];
+
+  let h=`<div class="d-title">${dom.icon} ${dom.title}</div>`;
+
+  if(past.length>0){
+    const pastSrcs=[...new Set(past.map(m=>m.src))];
+    h+=`<button class="past-btn" onclick="togglePast(this)">▸ ${past.length} 項更早達成</button>
+<div class="past-list">
+<div class="g-label">更早達成</div>`;
+    past.forEach(m=>{h+=msRow(m,'ms-past','✓',`≤${fmtAge(m.aE)}`);});
+    // legend for past items
+    const pastPresent=['mcdi','hung','wu','notes'].filter(s=>pastSrcs.includes(s));
+    if(pastPresent.length>0) h+=`<div class="card-legend">${pastPresent.map(s=>`<span class="${(s==='notes'||s==='hung')?'leg-warn':''}">${SRC_LABEL_SHORT[s]}</span>`).join('')}</div>`;
+    h+=`</div>`;
+  }
+
+  if(recent.length>0){
+    h+=`<div class="g-label">近期已達到</div>`;
+    recent.forEach(m=>{h+=msRow(m,'ms-recent','✓',`≈${fmtAge(m.aS)}`);});
+  }
+  if(current.length>0){
+    h+=`<div class="g-label">本齡目標 ★</div>`;
+    current.forEach(m=>{h+=msRow(m,'ms-current','▶',`${fmtAge(m.aS)}–${fmtAge(m.aE)}`);});
+  }
+  if(upcoming.length>0){
+    h+=`<div class="g-label">即將發展</div>`;
+    upcoming.forEach(m=>{h+=msRow(m,'ms-upcoming','○',`≈${fmtAge(m.aS)}`);});
+  }
+
+  if(current.length===0&&recent.length===0&&upcoming.length===0){
+    if(past.length>0) h+=`<div class="all-done-msg">✅ 此領域前期目標均已達到</div>`;
+    else h+=`<div class="no-ms">此年齡範圍暫無資料</div>`;
+  }
+
+  // Legend for visible items
+  if(visible.length>0) h+=cardLegend(visible);
+
+  return h;
+}
+
+function renderVocab(age){
+  return VOCAB_REFS.map(v=>{
+    const hi=age>=v.aS&&age<=v.aE;
+    return `<div class="v-row${hi?' hi':''}"><span class="v-label">${v.label}</span><div class="v-right"><div class="v-num">${v.expr}</div>${v.comp&&v.comp!=='—'?`<div class="v-sub">${v.comp}</div>`:''} ${v.note?`<span class="v-note">${v.note}</span>`:''}</div></div>`;
+  }).join('');
+}
+
+function renderPOS(age){
+  const g=age<42?3:age<54?4:age<66?5:6;
+  const d=POS_DATA[g];
+  const entries=[
+    {k:'V',label:'動詞'},{k:'N',label:'名詞'},{k:'Nh',label:'代詞'},
+    {k:'D',label:'副詞'},{k:'C',label:'連接詞 ↑'},{k:'T',label:'語氣詞'},
+    {k:'P',label:'介系詞 ↑'},{k:'A',label:'形容詞'},
+  ];
+  const A={3:0.13,4:0.19,5:0.20,6:0.22};
+  const full={...d,A:A[g]};
+  let cells=entries.map(e=>`<div class="pos-cell${e.k==='C'||e.k==='P'?' hi':''}"><div class="pos-name">${e.label}</div><div class="pos-mean">${(full[e.k]||0).toFixed(2)}</div><div class="pos-unit">次/句</div></div>`).join('');
+  return `<p style="font-size:11px;color:#888;margin-bottom:6px">目前對應年齡組：<strong>${g} 歲組</strong>（n=${POS_N[g]}）。↑ = 句子長度正向預測因子（P 與 C）。</p><div class="pos-grid">${cells}</div>`;
+}
+
+function renderRedFlags(){
+  return RED_FLAGS.map(r=>`<div class="rf-item"><span class="rf-age">${r.age}</span><span>${r.text} <span style="font-size:9.5px;color:#f87171;font-style:italic">[${r.src}]</span></span></div>`).join('');
+}
+
+function togglePast(btn){
+  const list=btn.nextElementSibling;
+  const open=list.classList.toggle('open');
+  const n=list.querySelectorAll('.ms-item').length;
+  btn.textContent=open?'▾ 收起早期里程碑':`▸ 查看更早期達成 ${n} 項`;
+}
+
+function update(){
+  const age=parseInt(document.getElementById('ageSlider').value);
+  document.getElementById('ageValEl').textContent=`${age} 個月`;
+  document.getElementById('ageSubEl').textContent=age>=12?fmtAge(age):'';
+  const stage=getStage(age);
+  document.getElementById('stagePillWrap').innerHTML=`<span class="stage-pill" style="background:${stage.bg};color:${stage.fg}">${stage.label}</span>`;
+  DOMAINS.forEach(d=>{document.getElementById(d.card).innerHTML=renderCard(d.key,age);});
+  document.getElementById('vocabRows').innerHTML=renderVocab(age);
+  const showPOS=age>=36;
+  document.getElementById('posSection').style.display=showPOS?'':'none';
+  if(showPOS) document.getElementById('posContent').innerHTML=renderPOS(age);
+  document.getElementById('hcBox').style.display=(age>=18&&age<=42)?'':'none';
+  document.getElementById('rfList').innerHTML=renderRedFlags();
+}
+
+document.getElementById('ageSlider').addEventListener('input',update);
+update();
+</script>
+</body>
+</html>
