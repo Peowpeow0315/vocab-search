@@ -42,6 +42,7 @@ sup.src-1{color:#93c5fd}  /* MCDI-T — blue */
 sup.src-2{color:#f59e0b}  /* Hung & Chang — amber */
 sup.src-3{color:#6ee7b7}  /* Wu & Lin — green */
 sup.src-4{color:#fb923c}  /* notes — orange */
+sup.src-5{color:#a78bfa}  /* Paul & Norbury — violet */
 
 /* ⚠ items: left accent border */
 .ms-item.is-warn{border-left:2px solid #fde68a;padding-left:8px;margin-left:-2px}
@@ -118,14 +119,15 @@ sup.src-4{color:#fb923c}  /* notes — orange */
 <div class="page">
   <h1 style="font-size:18px;font-weight:800;margin-bottom:4px">🌱 語言發展里程碑</h1>
   <p style="font-size:11px;color:#999;margin-bottom:1.1rem;line-height:1.7">
-    0–6 歲習華語兒童語言發展參考里程碑。8–36 個月數據引自 MCDI-T（劉惠美 & 曹峰銘，2010，台灣 n=2,654）；
+    0–18 歲語言發展參考里程碑。0–36 個月數據引自 MCDI-T（劉惠美 & 曹峰銘，2010，台灣 n=2,654）；
     1;8–3;0 詞彙組成引自 Hung & Chang（2024，⚠ 見提示）；3–6 歲詞類使用引自 Wu & Lin（2024，台灣 n=209）；
-    3–6 歲語用里程碑目前無台灣已發表常模，以 ⚠ 課程講義標記。
+    3–6 歲語用及 5–18 歲學齡期里程碑引自 Paul & Norbury（2012）⚠英語常模（底層資料：Chapman 2000 等）；
+    部分語用項目以 ⚠ 課程講義標記。
   </p>
 
   <div class="age-bar">
     <span class="age-label">月齡</span>
-    <input type="range" min="1" max="72" value="24" id="ageSlider">
+    <input type="range" min="1" max="216" value="24" id="ageSlider">
     <div class="age-display-wrap">
       <div class="age-val" id="ageValEl">24 個月</div>
       <div class="age-sub" id="ageSubEl">2 歲</div>
@@ -176,7 +178,7 @@ sup.src-4{color:#fb923c}  /* notes — orange */
     <div class="rf-title">🚩 轉介參考指標（Red Flags）</div>
     <div id="rfList"></div>
     <p style="font-size:10.5px;color:#f87171;margin-top:8px;line-height:1.6">
-      8–36 個月指標主要依據 MCDI-T（劉惠美 & 曹峰銘，2010）常模推衍；36 個月以上指標源自課程講義（⚠ 未出版）。
+      8–36 個月指標主要依據 MCDI-T（劉惠美 & 曹峰銘，2010）常模推衍；36 個月以上語用指標部分參考 Paul & Norbury（2012）⚠英語常模，其餘源自課程講義（⚠ 未出版）。
       建議結合 CLST / MCDI-T 及整體臨床觀察綜合判斷。
     </p>
   </div>
@@ -199,15 +201,20 @@ sup.src-4{color:#fb923c}  /* notes — orange */
       </div>
       <div class="cite-entry">
         <strong>④ 臨床手冊（三上編輯，未出版）</strong>：「溝通障礙導論」課程講義（頁 635）。<br>
-        ⚠ 台灣目前無已發表系統性 3–6 歲語用里程碑常模，本頁 3–6 歲語用部分暫以此課程講義為來源，並全部標記 ⚠。使用時請搭配標準化評估工具（CLST 等）。
+        ⚠ 台灣目前無已發表系統性 3–6 歲語用里程碑常模，本頁 3–6 歲語用部分部分以此課程講義為來源，並全部標記 ⚠。使用時請搭配標準化評估工具（CLST 等）。
+      </div>
+      <div class="cite-entry">
+        <strong>⑤ Paul, R., Norbury, C., & Gosse, C.（2012）</strong>：Language Disorders from Infancy through Adolescence (4th ed.). Elsevier Mosby. Inside front cover / back cover.<br>
+        底層數據引自 Chapman, R.（2000）. Children's language learning: An interactionist perspective. <em>Journal of Child Psychology and Psychiatry, 41</em>, 33–54；Miller, J.（1981）；Weiss et al.（1987）。<br>
+        ⚠ <strong>重要限制：</strong>此為英語兒童常模。語用溝通功能發展（如請求策略、敘事結構）具相對跨語言適用性，但月齡時間點可能因語言與文化差異而有所不同。語法語音欄之英語特定內容（Brown's Stages、英語音素）不得直接套用於華語兒童。本頁僅引用語用領域之概念性里程碑，標記 ⁵⚠。
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const SRC_NUM={mcdi:'1',hung:'2',wu:'3',notes:'4'};
-const SRC_LABEL_SHORT={mcdi:'¹ MCDI-T (劉惠美 & 曹峰銘, 2010)', hung:'² Hung & Chang (2024) ⚠', wu:'³ Wu & Lin (2024)', notes:'⁴ ⚠ 課程講義'};
+const SRC_NUM={mcdi:'1',hung:'2',wu:'3',notes:'4',paul:'5'};
+const SRC_LABEL_SHORT={mcdi:'¹ MCDI-T (劉惠美 & 曹峰銘, 2010)', hung:'² Hung & Chang (2024) ⚠', wu:'³ Wu & Lin (2024)', notes:'⁴ ⚠ 課程講義', paul:'⁵ Paul & Norbury (2012) ⚠英語'};
 
 function srcNum(s){
   const n=SRC_NUM[s]||'';
@@ -215,7 +222,7 @@ function srcNum(s){
   const sup={'1':'¹','2':'²','3':'³','4':'⁴'}[n]||n;
   return `<sup class="src-num ${cls}">${sup}</sup>`;
 }
-function isWarn(s){return s==='notes'||s==='hung';}
+function isWarn(s){return s==='notes'||s==='hung'||s==='paul';}
 
 // Source: 劉惠美 & 曹峰銘 (2010) 圖二、圖三、圖五、表六、表七
 // Source: Hung & Chang (2024) Tables 4-6, median MLU
@@ -256,6 +263,9 @@ const MS=[
   {aS:36, aE:48, d:'grammar', t:'連接詞（C）使用顯著增加；每句平均約 0.16–0.27 次（3–4 歲）', src:'wu'},
   {aS:42, aE:60, d:'grammar', t:'複雜句快速發展（4–5 歲）；介系詞（P）與連接詞（C）為句子長度正向預測因子', src:'wu'},
   {aS:60, aE:72, d:'grammar', t:'連接詞每句平均約 0.42 次；連接詞至 6 歲趨於成熟使用', src:'wu'},
+  // Paul & Norbury (2012) Inside front cover — data from Chapman (2000); ⚠ 英語常模，語法概念具跨語言參考性
+  {aS:36, aE:48, d:'grammar', t:'複雜嵌入句出現：含附加、時間、因果、對比子句；連接詞 and/because 使用穩定增加（Brown\'s Stage IV，英語常模）', src:'paul'},
+  {aS:48, aE:60, d:'grammar', t:'關係子句（右側分支）、不定詞子句（不同主語）、動名詞等高複雜度句型發展；基本句型架構趨於完成（Brown\'s Stage V，英語常模）', src:'paul'},
 
   // ── 語用 ──
   {aS:6, aE:10, d:'pragmatics', t:'社交微笑；以發聲表達快樂與不開心', src:'mcdi'},
@@ -274,6 +284,44 @@ const MS=[
   {aS:48, aE:56, d:'pragmatics', t:'可詳細描述事件與活動；提出許多問題', src:'notes', w:'⚠ 課程講義'},
   {aS:60, aE:68, d:'pragmatics', t:'清楚用語言表達情感與想法；能講述有結構的故事', src:'notes', w:'⚠ 課程講義'},
   {aS:66, aE:72, d:'pragmatics', t:'理解並使用時間概念（昨天、今天、明天）；遵循多步驟指令', src:'notes', w:'⚠ 課程講義'},
+  // Paul & Norbury (2012) Inside front cover & back cover — data from Chapman (2000); ⚠ 英語常模
+  // 語用發展功能具跨語言適用性，但絕對月齡可能因語言文化而異
+  {aS:36, aE:42, d:'pragmatics', t:'請求方式更具彈性：許可式「你可以...？」與間接請求「你願意...？」出現；直接命令逐漸減少', src:'paul'},
+  {aS:36, aE:42, d:'pragmatics', t:'敘事（Narrative）發展：「原始式」敘事—有主題與部分時序組織，尚無完整情節', src:'paul'},
+  {aS:42, aE:48, d:'pragmatics', t:'新溝通功能出現：回報過去事件、推理、預測、表達同理心、維持對話互動', src:'paul'},
+  {aS:42, aE:48, d:'pragmatics', t:'角色扮演與想像道具創造；敘事為「鏈狀式」—有部分情節，但無高潮或結局', src:'paul'},
+  {aS:48, aE:60, d:'pragmatics', t:'間接暗示出現（不直說請求意圖，如「那聞起來好香！」）；能針對對方澄清需求給予具體回應', src:'paul'},
+  {aS:48, aE:60, d:'pragmatics', t:'敘事為「鏈狀式」：有部分情節，但尚無高潮與完整結局', src:'paul'},
+  {aS:60, aE:72, d:'pragmatics', t:'敘事達「真實故事」結構：有中心焦點、高潮、結局（5–7 歲）', src:'paul'},
+
+  // ── 學齡期（Paul & Norbury 2012, inside back cover）⚠ 英語常模 ──
+  // Data from Chapman (2000), Nippold (1998), Westby (1999)
+
+  // 5–7 歲（60–84 mo）
+  {aS:60, aE:84, d:'vocab',     t:'詞彙量約 3,000–5,000 個；詞彙知識從情境聯想（syntagmatic）重組為語意網絡（paradigmatic）', src:'paul'},
+  {aS:60, aE:84, d:'grammar',   t:'被動句理解與使用出現；基本語法規則的例外形式開始習得', src:'paul'},
+  {aS:60, aE:84, d:'grammar',   t:'音素切割（phoneme segmentation）能力出現；「詞」的概念與所指物分離；最後殘留構音錯誤消失', src:'paul'},
+  {aS:72, aE:84, d:'pragmatics',t:'敘事有中心焦點、高潮與完整結局；故事以主題為中心（5–7 歲）', src:'paul'},
+
+  // 7–9 歲（84–108 mo）
+  {aS:84, aE:108, d:'vocab',    t:'學校與閱讀帶來大量新詞；詞語定義包含同義詞與語意範疇；多義詞理解；比喻語言能力增加', src:'paul'},
+  {aS:84, aE:108, d:'grammar',  t:'學術語言句法發展（代詞照應、複雜子句）；少數名詞片語錯誤仍持續（如 "much bricks"）；構音大多無誤；音韻知識用於拼字', src:'paul'},
+  {aS:84, aE:108, d:'pragmatics',t:'故事插曲完整（含人物目標、動機、反應）；語言用於建立與維繫社會關係；觀點採取（perspective-taking）增強；能以定義或背景說明修復溝通失敗；能完成簡單參考式溝通任務', src:'paul'},
+
+  // 9–12 歲（108–144 mo）
+  {aS:108, aE:144, d:'vocab',   t:'學術詞彙抽象度提升；副詞連接詞開始使用（約佔 4% 語句）；常見慣用語（idioms）理解完成', src:'paul'},
+  {aS:108, aE:144, d:'grammar', t:'書面語句法複雜度高於口語；詞序變化（書寫）增加；形態音韻知識（morphophonological）發展並用於拼寫；後設認知（metacognition）能力出現', src:'paul'},
+  {aS:108, aE:144, d:'pragmatics',t:'能理解複雜嵌入式故事插曲；能理解詞彙歧義（lexical ambiguity）的笑話與謎語', src:'paul'},
+
+  // 12–14 歲（144–168 mo）
+  {aS:144, aE:168, d:'vocab',   t:'能給出抽象字典式定義；副詞連接詞使用率升至約 85%；能在語境中解釋諺語', src:'paul'},
+  {aS:144, aE:168, d:'grammar', t:'完成式（have + 過去分詞）使用增加；書面語複雜度高於口語；重音規則習得（複合詞 vs. 詞組之重音區分）', src:'paul'},
+  {aS:144, aE:168, d:'pragmatics',t:'說明文體（expository texts）用於學校書寫；能理解深層結構歧義（deep structure ambiguity）的笑話', src:'paul'},
+
+  // 15–18 歲（180–216 mo）
+  {aS:180, aE:216, d:'vocab',   t:'高中畢業生詞彙量約 10,000 個', src:'paul'},
+  {aS:180, aE:216, d:'grammar', t:'完整成人句法範圍達成；書面語句子長度與複雜度持續高於口語；情態助動詞使用增加；形態音韻規則達成人水準', src:'paul'},
+  {aS:180, aE:216, d:'pragmatics',t:'語言用於維繫社交關係（「就是聊天」功能）；說服與辯論能力接近成人水準', src:'paul'},
 ];
 
 const DOMAINS=[
@@ -321,9 +369,12 @@ const RED_FLAGS=[
 ];
 
 const STAGES=[
-  {min:1,  max:11, label:'前語言期',    bg:'#e0f2fe', fg:'#0369a1'},
-  {min:12, max:35, label:'幼兒語言期',  bg:'#dcfce7', fg:'#15803d'},
-  {min:36, max:72, label:'學齡前語言期',bg:'#fef9c3', fg:'#a16207'},
+  {min:1,  max:11,  label:'前語言期',          bg:'#e0f2fe', fg:'#0369a1'},
+  {min:12, max:35,  label:'幼兒語言期',        bg:'#dcfce7', fg:'#15803d'},
+  {min:36, max:72,  label:'學齡前語言期',      bg:'#fef9c3', fg:'#a16207'},
+  {min:73, max:108, label:'學齡早期（5–9 歲）', bg:'#ede9fe', fg:'#5b21b6'},
+  {min:109,max:168, label:'學齡中期（9–14 歲）',bg:'#fce7f3', fg:'#9d174d'},
+  {min:169,max:216, label:'青春期（14–18 歲）', bg:'#f0fdf4', fg:'#14532d'},
 ];
 
 function fmtAge(m){
@@ -346,7 +397,7 @@ function msRow(m, stateClass, ic, ageStr){
 
 function cardLegend(allItems){
   const srcs=[...new Set(allItems.map(m=>m.src))];
-  const order=['mcdi','hung','wu','notes'];
+  const order=['mcdi','hung','wu','notes','paul'];
   const present=order.filter(s=>srcs.includes(s));
   if(present.length===0) return '';
   const parts=present.map(s=>{
@@ -377,7 +428,7 @@ function renderCard(domainKey,age){
 <div class="g-label">更早達成</div>`;
     past.forEach(m=>{h+=msRow(m,'ms-past','✓',`≤${fmtAge(m.aE)}`);});
     // legend for past items
-    const pastPresent=['mcdi','hung','wu','notes'].filter(s=>pastSrcs.includes(s));
+    const pastPresent=['mcdi','hung','wu','notes','paul'].filter(s=>pastSrcs.includes(s));
     if(pastPresent.length>0) h+=`<div class="card-legend">${pastPresent.map(s=>`<span class="${(s==='notes'||s==='hung')?'leg-warn':''}">${SRC_LABEL_SHORT[s]}</span>`).join('')}</div>`;
     h+=`</div>`;
   }
