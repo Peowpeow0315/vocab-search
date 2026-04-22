@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>吞嚥餵食臨床參考</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+.site-nav{display:flex;align-items:center;gap:6px;background:#1a1a1a;padding:10px 16px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.site-nav-title{font-size:12px;color:#666;letter-spacing:.04em;flex:1;min-width:60px}
+.site-nav a{font-size:12px;padding:5px 12px;border-radius:7px;text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.nav-active{background:#fff;color:#1a1a1a}
+.nav-inactive{color:#aaa;border:1px solid #444}
+.nav-inactive:hover{color:#fff;border-color:#888}
+.page{max-width:820px;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+.tab-bar{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:120px;padding:8px 12px;border-radius:9px;border:1.5px solid #e0e0de;background:#fafaf8;color:#888;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.tab-btn.act{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.tab-btn:hover:not(.act){background:#f0f0ee;color:#555}
+.tab-content{display:none}
+.tab-content.act{display:block}
+.section-box{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:15px 16px;margin-bottom:.875rem}
+.s-title{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.age-bar{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:14px 18px;margin-bottom:.75rem;display:flex;align-items:center;gap:14px}
+.age-label{font-size:13px;color:#888;white-space:nowrap}
+.age-bar input[type=range]{flex:1;accent-color:#1a1a1a;height:4px;cursor:pointer}
+.age-display-wrap{text-align:right;min-width:80px;flex-shrink:0}
+.age-val{font-size:22px;font-weight:700;color:#1a1a1a;line-height:1.2;white-space:nowrap}
+.age-sub{font-size:11px;color:#999;margin-top:1px}
+.stage-pill{display:inline-block;padding:3px 13px;border-radius:12px;font-size:11px;font-weight:600;margin-bottom:.75rem}
+.ms-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;font-size:12.5px;line-height:1.5;border-bottom:1px solid #f5f5f3}
+.ms-item:last-child{border-bottom:none}
+.ms-ic{flex-shrink:0;font-size:11px;width:18px;padding-top:1px}
+.ms-body{flex:1}
+.ms-txt{color:#2a2a2a}
+.ms-sub{font-size:10.5px;color:#aaa;margin-top:1px}
+.g-label{font-size:9px;font-weight:700;letter-spacing:.08em;color:#d0d0cc;margin:10px 0 4px;text-transform:uppercase}
+.rf-box{background:#fff8f8;border:1px solid #fecaca;border-radius:12px;padding:15px 16px;margin-bottom:.875rem}
+.rf-title{font-size:12.5px;font-weight:700;color:#b91c1c;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.rf-item{display:flex;align-items:flex-start;gap:8px;padding:4.5px 0;border-bottom:1px solid #fee2e2;font-size:12.5px;line-height:1.5;color:#7f1d1d}
+.rf-item:last-child{border-bottom:none}
+.rf-lbl{font-size:10.5px;font-weight:700;color:#dc2626;min-width:70px;flex-shrink:0;padding-top:2px}
+.warn-box{background:#fff8ee;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;margin-bottom:.875rem}
+.warn-title{font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.warn-item{font-size:11.5px;color:#78350f;padding:3.5px 0;line-height:1.65;border-bottom:1px solid #fde68a}
+.warn-item:last-child{border-bottom:none}
+.warn-item strong{color:#92400e}
+.iddsi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px}
+.iddsi-card{border-radius:8px;padding:10px 12px;font-size:11.5px;line-height:1.6;border:1.5px solid}
+.iddsi-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.iddsi-en{font-size:10px;margin-bottom:4px;opacity:.7}
+.iddsi-desc{font-size:11px;line-height:1.55}
+.iddsi-eg{font-size:10.5px;margin-top:4px;font-style:italic;opacity:.8}
+.tx-card{background:#f8f9ff;border:1px solid #dde2f0;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.tx-title{font-size:12.5px;font-weight:700;color:#1e3a8a;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.tx-item{font-size:12px;color:#374151;padding:2.5px 0;line-height:1.55;border-bottom:1px solid #eef0f8}
+.tx-item:last-child{border-bottom:none}
+.tx-item strong{color:#1e3a8a}
+.checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #f5f5f3;font-size:12.5px;line-height:1.5}
+.checklist-item:last-child{border-bottom:none}
+.checklist-ic{flex-shrink:0;font-size:12px;width:20px;padding-top:1px}
+.fold-btn{font-size:10.5px;color:#c0c0be;background:none;border:none;cursor:pointer;padding:4px 0;display:block;width:100%;text-align:left;line-height:1.4;margin-top:2px}
+.fold-btn:hover{color:#777}
+.fold-body{display:none}
+.fold-body.open{display:block}
+.clin-fold-btn{font-size:10.5px;color:#6366f1;background:none;border:1px solid #e0e0f8;border-radius:6px;cursor:pointer;padding:4px 10px;display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-weight:500}
+.clin-fold-btn:hover{background:#f5f3ff;border-color:#a5b4fc}
+.clin-panel{background:#f8f9ff;border:1px solid #dde2f0;border-radius:8px;padding:10px 12px;margin-top:6px}
+.clin-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:#9ca3af;text-transform:uppercase;margin:7px 0 3px;padding-top:7px;border-top:1px solid #eef0f8}
+.clin-lbl.first{margin-top:0;padding-top:0;border-top:none}
+.clin-item{display:flex;align-items:flex-start;gap:5px;padding:2px 0;font-size:11.5px;line-height:1.6;color:#374151}
+.clin-ic{flex-shrink:0;width:18px;font-size:10px;padding-top:2px}
+.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+@media(max-width:540px){.phase-grid{grid-template-columns:1fr}}
+.phase-card{border-radius:8px;padding:10px 12px;font-size:11.5px;border:1px solid}
+.phase-title{font-size:12px;font-weight:700;margin-bottom:5px}
+.cite-box{font-size:10.5px;color:#aaa;background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:12px 16px;line-height:1.75;margin-bottom:.875rem}
+.cite-box strong{color:#888}
+.cite-entry{margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f0f0ee}
+.cite-entry:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+sup.src{font-size:8px;vertical-align:super;line-height:0;margin-left:2px;font-weight:700}
+sup.s-arv{color:#6ee7b7}
+sup.s-log{color:#a78bfa}
+sup.s-iddsi{color:#60a5fa}
+sup.s-asha{color:#f59e0b}
+sup.s-notes{color:#fb923c}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600;margin-left:4px}
+.tag-ok{background:#dcfce7;color:#15803d}
+.tag-warn{background:#fef9c3;color:#92400e}
+.tag-bad{background:#fee2e2;color:#b91c1c}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <span class="site-nav-title">語言治療臨床工具</span>
+  <a href="index.html" class="nav-inactive">🏠 詞彙</a>
+  <a href="artic.html" class="nav-inactive">🗣 構音音韻</a>
+  <a href="plan.html" class="nav-inactive">📋 治療計畫</a>
+  <a href="lang.html" class="nav-inactive">🌱 語言發展</a>
+  <a href="fluency.html" class="nav-inactive">💬 語暢</a>
+  <a href="feeding.html" class="nav-active">🍽 吞嚥餵食</a>
+</nav>
+
+<div class="page">
+  <h1 style="font-size:18px;font-weight:800;margin-bottom:4px">🍽 吞嚥餵食臨床參考</h1>
+  <p style="font-size:11px;color:#999;margin-bottom:1rem;line-height:1.7">
+    ⚠️ 兒童餵食里程碑引自英語文獻（Arvedson & Brodsky 2002、ASHA）；成人吞嚥評估引自 Logemann（1998）；
+    IDDSI 飲食質地分級為國際框架，提供正式繁體中文版（可引用，無⚠️）。
+    台灣目前無已發表兒童餵食或成人吞嚥本土常模。
+    標記：<sup class="src s-arv">Ar</sup> Arvedson & Brodsky、<sup class="src s-log">Lo</sup> Logemann、
+    <sup class="src s-iddsi">ID</sup> IDDSI、<sup class="src s-asha">AS</sup> ASHA、<sup class="src s-notes">N</sup> 課程講義。
+  </p>
+
+  <div class="tab-bar">
+    <button class="tab-btn act" onclick="switchTab(0)">🍼 餵食發展里程碑</button>
+    <button class="tab-btn" onclick="switchTab(1)">🔍 吞嚥障礙評估</button>
+    <button class="tab-btn" onclick="switchTab(2)">📋 介入與飲食建議</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 0：餵食發展里程碑
+  ══════════════════════════════════════════ -->
+  <div id="tab0" class="tab-content act">
+    <div class="age-bar">
+      <span class="age-label">月齡</span>
+      <input type="range" min="0" max="72" value="6" id="ageSlider" oninput="updateFeed()">
+      <div class="age-display-wrap">
+        <div class="age-val" id="ageValEl">6 個月</div>
+        <div class="age-sub" id="ageSubEl"></div>
+      </div>
+    </div>
+    <div id="stagePill" style="margin-bottom:.75rem"></div>
+
+    <div class="section-box">
+      <div class="s-title">🎯 本齡餵食發展里程碑</div>
+      <div id="feedMain"></div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點</button>
+      <div class="fold-body"><div id="feedClin" class="clin-panel"></div></div>
+    </div>
+
+    <div class="rf-box">
+      <div class="rf-title">🚩 餵食紅旗指標（需轉介評估）<sup class="src s-arv">Ar</sup><sup class="src s-asha">AS</sup></div>
+      <div class="rf-item"><span class="rf-lbl">任何年齡</span><span>進食時或進食後出現<strong>嗆咳、哽咽、聲音改變（濕潤音質）</strong></span></div>
+      <div class="rf-item"><span class="rf-lbl">任何年齡</span><span>進食時間過長（嬰兒 &gt;30 分鐘 / 幼兒 &gt;45 分鐘完成一餐）</span></div>
+      <div class="rf-item"><span class="rf-lbl">任何年齡</span><span>體重增加不良或體重下降</span></div>
+      <div class="rf-item"><span class="rf-lbl">任何年齡</span><span>進食時拱背、哭鬧、拒絕進食（可能為不舒適或吞嚥困難）</span></div>
+      <div class="rf-item"><span class="rf-lbl">任何年齡</span><span>反覆性肺炎（疑似吸入性）</span></div>
+      <div class="rf-item"><span class="rf-lbl">6 個月</span><span>無法協調吸吮—吞嚥—呼吸節律</span></div>
+      <div class="rf-item"><span class="rf-lbl">12 個月</span><span>仍完全依賴流質，無法接受任何泥狀食物嘗試</span></div>
+      <div class="rf-item"><span class="rf-lbl">24 個月</span><span>食物質地仍停留在泥狀，無法進展至碎食</span></div>
+      <div class="rf-item"><span class="rf-lbl">36 個月</span><span>無法自我餵食；對食物類別、質地有極度受限的接受範圍（&lt; 20 種食物）</span></div>
+    </div>
+
+    <div class="cite-box">
+      <strong>餵食發展資料來源</strong>
+      <div style="margin-top:8px">
+        <div class="cite-entry"><sup class="src s-arv">Ar</sup> Arvedson, J.C. & Brodsky, L.（2002）. Pediatric Swallowing and Feeding (2nd ed.). Singular. ⚠️ T2 英語</div>
+        <div class="cite-entry"><sup class="src s-asha">AS</sup> ASHA. Pediatric Dysphagia. www.asha.org ⚠️ T2 英語</div>
+        <div class="cite-entry"><sup class="src s-notes">N</sup> 馬偕課程講義（未出版）⚠️ T3</div>
+      </div>
+    </div>
+  </div><!-- /tab0 -->
+
+  <!-- ══════════════════════════════════════════
+       TAB 1：吞嚥障礙評估
+  ══════════════════════════════════════════ -->
+  <div id="tab1" class="tab-content">
+
+    <!-- 三期簡介 -->
+    <div class="section-box">
+      <div class="s-title">🔬 吞嚥三期與常見問題<sup class="src s-log">Lo</sup></div>
+      <div class="phase-grid">
+        <div class="phase-card" style="background:#fff8ee;border-color:#fed7aa">
+          <div class="phase-title" style="color:#92400e">口腔期</div>
+          <div style="font-size:11px;color:#78350f;line-height:1.6">
+            食物攪碎成食糰、舌頭推送至咽部<br>
+            <strong>常見問題：</strong>食糰形成差、提前洩漏至咽部、舌頭動作受限
+          </div>
+        </div>
+        <div class="phase-card" style="background:#fef2f2;border-color:#fecaca">
+          <div class="phase-title" style="color:#b91c1c">咽喉期</div>
+          <div style="font-size:11px;color:#7f1d1d;line-height:1.6">
+            吞嚥反射、喉部上抬閉合、食物通過咽部<br>
+            <strong>常見問題：</strong>吞嚥反射延遲、喉部上抬不足、殘留、誤吸
+          </div>
+        </div>
+        <div class="phase-card" style="background:#f0fdf4;border-color:#bbf7d0">
+          <div class="phase-title" style="color:#15803d">食道期</div>
+          <div style="font-size:11px;color:#166534;line-height:1.6">
+            食物由咽食道交接處至胃<br>
+            <strong>常見問題：</strong>蠕動異常、逆流（GER）→ 轉介腸胃科
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 床邊評估 -->
+    <div class="section-box">
+      <div class="s-title">📋 臨床床邊吞嚥評估（Bedside Evaluation）<sup class="src s-log">Lo</sup><sup class="src s-asha">AS</sup></div>
+      <div class="g-label">基本狀態</div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>意識程度（清醒、合作程度）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>姿勢控制（頭頸軀幹穩定性）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>呼吸狀態（氣切？氧飽和度？）</span></div>
+      <div class="g-label">口腔功能檢查</div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>口腔衛生與分泌物管理（是否有流涎？）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>唇部閉合（能否維持？有無漏食？）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>舌頭動作：前後、上下、左右、上抬幅度</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>咀嚼動作（下顎、咬合）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>口腔感覺（觸覺、溫度辨識）</span></div>
+      <div class="g-label">試吞觀察（由安全質地開始）</div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>乾吞（空吞）：喉部上抬幅度與對稱性</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>給予少量液體（1–3 ml）：嗆咳、音質變化（濕潤音）？</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>逐步增量（5 ml → 10 ml → 自由飲用）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>嘗試不同質地（增稠液體 → 泥狀 → 軟食）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>吞嚥後音質：請個案發「ㄚ」，聽是否有濕潤/液性音</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>吞嚥後口腔殘留（翻唇檢查）</span></div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點</button>
+      <div class="fold-body">
+        <div class="clin-panel">
+          <div class="clin-lbl first">← 倒退施測（若狀況不穩定）</div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>若意識不清或無法配合 → 暫停試吞，先評估口腔功能與反射</span></div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>若試吞液體有明顯嗆咳 → 退至乾吞評估，再評估是否使用增稠液</span></div>
+          <div class="clin-lbl">→ 向前施測（若床邊評估安全）</div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>床邊評估無明顯異常但仍懷疑 → 轉介 VFSS 或 FEES 進行儀器評估</span></div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>確認安全質地後 → 進入飲食建議與代償策略訓練</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 儀器評估 -->
+    <div class="section-box">
+      <div class="s-title">🔬 儀器評估說明<sup class="src s-log">Lo</sup></div>
+      <div class="tx-card">
+        <div class="tx-title">📹 VFSS（videofluoroscopic swallow study）X光吞嚥攝影</div>
+        <div class="tx-item"><strong>優點：</strong>可觀察口腔期到食道期全過程，量化喉部上抬、殘留位置、誤吸時機</div>
+        <div class="tx-item"><strong>適用：</strong>懷疑咽喉期問題、評估代償策略效果、兒童吞嚥障礙</div>
+        <div class="tx-item"><strong>限制：</strong>輻射暴露，需轉移至放射科；時間有限、部分個案無法配合</div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-title">🔦 FEES（fiberoptic endoscopic evaluation of swallowing）內視鏡吞嚥評估</div>
+        <div class="tx-item"><strong>優點：</strong>床邊可執行、無輻射、可觀察分泌物管理與聲帶功能</div>
+        <div class="tx-item"><strong>適用：</strong>ICU 個案、無法移動至放射科、重複評估、觀察聲帶閉合</div>
+        <div class="tx-item"><strong>限制：</strong>吞嚥瞬間（whiteout phase）無法觀察；需 ENT 或 SLP 操作訓練</div>
+      </div>
+    </div>
+
+    <!-- 兒童 vs. 成人差異 -->
+    <div class="section-box">
+      <div class="s-title">👶🧑 兒童 vs. 成人吞嚥評估差異<sup class="src s-arv">Ar</sup><sup class="src s-log">Lo</sup></div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:#f8f8f6">
+          <th style="padding:7px 10px;text-align:left;border-bottom:2px solid #e8e8e6;color:#666;font-size:11px">面向</th>
+          <th style="padding:7px 10px;text-align:left;border-bottom:2px solid #e8e8e6;color:#666;font-size:11px">兒童</th>
+          <th style="padding:7px 10px;text-align:left;border-bottom:2px solid #e8e8e6;color:#666;font-size:11px">成人</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">主要病因</td><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">早產、腦性麻痺、先天心臟病、唇顎裂、神經發展問題</td><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">腦中風、頭頸癌、帕金森氏症、失智症、脊髓損傷</td></tr>
+          <tr><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">評估重點</td><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">發展里程碑對照、吸吮—吞嚥—呼吸協調、質地進展</td><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">誤吸風險、三期功能、代償策略適用性</td></tr>
+          <tr><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">行為因素</td><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">挑食、感覺過敏、進食行為問題</td><td style="padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top">認知配合度、動機、進食認知</td></tr>
+          <tr><td style="padding:7px 10px;vertical-align:top">家庭角色</td><td style="padding:7px 10px;vertical-align:top">家長衛教與參與是核心</td><td style="padding:7px 10px;vertical-align:top">照顧者訓練、醫療團隊協作</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div><!-- /tab1 -->
+
+  <!-- ══════════════════════════════════════════
+       TAB 2：介入與飲食建議
+  ══════════════════════════════════════════ -->
+  <div id="tab2" class="tab-content">
+
+    <!-- IDDSI -->
+    <div class="section-box">
+      <div class="s-title">🍽 IDDSI 國際飲食質地分級<sup class="src s-iddsi">ID</sup></div>
+      <p style="font-size:11.5px;color:#555;margin-bottom:10px;line-height:1.6">
+        IDDSI（International Dysphagia Diet Standardisation Initiative）為國際通用標準，提供正式繁體中文版。
+        分為 <strong>飲品（Level 0–4）</strong>及<strong>食物（Level 3–7）</strong>，數字越小越稀/越細碎。
+      </p>
+      <div class="iddsi-grid">
+        <div class="iddsi-card" style="background:#e0f2fe;border-color:#7dd3fc;color:#0c4a6e">
+          <div class="iddsi-name">Level 0 稀薄</div>
+          <div class="iddsi-en">Thin</div>
+          <div class="iddsi-desc">水、茶、一般飲料等自然流速</div>
+          <div class="iddsi-eg">例：水、茶、米湯</div>
+        </div>
+        <div class="iddsi-card" style="background:#e0f9f0;border-color:#6ee7b7;color:#064e3b">
+          <div class="iddsi-name">Level 1 微稠</div>
+          <div class="iddsi-en">Slightly Thick</div>
+          <div class="iddsi-desc">比水稍厚，流速稍慢</div>
+          <div class="iddsi-eg">例：部分嬰兒配方（稠化後）</div>
+        </div>
+        <div class="iddsi-card" style="background:#fef9c3;border-color:#fde047;color:#713f12">
+          <div class="iddsi-name">Level 2 低稠</div>
+          <div class="iddsi-en">Mildly Thick</div>
+          <div class="iddsi-desc">流動但比水慢，可用吸管</div>
+          <div class="iddsi-eg">例：稠化果汁、部分優格飲</div>
+        </div>
+        <div class="iddsi-card" style="background:#fde68a;border-color:#f59e0b;color:#78350f">
+          <div class="iddsi-name">Level 3 中稠</div>
+          <div class="iddsi-en">Moderately Thick</div>
+          <div class="iddsi-desc">可倒出但流速慢，需寬管吸管</div>
+          <div class="iddsi-eg">例：稠化飲品、布丁飲</div>
+        </div>
+        <div class="iddsi-card" style="background:#fed7aa;border-color:#fb923c;color:#7c2d12">
+          <div class="iddsi-name">Level 4 高稠／泥狀</div>
+          <div class="iddsi-en">Extremely Thick / Puréed</div>
+          <div class="iddsi-desc">不會流動，需湯匙舀，無需咀嚼</div>
+          <div class="iddsi-eg">例：均質泥、南瓜泥、布丁</div>
+        </div>
+        <div class="iddsi-card" style="background:#fca5a5;border-color:#f87171;color:#7f1d1d">
+          <div class="iddsi-name">Level 5 碎食</div>
+          <div class="iddsi-en">Minced & Moist</div>
+          <div class="iddsi-desc">小顆粒（≤4mm），濕潤，需少量咀嚼</div>
+          <div class="iddsi-eg">例：碎肉、碎蔬菜、碎軟飯</div>
+        </div>
+        <div class="iddsi-card" style="background:#e9d5ff;border-color:#c084fc;color:#4a1d96">
+          <div class="iddsi-name">Level 6 軟食</div>
+          <div class="iddsi-en">Soft & Bite-sized</div>
+          <div class="iddsi-desc">塊狀（≤15mm），可以叉壓碎，需正常咀嚼</div>
+          <div class="iddsi-eg">例：軟煮蔬菜、嫩豆腐、軟飯糰</div>
+        </div>
+        <div class="iddsi-card" style="background:#f0fdf4;border-color:#86efac;color:#14532d">
+          <div class="iddsi-name">Level 7 一般</div>
+          <div class="iddsi-en">Regular / Easy to Chew</div>
+          <div class="iddsi-desc">正常各種質地，無限制</div>
+          <div class="iddsi-eg">例：一般正常飲食</div>
+        </div>
+      </div>
+      <p style="font-size:10px;color:#bbb;margin-top:8px;line-height:1.6">
+        來源：IDDSI Framework（2019）. www.iddsi.org 繁體中文版已發布，可直接下載使用（無需⚠️）。
+      </p>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點（質地建議）</button>
+      <div class="fold-body">
+        <div class="clin-panel">
+          <div class="clin-lbl first">← 若目前質地不安全</div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>出現嗆咳 / 濕潤音質 → 退一階段質地，重新試吞評估</span></div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>若液體（Level 0）不安全 → 先增稠至 Level 2，再確認安全後調整</span></div>
+          <div class="clin-lbl">→ 若目前質地安全，向上挑戰</div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>確認 Level N 安全後 → 嘗試 Level N+1，逐階進展</span></div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>每次質地調整須重新進行試吞觀察，不可跳級</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 代償策略 -->
+    <div class="section-box">
+      <div class="s-title">🧭 代償策略（Compensatory Strategies）<sup class="src s-log">Lo</sup></div>
+      <p style="font-size:11.5px;color:#555;margin-bottom:10px;line-height:1.6">代償策略不改變吞嚥生理，但可即時降低誤吸風險。停用策略後效果消失。</p>
+      <div class="tx-card">
+        <div class="tx-title">🏋️ 姿勢調整</div>
+        <div class="tx-item"><strong>下巴內收（Chin tuck）：</strong>頭稍微低下。加寬聲門下空間，協助保護氣道。適用：吞嚥反射延遲、喉部閉合不足</div>
+        <div class="tx-item"><strong>頭部轉向患側（Head rotation）：</strong>頭轉向較弱側。閉合該側梨狀竇，引導食糰走較強一側。適用：單側咽喉無力</div>
+        <div class="tx-item"><strong>頭部傾向健側（Head tilt）：</strong>頭傾向較強側，利用重力引導食糰走強側咽道</div>
+        <div class="tx-item"><strong>躺下進食：</strong>仰臥或側臥，利用重力減少誤吸（適用特定情況）</div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-title">🔄 吞嚥手法</div>
+        <div class="tx-item"><strong>多次吞嚥（Multiple swallows）：</strong>每口食物吞嚥 2–3 次，清除咽部殘留</div>
+        <div class="tx-item"><strong>交替液體與固體：</strong>用液體沖洗咽部食物殘留</div>
+        <div class="tx-item"><strong>吞嚥後清喉嚨再吞：</strong>咳出殘留後再空吞清除</div>
+      </div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點</button>
+      <div class="fold-body">
+        <div class="clin-panel">
+          <div class="clin-lbl first">← 倒退施測（若個案無法執行策略）</div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>先評估個案能否理解並執行指令；認知受損者改由照顧者協助調整姿勢</span></div>
+          <div class="clin-lbl">→ 向前施測（策略已有效）</div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>確認策略有效後 → 訓練照顧者執行，並逐步在日常進食中類化</span></div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>代償策略穩定後 → 評估是否可進入復健策略（改變吞嚥生理）</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 復健策略 -->
+    <div class="section-box">
+      <div class="s-title">💪 復健策略（Rehabilitative Strategies）<sup class="src s-log">Lo</sup><sup class="src s-asha">AS</sup></div>
+      <p style="font-size:11.5px;color:#555;margin-bottom:10px;line-height:1.6">復健策略旨在改變吞嚥生理，需長期訓練才能見效。</p>
+      <div class="tx-card">
+        <div class="tx-title">🏋️ 成人吞嚥復健手法</div>
+        <div class="tx-item"><strong>Shaker 運動（頭部抬舉運動）：</strong>仰臥抬頭看腳趾，強化舌骨上肌群，改善上食道括約肌開放。每日進行，需持續 6 週以上</div>
+        <div class="tx-item"><strong>Mendelsohn 手法：</strong>吞嚥時主動延長喉部上抬時間，改善上食道括約肌開放幅度與時間</div>
+        <div class="tx-item"><strong>Masako 手法（舌頭保持法）：</strong>吞嚥時舌頭被牙齒輕咬，強化咽後壁前推動作。不可搭配食物使用</div>
+        <div class="tx-item"><strong>用力吞嚥（Effortful swallow）：</strong>用最大力量吞嚥，增加舌根後推力與咽部清除效率</div>
+        <div class="tx-item"><strong>超聲門吞嚥（Supraglottic swallow）：</strong>吸氣→憋氣→吞嚥→咳嗽→再吞，適用聲帶閉合不足者</div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-title">👶 兒童餵食介入策略</div>
+        <div class="tx-item"><strong>口腔動作訓練：</strong>舌頭活動度、唇部閉合、咀嚼動作的主動/被動練習</div>
+        <div class="tx-item"><strong>感覺促進：</strong>對口腔內外施予不同溫度、壓力、質地刺激，提升感覺辨識與反應</div>
+        <div class="tx-item"><strong>質地階梯訓練：</strong>系統性由安全質地逐步嘗試更複雜質地，建立成功進食經驗</div>
+        <div class="tx-item"><strong>行為介入（挑食/拒食）：</strong>系統脫敏、正增強、逐步暴露策略。需與行為治療師或心理師合作</div>
+        <div class="tx-item"><strong>餵食位置與器具調整：</strong>適合的座椅支撐、奶嘴/奶瓶流速、湯匙大小與材質</div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-title">📚 家屬衛教要點</div>
+        <div class="tx-item"><strong>安全進食環境：</strong>專注進食、減少干擾、避免邊吃邊說話或大笑</div>
+        <div class="tx-item"><strong>質地準備：</strong>正確製備各 IDDSI Level 食物，使用食物增稠劑的正確操作方式</div>
+        <div class="tx-item"><strong>嗆咳處理：</strong>輕拍背部、鼓勵咳出；嚴重時執行海姆立克法；了解何時需送急診</div>
+        <div class="tx-item"><strong>進食時間管理：</strong>不催促，給予足夠時間；過長時間（&gt;45 分鐘）需重新評估</div>
+        <div class="tx-item"><strong>觀察與回報：</strong>記錄嗆咳頻率、食物接受度、體重變化，定期回報治療師</div>
+      </div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點</button>
+      <div class="fold-body">
+        <div class="clin-panel">
+          <div class="clin-lbl first">← 倒退施測（若復健策略無效）</div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>先確認代償策略是否已建立且有效，不可直接跳至復健策略</span></div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>確認個案認知配合度：若無法跟從指令 → 優先家屬衛教與環境調整</span></div>
+          <div class="clin-lbl">→ 向前施測（復健進展中）</div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>肌力改善後 → 重新進行床邊或儀器評估，確認質地是否可升級</span></div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>目標：逐步減少代償策略依賴，接近正常進食功能</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cite-box">
+      <strong>介入分頁資料來源</strong>
+      <div style="margin-top:8px">
+        <div class="cite-entry"><sup class="src s-iddsi">ID</sup> IDDSI Framework（2019）. International Dysphagia Diet Standardisation Initiative. www.iddsi.org 繁體中文版已發布</div>
+        <div class="cite-entry"><sup class="src s-log">Lo</sup> Logemann, J.A.（1998）. Evaluation and Treatment of Swallowing Disorders (2nd ed.). Pro-Ed. ⚠️ T2 英語</div>
+        <div class="cite-entry"><sup class="src s-asha">AS</sup> ASHA. Adult Dysphagia / Pediatric Dysphagia. www.asha.org ⚠️ T2 英語</div>
+        <div class="cite-entry"><sup class="src s-arv">Ar</sup> Arvedson, J.C. & Brodsky, L.（2002）. Pediatric Swallowing and Feeding (2nd ed.). Singular. ⚠️ T2 英語</div>
+        <div class="cite-entry"><sup class="src s-notes">N</sup> 馬偕課程講義（未出版）⚠️ T3</div>
+      </div>
+    </div>
+  </div><!-- /tab2 -->
+</div><!-- /page -->
+
+<script>
+// ── Feeding development bands
+const FEED_BANDS=[
+  {min:0,max:3,label:'新生兒期',bg:'#e0f2fe',fg:'#0369a1',
+   title:'新生兒餵食期（0–3 個月）',
+   items:[
+    {ic:'🤱',txt:'主要以吸吮—吞嚥—呼吸協調為目標',sub:'每 2–3 分鐘呼吸一次的節律建立'},
+    {ic:'🍼',txt:'反射性吸吮（rooting、sucking、swallowing refleks）主導進食',sub:''},
+    {ic:'😴',txt:'進食與清醒狀態密切相關；早產兒協調性較差',sub:''},
+    {ic:'⏱',txt:'哺乳時間：每次 20–30 分鐘以內為宜',sub:'超過 30 分鐘可能代表協調困難'},
+   ],
+   flags:['吸吮力道過弱或無法維持有效吸吮','進食時出現嗆咳或發紺（發藍）','每次哺乳時間 > 30 分鐘且體重增加不良'],
+   back:'評估口腔反射（rooting、sucking 反射）是否存在；確認吸吮模式（節律性 vs. 非律律性）',
+   fwd:'觀察吸吮—吞嚥—呼吸節律協調性；評估乳汁流速是否適當（奶瓶孔大小）'},
+  {min:4,max:5,label:'副食品準備期',bg:'#dcfce7',fg:'#15803d',
+   title:'副食品準備期（4–5 個月）',
+   items:[
+    {ic:'👄',txt:'吸吮式吞嚥（suckle）開始轉換為成熟吸吮（suck）',sub:''},
+    {ic:'👅',txt:'舌頭推出反射（tongue extrusion reflex）尚在消退中',sub:'若仍強烈推舌，副食品介入需延遲'},
+    {ic:'🪑',txt:'頭部控制改善，可開始評估是否準備好接受副食品',sub:''},
+    {ic:'👀',txt:'對食物開始表現出興趣（眼神追隨、口水增多）',sub:''},
+   ],
+   flags:['仍有強烈推舌反射（不應強行開始副食品）','頭部控制不穩定（需充分支撐才能坐穩）'],
+   back:'確認吸吮反射是否正常；評估頭部控制程度',
+   fwd:'若推舌反射消退 → 開始嘗試 IDDSI Level 4（均質泥狀）；量少（1–2 茶匙）從米糊開始'},
+  {min:6,max:8,label:'泥狀食物期',bg:'#fef9c3',fg:'#a16207',
+   title:'泥狀食物期（6–8 個月）',
+   items:[
+    {ic:'🥣',txt:'開始接受 IDDSI Level 4 泥狀食物',sub:'米糊、南瓜泥、馬鈴薯泥等'},
+    {ic:'👅',txt:'舌頭開始出現上下動作（非僅前後）',sub:'咀嚼動作前驅'},
+    {ic:'🥤',txt:'可開始嘗試杯子飲水（輔助杯）',sub:''},
+    {ic:'🤲',txt:'開始嘗試用手抓取食物（手指食物前期）',sub:''},
+   ],
+   flags:['6 個月後仍完全拒絕任何非液體食物','進食泥狀食物時持續嗆咳或嘔吐'],
+   back:'確認是否已達副食品準備里程碑（推舌反射消退、頭部控制穩定）',
+   fwd:'若泥狀接受良好 → 逐步嘗試 Level 5 碎食（7–8 個月）；嘗試新食材'},
+  {min:9,max:11,label:'碎食期',bg:'#fef9c3',fg:'#a16207',
+   title:'碎食與手指食物期（9–11 個月）',
+   items:[
+    {ic:'🦷',txt:'上下咀嚼動作出現（munching），旋轉咀嚼前期',sub:''},
+    {ic:'🍌',txt:'可接受 IDDSI Level 5 碎食與軟手指食物',sub:'香蕉塊、軟煮蔬菜、豆腐'},
+    {ic:'🥤',txt:'可學習用杯子喝水（仍需輔助）',sub:''},
+    {ic:'✋',txt:'手指撿拾食物（pincer grasp 發展中）',sub:''},
+   ],
+   flags:['9 個月後仍只能接受泥狀食物','對固體食物強烈拒絕或嘔吐反應'],
+   back:'確認咀嚼動作是否出現；確認口腔感覺耐受度',
+   fwd:'進階至 Level 6 軟食；嘗試自我餵食（spoon-feeding）'},
+  {min:12,max:17,label:'軟食過渡期',bg:'#ede9fe',fg:'#5b21b6',
+   title:'軟食過渡期（12–17 個月）',
+   items:[
+    {ic:'🥗',txt:'旋轉式咀嚼（rotary chew）漸成熟',sub:''},
+    {ic:'🍽',txt:'可接受 IDDSI Level 6 軟食，家庭一般食物（切小塊）',sub:''},
+    {ic:'🥤',txt:'可用杯子喝水（仍可能溢漏）',sub:''},
+    {ic:'🥄',txt:'開始嘗試自己拿湯匙進食（較混亂，屬正常）',sub:''},
+   ],
+   flags:['12 個月後仍完全依賴液態奶','進食時間持續 > 45 分鐘','接受食物種類 < 20 種'],
+   back:'確認是否能接受碎食（Level 5）；評估咀嚼動作是否出現',
+   fwd:'逐步挑戰接近正常質地食物；引導自我餵食獨立性'},
+  {min:18,max:35,label:'幼兒期',bg:'#ede9fe',fg:'#5b21b6',
+   title:'幼兒餵食發展期（18–35 個月）',
+   items:[
+    {ic:'🍱',txt:'應可接受家庭一般食物（Level 7），質地接近成人',sub:''},
+    {ic:'🥤',txt:'可用吸管喝水（約 18–24 個月）',sub:''},
+    {ic:'🥄',txt:'獨立使用湯匙進食（24 個月後），叉子（約 30 個月）',sub:''},
+    {ic:'🧂',txt:'食物偏好與挑食行為正常出現',sub:'接受 10–20 種食物屬正常範圍'},
+   ],
+   flags:['接受食物種類極少（< 10 種）且持續 1 個月以上','24 個月後仍無法自我餵食任何食物','進食時哭鬧、拒食頻繁，影響家庭關係'],
+   back:'評估是否仍停留在較低質地；確認口腔動作功能',
+   fwd:'若挑食嚴重 → 系統性脫敏訓練；確認是否有感覺過敏問題'},
+  {min:36,max:72,label:'學齡前期',bg:'#fce7f3',fg:'#9d174d',
+   title:'學齡前餵食發展（3–6 歲）',
+   items:[
+    {ic:'🍽',txt:'進食技能應接近成人，可處理大多數食物質地',sub:''},
+    {ic:'🥢',txt:'筷子使用約 4–5 歲開始（文化差異大）',sub:''},
+    {ic:'🌿',txt:'偏食與挑食行為常見，通常隨年齡改善',sub:''},
+    {ic:'⏰',txt:'進餐時間約 20–30 分鐘為宜',sub:''},
+   ],
+   flags:['接受食物種類仍 < 20 種且有明顯營養不均','進食時頻繁嗆咳（排除神經性原因）','進餐時間 > 45 分鐘影響正常生活'],
+   back:'回到基礎評估：是否有口腔動作問題？還是單純行為性拒食？',
+   fwd:'若行為性挑食 → 結合行為治療師；若有感覺過敏 → 職能治療轉介'},
+];
+
+function fmtAge(m){
+  if(m<12) return `${m} 個月`;
+  const y=Math.floor(m/12),mo=m%12;
+  if(mo===0) return `${y} 歲`;
+  return `${y} 歲 ${mo} 個月`;
+}
+
+function updateFeed(){
+  const age=parseInt(document.getElementById('ageSlider').value);
+  document.getElementById('ageValEl').textContent=age<12?`${age} 個月`:fmtAge(age);
+  document.getElementById('ageSubEl').textContent=age>=12?fmtAge(age):'';
+  const band=FEED_BANDS.find(b=>age>=b.min&&age<=b.max)||FEED_BANDS[FEED_BANDS.length-1];
+  document.getElementById('stagePill').innerHTML=`<span class="stage-pill" style="background:${band.bg};color:${band.fg}">${band.label}</span>`;
+
+  let h=`<p style="font-size:12.5px;font-weight:700;color:#1a1a1a;margin-bottom:8px">${band.title}</p>`;
+  band.items.forEach(item=>{
+    h+=`<div class="ms-item"><span class="ms-ic">${item.ic}</span><div class="ms-body"><span class="ms-txt">${item.txt}</span>${item.sub?`<div class="ms-sub">${item.sub}</div>`:''}</div></div>`;
+  });
+  if(band.flags&&band.flags.length){
+    h+=`<div class="g-label" style="margin-top:10px">🚩 本齡需注意</div>`;
+    band.flags.forEach(f=>{h+=`<div class="ms-item"><span class="ms-ic" style="color:#dc2626">⚠</span><div class="ms-body"><span class="ms-txt" style="color:#7f1d1d">${f}</span></div></div>`;});
+  }
+  document.getElementById('feedMain').innerHTML=h;
+
+  let c=`<div class="clin-lbl first">← 倒退施測</div><div class="clin-item"><span class="clin-ic">←</span><span>${band.back}</span></div>`;
+  c+=`<div class="clin-lbl">→ 向前施測</div><div class="clin-item"><span class="clin-ic">→</span><span>${band.fwd}</span></div>`;
+  document.getElementById('feedClin').innerHTML=c;
+}
+
+function switchTab(idx){
+  document.querySelectorAll('.tab-content').forEach((el,i)=>{el.classList.toggle('act',i===idx);});
+  document.querySelectorAll('.tab-btn').forEach((btn,i)=>{btn.classList.toggle('act',i===idx);});
+}
+
+function toggleFold(btn){
+  const body=btn.nextElementSibling;
+  const open=body.classList.toggle('open');
+  btn.textContent=btn.textContent.replace(open?'▸':'▾',open?'▾':'▸');
+}
+
+updateFeed();
+document.getElementById('ageSlider').addEventListener('input',updateFeed);
+</script>
+</body>
+</html>

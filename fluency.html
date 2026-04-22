@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>語暢（口吃）臨床參考</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;background:#f5f5f3;color:#1a1a1a;min-height:100vh}
+.site-nav{display:flex;align-items:center;gap:6px;background:#1a1a1a;padding:10px 16px;position:sticky;top:0;z-index:100;flex-wrap:wrap}
+.site-nav-title{font-size:12px;color:#666;letter-spacing:.04em;flex:1;min-width:60px}
+.site-nav a{font-size:12px;padding:5px 12px;border-radius:7px;text-decoration:none;font-weight:500;transition:all .15s;white-space:nowrap}
+.nav-active{background:#fff;color:#1a1a1a}
+.nav-inactive{color:#aaa;border:1px solid #444}
+.nav-inactive:hover{color:#fff;border-color:#888}
+.page{max-width:820px;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+.tab-bar{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{flex:1;min-width:120px;padding:8px 12px;border-radius:9px;border:1.5px solid #e0e0de;background:#fafaf8;color:#888;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.tab-btn.act{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.tab-btn:hover:not(.act){background:#f0f0ee;color:#555}
+.tab-content{display:none}
+.tab-content.act{display:block}
+.section-box{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:15px 16px;margin-bottom:.875rem}
+.s-title{font-size:13px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.warn-box{background:#fff8ee;border:1px solid #fed7aa;border-radius:12px;padding:14px 16px;margin-bottom:.875rem}
+.warn-title{font-size:12px;font-weight:700;color:#92400e;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.warn-item{font-size:11.5px;color:#78350f;padding:3.5px 0;line-height:1.65;border-bottom:1px solid #fde68a}
+.warn-item:last-child{border-bottom:none}
+.warn-item strong{color:#92400e}
+.rf-box{background:#fff8f8;border:1px solid #fecaca;border-radius:12px;padding:15px 16px;margin-bottom:.875rem}
+.rf-title{font-size:12.5px;font-weight:700;color:#b91c1c;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.rf-item{display:flex;align-items:flex-start;gap:8px;padding:4.5px 0;border-bottom:1px solid #fee2e2;font-size:12.5px;line-height:1.5;color:#7f1d1d}
+.rf-item:last-child{border-bottom:none}
+.rf-lbl{font-size:10.5px;font-weight:700;color:#dc2626;min-width:70px;flex-shrink:0;padding-top:2px}
+.age-bar{background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:14px 18px;margin-bottom:.75rem;display:flex;align-items:center;gap:14px}
+.age-label{font-size:13px;color:#888;white-space:nowrap}
+.age-bar input[type=range]{flex:1;accent-color:#1a1a1a;height:4px;cursor:pointer}
+.age-display-wrap{text-align:right;min-width:80px;flex-shrink:0}
+.age-val{font-size:22px;font-weight:700;color:#1a1a1a;line-height:1.2;white-space:nowrap}
+.age-sub{font-size:11px;color:#999;margin-top:1px}
+.stage-pill{display:inline-block;padding:3px 13px;border-radius:12px;font-size:11px;font-weight:600;margin-bottom:.75rem}
+.ms-item{display:flex;align-items:flex-start;gap:7px;padding:5px 0;font-size:12.5px;line-height:1.5;border-bottom:1px solid #f5f5f3}
+.ms-item:last-child{border-bottom:none}
+.ms-ic{flex-shrink:0;font-size:11px;width:18px;padding-top:1px}
+.ms-body{flex:1}
+.ms-txt{color:#2a2a2a}
+.ms-sub{font-size:10.5px;color:#aaa;margin-top:1px}
+.ms-current{background:#fef3c7;border-radius:8px;margin:2px -8px;padding:6px 8px;border-bottom:none;border-left:3px solid #f59e0b}
+.ms-current .ms-txt{font-weight:600;color:#1a1a1a}
+.dtype-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+.dtype-table th{background:#f8f8f6;padding:7px 10px;text-align:left;font-size:11px;color:#666;font-weight:600;border-bottom:2px solid #e8e8e6}
+.dtype-table td{padding:7px 10px;border-bottom:1px solid #f0f0ee;vertical-align:top;line-height:1.55}
+.dtype-table tr:last-child td{border-bottom:none}
+.tag{display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:600;margin-left:4px}
+.tag-ok{background:#dcfce7;color:#15803d}
+.tag-warn{background:#fef9c3;color:#92400e}
+.tag-bad{background:#fee2e2;color:#b91c1c}
+.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+@media(max-width:540px){.risk-grid{grid-template-columns:1fr}}
+.risk-card{border-radius:8px;padding:10px 12px;font-size:11.5px;line-height:1.6}
+.risk-persist{background:#fef2f2;border:1px solid #fecaca}
+.risk-recover{background:#f0fdf4;border:1px solid #bbf7d0}
+.risk-card-title{font-size:11px;font-weight:700;margin-bottom:5px}
+.risk-persist .risk-card-title{color:#b91c1c}
+.risk-recover .risk-card-title{color:#15803d}
+.risk-item{padding:1.5px 0;color:#374151}
+.pct-bar-wrap{display:flex;align-items:center;gap:8px;margin:4px 0}
+.pct-bar-bg{flex:1;height:14px;background:#f0f0ee;border-radius:3px;overflow:hidden}
+.pct-bar-fill{height:100%;border-radius:3px}
+.pct-lbl{font-size:11px;font-weight:600;min-width:35px;text-align:right}
+.checklist-item{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid #f5f5f3;font-size:12.5px;line-height:1.5}
+.checklist-item:last-child{border-bottom:none}
+.checklist-ic{flex-shrink:0;font-size:12px;width:20px;padding-top:1px}
+.tx-card{background:#f8f9ff;border:1px solid #dde2f0;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.tx-title{font-size:12.5px;font-weight:700;color:#1e3a8a;margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.tx-item{font-size:12px;color:#374151;padding:2.5px 0;line-height:1.55;border-bottom:1px solid #eef0f8}
+.tx-item:last-child{border-bottom:none}
+.tx-item strong{color:#1e3a8a}
+.fold-btn{font-size:10.5px;color:#c0c0be;background:none;border:none;cursor:pointer;padding:4px 0;display:block;width:100%;text-align:left;line-height:1.4;margin-top:2px}
+.fold-btn:hover{color:#777}
+.fold-body{display:none}
+.fold-body.open{display:block}
+.clin-fold-btn{font-size:10.5px;color:#6366f1;background:none;border:1px solid #e0e0f8;border-radius:6px;cursor:pointer;padding:4px 10px;display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-weight:500}
+.clin-fold-btn:hover{background:#f5f3ff;border-color:#a5b4fc}
+.clin-panel{background:#f8f9ff;border:1px solid #dde2f0;border-radius:8px;padding:10px 12px;margin-top:6px}
+.clin-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;color:#9ca3af;text-transform:uppercase;margin:7px 0 3px;padding-top:7px;border-top:1px solid #eef0f8}
+.clin-lbl.first{margin-top:0;padding-top:0;border-top:none}
+.clin-item{display:flex;align-items:flex-start;gap:5px;padding:2px 0;font-size:11.5px;line-height:1.6;color:#374151}
+.clin-ic{flex-shrink:0;width:18px;font-size:10px;padding-top:2px}
+.g-label{font-size:9px;font-weight:700;letter-spacing:.08em;color:#d0d0cc;margin:10px 0 4px;text-transform:uppercase}
+.cite-box{font-size:10.5px;color:#aaa;background:#fff;border:1px solid #e8e8e6;border-radius:12px;padding:12px 16px;line-height:1.75;margin-bottom:.875rem}
+.cite-box strong{color:#888}
+.cite-entry{margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid #f0f0ee}
+.cite-entry:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+sup.src{font-size:8px;vertical-align:super;line-height:0;margin-left:2px;font-weight:700}
+sup.s-guitar{color:#a78bfa}
+sup.s-asha{color:#60a5fa}
+sup.s-notes{color:#fb923c}
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <span class="site-nav-title">語言治療臨床工具</span>
+  <a href="index.html" class="nav-inactive">🏠 詞彙</a>
+  <a href="artic.html" class="nav-inactive">🗣 構音音韻</a>
+  <a href="plan.html" class="nav-inactive">📋 治療計畫</a>
+  <a href="lang.html" class="nav-inactive">🌱 語言發展</a>
+  <a href="fluency.html" class="nav-active">💬 語暢</a>
+  <a href="feeding.html" class="nav-inactive">🍽 吞嚥餵食</a>
+</nav>
+
+<div class="page">
+  <h1 style="font-size:18px;font-weight:800;margin-bottom:4px">💬 語暢（口吃）臨床參考</h1>
+  <p style="font-size:11px;color:#999;margin-bottom:1rem;line-height:1.7">
+    ⚠️ 本頁內容主要依據英語文獻（Guitar 2014、Yairi & Ambrose 2005、ASHA 指引），屬 T2 國際教科書常模，標記
+    <sup class="src s-guitar">G</sup> Guitar（2014）、<sup class="src s-asha">A</sup> ASHA、<sup class="src s-notes">N</sup> 課程講義。
+    台灣目前無已發表口吃流暢度發展常模，所有數值不得直接作為台灣兒童鑑別診斷依據，須結合整體臨床觀察。
+  </p>
+
+  <div class="tab-bar">
+    <button class="tab-btn act" onclick="switchTab(0)">🗓 流暢度發展</button>
+    <button class="tab-btn" onclick="switchTab(1)">🔍 鑑別與評估</button>
+    <button class="tab-btn" onclick="switchTab(2)">📋 治療方法</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TAB 0：流暢度發展
+  ══════════════════════════════════════════ -->
+  <div id="tab0" class="tab-content act">
+
+    <div class="age-bar">
+      <span class="age-label">月齡</span>
+      <input type="range" min="18" max="216" value="48" id="ageSlider" oninput="updateDev()">
+      <div class="age-display-wrap">
+        <div class="age-val" id="ageValEl">48 個月</div>
+        <div class="age-sub" id="ageSubEl">4 歲</div>
+      </div>
+    </div>
+    <div id="stagePill" style="margin-bottom:.75rem"></div>
+
+    <!-- 本齡期望 -->
+    <div class="section-box">
+      <div class="s-title">🎯 本齡流暢度期望</div>
+      <div id="devMain"></div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點</button>
+      <div class="fold-body"><div id="devClin" class="clin-panel"></div></div>
+    </div>
+
+    <!-- 正常 vs. 口吃型非流暢對照 -->
+    <div class="section-box">
+      <div class="s-title">🔄 正常非流暢 vs. 口吃型非流暢<sup class="src s-guitar">G</sup><sup class="src s-asha">A</sup></div>
+      <table class="dtype-table">
+        <thead>
+          <tr>
+            <th>類型</th>
+            <th>定義與例子</th>
+            <th>臨床意義</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>整詞重複</strong><br><span style="font-size:10px;color:#aaa">whole-word</span></td>
+            <td>「我我我要去」重複整個詞或片語</td>
+            <td><span class="tag tag-ok">正常</span> 學齡前兒童常見</td>
+          </tr>
+          <tr>
+            <td><strong>片語重複</strong><br><span style="font-size:10px;color:#aaa">phrase repetition</span></td>
+            <td>「然後然後他就去了」</td>
+            <td><span class="tag tag-ok">正常</span></td>
+          </tr>
+          <tr>
+            <td><strong>修正／未完句</strong><br><span style="font-size:10px;color:#aaa">revision</span></td>
+            <td>「我想要…不對，我要去…」</td>
+            <td><span class="tag tag-ok">正常</span> 認知負荷高時增加</td>
+          </tr>
+          <tr>
+            <td><strong>插入詞</strong><br><span style="font-size:10px;color:#aaa">interjection</span></td>
+            <td>「嗯…那個…然後」</td>
+            <td><span class="tag tag-ok">正常</span></td>
+          </tr>
+          <tr style="background:#fef9f9">
+            <td><strong>聲音／音節重複</strong><br><span style="font-size:10px;color:#aaa">part-word repetition ⚠️</span></td>
+            <td>「ㄅ-ㄅ-ㄅ爸爸」重複詞的一部分</td>
+            <td><span class="tag tag-bad">口吃型</span> 臨床最重要指標</td>
+          </tr>
+          <tr style="background:#fef9f9">
+            <td><strong>延長</strong><br><span style="font-size:10px;color:#aaa">prolongation ⚠️</span></td>
+            <td>「ㄇ———媽媽」不自然地拉長語音</td>
+            <td><span class="tag tag-bad">口吃型</span></td>
+          </tr>
+          <tr style="background:#fef9f9">
+            <td><strong>卡頓／阻斷</strong><br><span style="font-size:10px;color:#aaa">block ⚠️</span></td>
+            <td>發音前後的緊張性停頓，氣流受阻</td>
+            <td><span class="tag tag-bad">口吃型</span> 嚴重度最高</td>
+          </tr>
+          <tr style="background:#fef3f3">
+            <td><strong>次要行為</strong><br><span style="font-size:10px;color:#aaa">secondary behaviors</span></td>
+            <td>眨眼、頭部動作、迴避詞彙、繞彎說</td>
+            <td><span class="tag tag-bad">伴隨口吃</span> 代表心理負擔</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="font-size:10px;color:#bbb;margin-top:8px;line-height:1.6">
+        來源：Guitar, B.（2014）. Stuttering: An integrated approach (4th ed.)；ASHA Practice Guidelines. ⚠️ 英語文獻。
+      </p>
+    </div>
+
+    <!-- %SS 出現率參考 -->
+    <div class="section-box">
+      <div class="s-title">📊 口吃率（%SS）參考範圍<sup class="src s-guitar">G</sup></div>
+      <p style="font-size:11.5px;color:#555;margin-bottom:10px;line-height:1.6">%SS（Percentage of Stuttered Syllables）= 口吃音節數 ÷ 總音節數 × 100</p>
+      <div class="pct-bar-wrap"><div style="font-size:11.5px;min-width:90px;color:#374151">0–3%</div><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:30%;background:#4ade80"></div></div><div class="pct-lbl" style="color:#15803d">正常範圍</div></div>
+      <div class="pct-bar-wrap"><div style="font-size:11.5px;min-width:90px;color:#374151">3–5%</div><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:50%;background:#fbbf24"></div></div><div class="pct-lbl" style="color:#92400e">臨界／輕微</div></div>
+      <div class="pct-bar-wrap"><div style="font-size:11.5px;min-width:90px;color:#374151">5–10%</div><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:70%;background:#fb923c"></div></div><div class="pct-lbl" style="color:#c2410c">輕中度</div></div>
+      <div class="pct-bar-wrap"><div style="font-size:11.5px;min-width:90px;color:#374151">&gt;10%</div><div class="pct-bar-bg"><div class="pct-bar-fill" style="width:100%;background:#f87171"></div></div><div class="pct-lbl" style="color:#b91c1c">中重度</div></div>
+      <p style="font-size:10px;color:#bbb;margin-top:8px;line-height:1.6">注意：%SS 僅為參考，需結合口吃類型、次要行為及個案感受綜合判斷。⚠️ 英語常模數值。</p>
+    </div>
+
+    <!-- 自然恢復與風險因子 -->
+    <div class="section-box">
+      <div class="s-title">📈 自然恢復率與持續風險因子<sup class="src s-guitar">G</sup></div>
+      <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#065f46;line-height:1.6">
+        約 <strong>75–80%</strong> 口吃兒童可自然恢復，多數在發病後 <strong>18–24 個月</strong>內；女童恢復率高於男童且恢復更早。
+      </div>
+      <div class="risk-grid">
+        <div class="risk-card risk-persist">
+          <div class="risk-card-title">⚠️ 持續口吃風險因子</div>
+          <div class="risk-item">• 男性（女童恢復率較高）</div>
+          <div class="risk-item">• 有家族持續口吃史</div>
+          <div class="risk-item">• 發病年齡較晚（＞3.5 歲）</div>
+          <div class="risk-item">• 發病後已持續 6–12 個月以上</div>
+          <div class="risk-item">• 合併語言或構音問題</div>
+          <div class="risk-item">• 嚴重度漸增而非減少</div>
+          <div class="risk-item">• 個案／家長明顯焦慮</div>
+          <div class="risk-item">• 出現次要行為或迴避</div>
+        </div>
+        <div class="risk-card risk-recover">
+          <div class="risk-card-title">✅ 較可能自然恢復</div>
+          <div class="risk-item">• 女性</div>
+          <div class="risk-item">• 無家族口吃持續史</div>
+          <div class="risk-item">• 發病年齡早（2–3 歲）</div>
+          <div class="risk-item">• 發病後 6 個月內，嚴重度減少</div>
+          <div class="risk-item">• 無合併語言問題</div>
+          <div class="risk-item">• 無次要行為</div>
+          <div class="risk-item">• 個案對口吃無特別在意</div>
+        </div>
+      </div>
+      <p style="font-size:10px;color:#bbb;margin-top:8px;line-height:1.6">來源：Yairi & Ambrose（2005）Early Childhood Stuttering；Guitar（2014）. ⚠️ 英語研究數據。</p>
+    </div>
+
+    <div class="cite-box">
+      <strong>本分頁資料來源</strong>
+      <div style="margin-top:8px">
+        <div class="cite-entry"><sup class="src s-guitar">G</sup> <strong>Guitar, B.（2014）</strong>: Stuttering: An integrated approach to its nature and treatment (4th ed.). Lippincott Williams & Wilkins. ⚠️ T2 英語文獻</div>
+        <div class="cite-entry"><sup class="src s-asha">A</sup> <strong>ASHA（American Speech-Language-Hearing Association）</strong>: Stuttering practice guidelines and technical reports. www.asha.org ⚠️ T2 英語指引</div>
+        <div class="cite-entry"><strong>Yairi, E. & Ambrose, N.（2005）</strong>: Early Childhood Stuttering. Pro-Ed. ⚠️ T2 英語文獻</div>
+      </div>
+    </div>
+  </div><!-- /tab0 -->
+
+  <!-- ══════════════════════════════════════════
+       TAB 1：鑑別診斷與評估
+  ══════════════════════════════════════════ -->
+  <div id="tab1" class="tab-content">
+
+    <!-- 評估流程 -->
+    <div class="section-box">
+      <div class="s-title">📋 評估必要資訊收集<sup class="src s-guitar">G</sup><sup class="src s-asha">A</sup></div>
+      <div class="g-label">發病與病史</div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>發病年齡與發病情境（突然 vs. 漸進）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>發病至今持續時間</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>嚴重度是否有波動（情境差異：電話、朗讀、唱歌、獨白）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>家族史：一等親是否有口吃？是否自然恢復？</span></div>
+      <div class="g-label">語言發展史</div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>語言里程碑是否符合預期（詞彙、句法）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>是否合併構音或語言問題</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>雙語環境（兩種語言流暢度差異）</span></div>
+      <div class="g-label">個案態度與次要行為</div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>個案是否意識到自己口吃？是否感到困擾？</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>是否有迴避行為（換字、迂迴說法、拒絕發言）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>是否有次要行為（眨眼、頭頸動作、手勢）</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>家長／老師對口吃的反應與態度</span></div>
+      <div class="g-label">流暢情境 vs. 非流暢情境</div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>流暢時：唱歌、獨白、低壓力情境、大笑後</span></div>
+      <div class="checklist-item"><span class="checklist-ic">□</span><span>惡化時：打電話、陌生人、課堂回答、時間壓力</span></div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點（倒退／向前）</button>
+      <div class="fold-body">
+        <div class="clin-panel">
+          <div class="clin-lbl first">← 若資訊不足（退回基礎）</div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>先確認：是否真的是口吃？還是正常的學齡前非流暢期？請家長描述具體例子（有無聲音/音節重複）</span></div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>確認發病時間點，區分新發病 vs. 慢性口吃</span></div>
+          <div class="clin-lbl">→ 若已確認口吃（向前深化）</div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>進行正式語料採樣（至少 300 個音節），計算 %SS 與口吃類型分佈</span></div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>若個案 ≥ 7 歲，加入態度評估（CAT / A-19 量表概念）</span></div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>評估次要行為嚴重度（影響生活功能程度）</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SSI-4 嚴重度 -->
+    <div class="section-box">
+      <div class="s-title">📊 口吃嚴重度參考（SSI-4 概念）<sup class="src s-guitar">G</sup></div>
+      <p style="font-size:11.5px;color:#555;margin-bottom:10px;line-height:1.6">SSI-4（Stuttering Severity Instrument–4）綜合評估：口吃頻率、持續時間、身體伴隨動作。以下為簡化參考，正式診斷需施測完整 SSI-4。</p>
+      <table class="dtype-table">
+        <thead><tr><th>嚴重度</th><th>%SS 約略範圍</th><th>特徵描述</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-ok">非常輕微</span></td><td>1–3%</td><td>偶爾出現，不影響溝通，幾乎無次要行為</td></tr>
+          <tr><td><span class="tag tag-ok">輕微</span></td><td>3–6%</td><td>偶爾明顯，少數情境受影響</td></tr>
+          <tr><td><span class="tag tag-warn">中度</span></td><td>6–9%</td><td>多數情境均出現，有部分次要行為</td></tr>
+          <tr><td><span class="tag tag-bad">重度</span></td><td>10–16%</td><td>大多數溝通受影響，明顯次要行為</td></tr>
+          <tr><td><span class="tag tag-bad">極重度</span></td><td>&gt;16%</td><td>嚴重影響日常溝通，明顯迴避與情緒反應</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:10px;color:#bbb;margin-top:8px">⚠️ 此表為概念性分級，%SS 範圍因情境與語料類型而異，不得單獨用於診斷分類。</p>
+    </div>
+
+    <!-- 轉介指標 -->
+    <div class="rf-box">
+      <div class="rf-title">🚩 轉介正式評估指標<sup class="src s-asha">A</sup></div>
+      <div class="rf-item"><span class="rf-lbl">持續時間</span><span>口吃持續超過 <strong>6 個月</strong>，尤其無改善跡象</span></div>
+      <div class="rf-item"><span class="rf-lbl">類型</span><span>出現明顯聲音/音節重複、延長、或卡頓（非整詞重複）</span></div>
+      <div class="rf-item"><span class="rf-lbl">次要行為</span><span>伴隨眨眼、頭頸緊張、面部用力等次要行為</span></div>
+      <div class="rf-item"><span class="rf-lbl">情緒反應</span><span>個案對說話表現出明顯焦慮、挫折、迴避</span></div>
+      <div class="rf-item"><span class="rf-lbl">家族史</span><span>一等親有持續性口吃（非自然恢復者）</span></div>
+      <div class="rf-item"><span class="rf-lbl">發病年齡</span><span>3.5 歲後新發病</span></div>
+      <div class="rf-item"><span class="rf-lbl">任何年齡</span><span>家長或個案主動求助，或老師回報課堂溝通明顯受影響</span></div>
+    </div>
+  </div><!-- /tab1 -->
+
+  <!-- ══════════════════════════════════════════
+       TAB 2：治療方法
+  ══════════════════════════════════════════ -->
+  <div id="tab2" class="tab-content">
+
+    <!-- 治療取向選擇 -->
+    <div class="warn-box">
+      <div class="warn-title">⚠️ 治療取向選擇原則<sup class="src s-guitar">G</sup></div>
+      <div class="warn-item"><strong>學齡前（2–5 歲）：</strong>優先考慮間接介入（父母諮詢、環境調整）；若風險因子多，考慮直接介入（Lidcombe Program）。</div>
+      <div class="warn-item"><strong>學齡（6–12 歲）：</strong>結合流暢塑型與口吃修正；同時處理態度與溝通信心。</div>
+      <div class="warn-item"><strong>青少年／成人：</strong>流暢塑型法或口吃修正法；必要時轉介心理諮商處理接受度與焦慮。</div>
+    </div>
+
+    <!-- 學齡前 -->
+    <div class="section-box">
+      <div class="s-title">🧒 學齡前治療（2–5 歲）</div>
+      <div class="tx-card">
+        <div class="tx-title">📌 間接介入（父母諮詢）<sup class="src s-guitar">G</sup></div>
+        <div class="tx-item"><strong>說話速度：</strong>父母放慢自身語速，示範輕鬆流暢的說話方式</div>
+        <div class="tx-item"><strong>輪替：</strong>確保足夠的說話輪替時間，不打斷孩子說話</div>
+        <div class="tx-item"><strong>反應方式：</strong>不要要求「慢慢說」「重新說一遍」；專注聆聽內容而非口吃本身</div>
+        <div class="tx-item"><strong>溝通壓力：</strong>減少開放性問題、降低情境壓力（疲勞、興奮、趕時間）</div>
+        <div class="tx-item"><strong>回饋：</strong>正向回饋溝通內容，勿對口吃行為直接評論</div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-title">📌 Lidcombe Program（直接介入）<sup class="src s-asha">A</sup></div>
+        <div class="tx-item"><strong>適用：</strong>學齡前兒童（通常 &lt;6 歲），父母能配合執行</div>
+        <div class="tx-item"><strong>第一階段：</strong>每週回診，父母在家每日執行短暫結構化練習（10–15 分鐘）；針對流暢說話給予口頭正向回饋（「那句話說得很流暢！」），偶爾溫和標記口吃（「那個詞有一點卡」）</div>
+        <div class="tx-item"><strong>第二階段：</strong>維持期，逐漸減少回診頻率至每月一次，確保成效維持</div>
+        <div class="tx-item"><strong>實證等級：</strong>有多項 RCT 支持，為目前學齡前兒童口吃最具實證的直接介入法</div>
+      </div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點</button>
+      <div class="fold-body">
+        <div class="clin-panel">
+          <div class="clin-lbl first">🚩 學齡前若缺失需注意</div>
+          <div class="clin-item"><span class="clin-ic">⚠️</span><span>父母對口吃過度關注或直接矯正 → 可能增加兒童說話焦慮</span></div>
+          <div class="clin-item"><span class="clin-ic">⚠️</span><span>口吃持續 &gt;12 個月且無改善 → 考慮升級至 Lidcombe 直接介入</span></div>
+          <div class="clin-lbl">← 倒退施測</div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>先確認父母已理解「不批評口吃」原則，再教父母辨別口吃類型</span></div>
+          <div class="clin-lbl">→ 向前施測</div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>若間接介入 3 個月無效，評估是否開始 Lidcombe；若兒童 ≥ 5 歲，考慮學齡取向</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 學齡/成人 -->
+    <div class="section-box">
+      <div class="s-title">🧑 學齡兒童至成人治療（6 歲以上）</div>
+      <div class="tx-card">
+        <div class="tx-title">📌 口吃修正法（Stuttering Modification）<sup class="src s-guitar">G</sup></div>
+        <p style="font-size:11px;color:#666;margin-bottom:8px">目標：改變口吃方式，從緊張性口吃 → 輕鬆性口吃，最終接受口吃並流暢溝通。Van Riper 四階段：</p>
+        <div class="tx-item"><strong>① 識別（Identification）：</strong>認識自己的口吃類型、情境觸發因子、次要行為</div>
+        <div class="tx-item"><strong>② 脫敏（Desensitization）：</strong>減少對口吃的負面情緒反應與迴避；刻意在低壓力情境練習口吃（voluntary stuttering）</div>
+        <div class="tx-item"><strong>③ 修正（Modification）：</strong>三種技巧：
+          <br>・取消（Cancellation）：口吃後停頓，重新以輕鬆方式說
+          <br>・抽出（Pull-out）：在口吃中改變至流暢出聲
+          <br>・預備定式（Preparatory set）：預期口吃前先放鬆調整</div>
+        <div class="tx-item"><strong>④ 穩定（Stabilization）：</strong>維持技巧，類化至各種情境</div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-title">📌 流暢塑型法（Fluency Shaping）<sup class="src s-guitar">G</sup></div>
+        <div class="tx-item"><strong>緩慢延長語音（Prolonged Speech）：</strong>放慢語速，每個音節緩慢且滑順連結，逐步加速至自然語速</div>
+        <div class="tx-item"><strong>輕柔起聲（Easy Onset）：</strong>起始元音時聲帶緩慢輕鬆合攏，避免硬起聲</div>
+        <div class="tx-item"><strong>輕觸碰（Light Articulatory Contacts）：</strong>構音接觸點輕柔，避免過度用力</div>
+        <div class="tx-item"><strong>平滑連結（Smooth Transitions）：</strong>詞與詞之間滑順過渡，無中斷</div>
+        <div class="tx-item"><strong>腹式呼吸：</strong>穩定氣流支撐，避免胸式淺呼吸</div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-title">📌 類化與維持策略<sup class="src s-guitar">G</sup><sup class="src s-notes">N</sup></div>
+        <div class="tx-item"><strong>情境層次類化：</strong>診療室 → 家庭 → 學校/職場 → 公開場合（由易至難）</div>
+        <div class="tx-item"><strong>溝通夥伴：</strong>訓練家長、老師或重要他人配合使用適當回應方式</div>
+        <div class="tx-item"><strong>自我監控：</strong>個案學習在日常中自我評估流暢度，記錄觸發情境</div>
+        <div class="tx-item"><strong>心理支持：</strong>若合併溝通焦慮、社交逃避，轉介認知行為治療（CBT）</div>
+        <div class="tx-item"><strong>支持團體：</strong>同儕支持（口吃支持團體）有助於接受度與維持</div>
+      </div>
+      <button class="clin-fold-btn" onclick="toggleFold(this)">▸ 施測要點</button>
+      <div class="fold-body">
+        <div class="clin-panel">
+          <div class="clin-lbl first">← 倒退施測（技巧未建立時）</div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>若個案尚未能識別自己的口吃類型 → 先完成識別階段，建立口吃自我覺察</span></div>
+          <div class="clin-item"><span class="clin-ic">←</span><span>若情緒負擔過重（明顯焦慮／迴避）→ 先脫敏再進入修正技巧訓練</span></div>
+          <div class="clin-lbl">→ 向前施測（技巧已建立時）</div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>結構化情境已流暢 → 挑戰真實高壓情境（打電話、課堂發言、面試）</span></div>
+          <div class="clin-item"><span class="clin-ic">→</span><span>技巧穩定 → 導入自我監控與維持計畫，評估是否可降低介入頻率</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cite-box">
+      <strong>治療分頁資料來源</strong>
+      <div style="margin-top:8px">
+        <div class="cite-entry"><sup class="src s-guitar">G</sup> Guitar, B.（2014）. Stuttering: An integrated approach (4th ed.). ⚠️ T2 英語</div>
+        <div class="cite-entry"><sup class="src s-asha">A</sup> ASHA. Stuttering. www.asha.org/practice-portal/clinical-topics/stuttering/ ⚠️ T2 英語</div>
+        <div class="cite-entry"><sup class="src s-notes">N</sup> 馬偕課程講義（未出版）⚠️ T3</div>
+      </div>
+    </div>
+  </div><!-- /tab2 -->
+</div><!-- /page -->
+
+<script>
+// ── Sources
+const SRC_LABELS={guitar:'Guitar (2014) ⚠️英語',asha:'ASHA ⚠️英語',notes:'課程講義 ⚠️'};
+
+// ── Dev data per age band
+const DEV_BANDS=[
+  {min:18,max:35,label:'幼兒語言期',bg:'#dcfce7',fg:'#15803d',
+   title:'正常非流暢高峰期（1.5–3 歲）',
+   items:[
+    {ic:'ℹ️',txt:'語言快速發展期，整詞重複與修正是正常現象',sub:'此時非流暢多屬正常發展，不需立即擔心'},
+    {ic:'📊',txt:'正常兒童每 100 個音節約有 6–10 次非流暢，但多為整詞重複與插入詞',sub:''},
+    {ic:'👀',txt:'觀察重點：是否有聲音/音節重複（ㄅ-ㄅ-爸）、延長或卡頓',sub:'這三類才屬於口吃型非流暢'},
+   ],
+   flags:['出現聲音/音節重複（非整詞）','伴有明顯用力或掙扎','家長報告突然發病且迅速加重'],
+   back:'先確認：家長描述的是哪種類型的非流暢（整詞 vs. 部分詞）？',
+   fwd:'若已有口吃型非流暢 → 評估風險因子，諮詢父母間接介入原則'},
+  {min:36,max:59,label:'學齡前語言期',bg:'#fef9c3',fg:'#a16207',
+   title:'口吃發病高峰期（3–5 歲）',
+   items:[
+    {ic:'⚠️',txt:'口吃最常在此年齡段發病（2–5 歲為好發期）',sub:'約 5% 兒童曾出現口吃，多數自然恢復'},
+    {ic:'📊',txt:'若 %SS > 3% 且伴有音節重複，須密切追蹤',sub:''},
+    {ic:'🔍',txt:'觀察是否有次要行為出現（眨眼、用力）',sub:'次要行為代表心理負擔已增加'},
+   ],
+   flags:['%SS > 3% 且屬口吃型非流暢','持續超過 6 個月無改善','出現任何次要行為','個案開始迴避說話或表達挫折'],
+   back:'先確認發病時間與非流暢類型，排除正常發展性非流暢',
+   fwd:'若持續 6 個月以上 → 考慮正式評估；評估是否符合 Lidcombe Program 條件'},
+  {min:60,max:107,label:'學齡早期',bg:'#ede9fe',fg:'#5b21b6',
+   title:'學齡兒童評估期（5–9 歲）',
+   items:[
+    {ic:'📚',txt:'進入學校後溝通壓力增加，口吃可能更明顯',sub:'課堂發言、朗讀、師生對話均為高壓情境'},
+    {ic:'💭',txt:'此年齡個案已有自我意識，開始出現迴避與焦慮',sub:''},
+    {ic:'🔍',txt:'評估重點：%SS、次要行為、態度與情緒反應',sub:'需同時處理流暢技巧與溝通信心'},
+   ],
+   flags:['老師回報課堂明顯受影響','個案拒絕發言或選擇沉默','%SS 持續 > 5%','明顯次要行為且加重中'],
+   back:'確認個案是否已理解自己的口吃，能否識別不同情境下的差異',
+   fwd:'若技巧基礎建立 → 挑戰高壓情境類化（舉手、朗讀、對話）'},
+  {min:108,max:167,label:'學齡中期',bg:'#fce7f3',fg:'#9d174d',
+   title:'青春期口吃（9–14 歲）',
+   items:[
+    {ic:'💬',txt:'同儕關係與自我認同對口吃影響加大',sub:'嘲笑、霸凌或自我排除均需評估'},
+    {ic:'🧠',txt:'可開始更深入處理接受度（acceptance）與去標籤化',sub:''},
+    {ic:'📋',txt:'流暢塑型與口吃修正法均適用，加入溝通信心建立',sub:''},
+   ],
+   flags:['明顯社交迴避、拒絕公開場合','口吃造成學業或社交功能明顯影響','合併焦慮症狀（轉介心理諮詢）'],
+   back:'確認個案對口吃的認知與情緒狀態，建立治療動機',
+   fwd:'技巧鞏固後 → 高壓情境類化、接受度訓練、考慮支持團體'},
+  {min:168,max:216,label:'成人',bg:'#f0fdf4',fg:'#14532d',
+   title:'成人口吃（14 歲以上）',
+   items:[
+    {ic:'🎯',txt:'成人口吃多為慢性，自然恢復率大幅降低',sub:'治療目標從「消除口吃」轉向「有效溝通」'},
+    {ic:'💼',txt:'工作、面試、社交場合為主要困擾情境',sub:''},
+    {ic:'🧘',txt:'接受度（acceptance）與承諾治療（ACT）可作為輔助',sub:''},
+   ],
+   flags:['職場或人際關係明顯受影響','合併社交焦慮（轉介 CBT）','個案有強烈改變意願但治療成效停滯'],
+   back:'回顧先前治療史，了解哪些技巧曾有效；評估目前維持狀況',
+   fwd:'挑戰最高難度情境（公開演講、打電話）；考慮長期自我監控計畫'},
+];
+
+function fmtAge(m){
+  if(m<12) return `${m} 個月`;
+  const y=Math.floor(m/12),mo=m%12;
+  if(mo===0) return `${y} 歲`;
+  return `${y} 歲 ${mo} 個月`;
+}
+
+function updateDev(){
+  const age=parseInt(document.getElementById('ageSlider').value);
+  document.getElementById('ageValEl').textContent=`${age} 個月`;
+  document.getElementById('ageSubEl').textContent=age>=12?fmtAge(age):'';
+  const band=DEV_BANDS.find(b=>age>=b.min&&age<=b.max)||DEV_BANDS[DEV_BANDS.length-1];
+  document.getElementById('stagePill').innerHTML=`<span class="stage-pill" style="background:${band.bg};color:${band.fg}">${band.label}</span>`;
+
+  // Main content
+  let h=`<p style="font-size:12.5px;font-weight:700;color:#1a1a1a;margin-bottom:8px">${band.title}</p>`;
+  band.items.forEach(item=>{
+    h+=`<div class="ms-item"><span class="ms-ic">${item.ic}</span><div class="ms-body"><span class="ms-txt">${item.txt}</span>${item.sub?`<div class="ms-sub">${item.sub}</div>`:''}</div></div>`;
+  });
+  if(band.flags&&band.flags.length){
+    h+=`<div class="g-label" style="margin-top:10px">🚩 本齡需注意</div>`;
+    band.flags.forEach(f=>{h+=`<div class="ms-item"><span class="ms-ic" style="color:#dc2626">⚠</span><div class="ms-body"><span class="ms-txt" style="color:#7f1d1d">${f}</span></div></div>`;});
+  }
+  document.getElementById('devMain').innerHTML=h;
+
+  // Clinical panel
+  let c=`<div class="clin-lbl first">← 倒退施測</div><div class="clin-item"><span class="clin-ic">←</span><span>${band.back}</span></div>`;
+  c+=`<div class="clin-lbl">→ 向前施測</div><div class="clin-item"><span class="clin-ic">→</span><span>${band.fwd}</span></div>`;
+  document.getElementById('devClin').innerHTML=c;
+}
+
+function switchTab(idx){
+  document.querySelectorAll('.tab-content').forEach((el,i)=>{
+    el.classList.toggle('act',i===idx);
+  });
+  document.querySelectorAll('.tab-btn').forEach((btn,i)=>{
+    btn.classList.toggle('act',i===idx);
+  });
+}
+
+function toggleFold(btn){
+  const body=btn.nextElementSibling;
+  const open=body.classList.toggle('open');
+  btn.textContent=btn.textContent.replace(open?'▸':'▾',open?'▾':'▸');
+}
+
+updateDev();
+document.getElementById('ageSlider').addEventListener('input',updateDev);
+</script>
+</body>
+</html>
