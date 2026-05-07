@@ -215,6 +215,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
 .anlz-priority.low{background:#f3f4f6;color:#6b7280}
 .anlz-priority.special{background:#ede9fe;color:#5b21b6}
 .anlz-summary{padding:10px 12px;background:#1a1a1a;border-radius:10px;color:#fff;font-size:11px;line-height:1.7;margin-top:4px}
+.anlz-mode-toggle{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.anlz-mode-btn{padding:6px 14px;border-radius:99px;border:1.5px solid #ddd;background:#fafaf8;font-size:11px;color:#888;cursor:pointer;font-family:inherit;font-weight:600}
+.anlz-mode-btn:hover{border-color:#bbb;color:#555}
+.anlz-mode-btn.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.anlz-rime-warn{font-size:10px;color:#92400e;background:#fef3c7;border-left:3px solid #f59e0b;padding:6px 10px;border-radius:6px;margin-bottom:10px;line-height:1.6}
+.anlz-rime-source{font-size:10px;color:#6b7280;margin-top:6px;padding:5px 8px;background:#fafaf8;border-radius:6px;border-left:3px solid #d1d5db;line-height:1.6}
 @media(max-width:600px){
   .anlz-inputs{flex-direction:column;align-items:stretch}
   .anlz-input{width:100%}
@@ -374,7 +380,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
   <!-- Age slider (phono) -->
   <div class="pp-age-bar">
     <span class="age-label">個案年齡</span>
-    <input type="range" id="pp-age-slider" min="2" max="7" step="0.5" value="4" oninput="updatePhono()">
+    <input type="range" id="pp-age-slider" min="2" max="7" step="0.5" value="4" oninput="onAgeSliderChange()">
     <span class="age-val" id="pp-age-val">4 歲</span>
     <button onclick="origOpenModal()" style="padding:5px 12px;border-radius:7px;border:1px solid #ddd;background:#fff;font-size:11px;color:#444;cursor:pointer;white-space:nowrap;flex-shrink:0">📊 出現率總表</button>
   </div>
@@ -444,22 +450,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-siz
   <!-- ── Phonological Analyzer ── -->
   <div class="anlz-panel">
     <div class="anlz-title">🔍 音韻歷程快速分析</div>
-    <div class="anlz-hint">輸入個案的目標聲母與實際說出的聲母，自動辨識音韻歷程並連動上方年齡滑桿判斷是否正常。若聲母被完全省略，「個案說出」欄位填入「省」。</div>
+    <div class="anlz-mode-toggle">
+      <button class="anlz-mode-btn on" id="mode-cons" onclick="setAnlzMode('cons')">🗣 聲母分析</button>
+      <button class="anlz-mode-btn" id="mode-rime" onclick="setAnlzMode('rime')">🌀 韻母分析</button>
+    </div>
+    <div class="anlz-hint" id="anlz-hint">輸入個案的目標聲母與實際說出的聲母，自動辨識音韻歷程並連動上方年齡滑桿判斷是否正常。若聲母被完全省略，「個案說出」欄位填入「省」。</div>
+    <div class="anlz-rime-warn" id="anlz-rime-warn" style="display:none">
+      ⚠ <b>韻母歷程資料限制</b>：鄭靜宜（2011）僅針對 <b>聲母</b> 建立 N＝326 的常模出現率，韻母歷程未列入論文統計（p. 141 說明出現率不高，故略過）。本分析器之韻母歷程判斷依據「鄭靜宜（2011）p. 138 對音節結構歷程的描述」與一般 SLP 臨床慣例，<b>無台灣兒童常模出現率與 SSD 對比資料</b>，僅供臨床參考。
+    </div>
     <div class="anlz-inputs">
       <div class="anlz-field">
-        <span class="anlz-label">目標聲母（正確）</span>
+        <span class="anlz-label" id="anlz-target-label">目標聲母（正確）</span>
         <input class="anlz-input" id="anlz-target" placeholder="ㄊ" maxlength="2" oninput="anlzClearError(this)">
       </div>
       <div class="anlz-arrow">→</div>
       <div class="anlz-field">
-        <span class="anlz-label">個案說出的聲母</span>
+        <span class="anlz-label" id="anlz-error-label">個案說出的聲母</span>
         <input class="anlz-input" id="anlz-error" placeholder="ㄉ" maxlength="2" oninput="anlzClearError(this)" onkeydown="if(event.key==='Enter')runAnalysis()">
       </div>
       <button class="anlz-btn" onclick="runAnalysis()">分析</button>
       <button class="anlz-clear" onclick="clearAnalysis()">清除</button>
     </div>
     <div class="anlz-results" id="anlz-results">
-      <div class="anlz-empty">輸入聲母後點「分析」</div>
+      <div class="anlz-empty" id="anlz-empty-msg">輸入聲母後點「分析」</div>
     </div>
 
     <!-- Stimulability follow-up -->
@@ -1051,6 +1064,21 @@ function updatePhono() {
   });
 }
 
+// 年齡滑桿變動時：更新上方歷程卡片，並（若分析器有有效輸入）自動重新跑分析
+// 讓「應消失年齡 vs 案主年齡」的比對結果即時更新。
+function onAgeSliderChange() {
+  updatePhono();
+  // 只有在分析器兩個欄位都有值時才自動重跑
+  const tEl = document.getElementById('anlz-target');
+  const eEl = document.getElementById('anlz-error');
+  if(!tEl || !eEl) return;
+  const t = (tEl.value||'').trim();
+  const e = (eEl.value||'').trim();
+  if(t && e) {
+    runAnalysis();
+  }
+}
+
 // ════════════════════════════════════════
 // PHONOLOGICAL ANALYSIS ENGINE
 // Based on 鄭靜宜 (2011) Appendix 2
@@ -1224,7 +1252,485 @@ function detectProcesses(target, errorSound) {
   return [...new Set(procs)]; // deduplicate
 }
 
-// Helper: look up process by exact name OR by name that starts with procName + '（'
+// ════════════════════════════════════════
+// RIME (韻母) ANALYSIS ENGINE
+// 韻母歷程在台灣 SLP 文獻中無常模出現率資料：
+// 鄭靜宜（2011）p. 138 提及末尾鼻音省略屬「音節結構歷程」，
+// p. 141 指出介音省略「出現率不高，略過不敘」，論文僅統計聲母歷程。
+// 因此本引擎不提供常模出現率／SSD 對比，僅做歷程辨識與一般臨床建議。
+// ════════════════════════════════════════
+
+// 單字韻母特徵表
+const RIME_BASE_FEATURES = {
+  // 單韻母
+  'ㄚ': {nucleus:'a',  coda:null, codaType:null},
+  'ㄛ': {nucleus:'o',  coda:null, codaType:null},
+  'ㄜ': {nucleus:'ə',  coda:null, codaType:null},
+  'ㄝ': {nucleus:'ɛ',  coda:null, codaType:null},
+  // 複韻母（vocalic coda）
+  'ㄞ': {nucleus:'a',  coda:'i',  codaType:'vocalic'},
+  'ㄟ': {nucleus:'e',  coda:'i',  codaType:'vocalic'},
+  'ㄠ': {nucleus:'a',  coda:'u',  codaType:'vocalic'},
+  'ㄡ': {nucleus:'o',  coda:'u',  codaType:'vocalic'},
+  // 聲隨韻母（nasal coda）
+  'ㄢ': {nucleus:'a',  coda:'n',  codaType:'nasal-alveolar'},
+  'ㄣ': {nucleus:'ə',  coda:'n',  codaType:'nasal-alveolar'},
+  'ㄤ': {nucleus:'a',  coda:'ŋ',  codaType:'nasal-velar'},
+  'ㄥ': {nucleus:'ə',  coda:'ŋ',  codaType:'nasal-velar'},
+  // 捲舌韻
+  'ㄦ': {nucleus:'ə',  coda:'r',  codaType:'rhotic'},
+};
+
+// 介音 (medials) - 也可獨立成韻
+const MEDIALS = new Set(['ㄧ','ㄨ','ㄩ']);
+const MEDIAL_AS_NUCLEUS = {
+  'ㄧ': {nucleus:'i', coda:null, codaType:null},
+  'ㄨ': {nucleus:'u', coda:null, codaType:null},
+  'ㄩ': {nucleus:'y', coda:null, codaType:null},
+};
+
+// 解析韻母輸入，傳回 {medial, nucleus, coda, codaType, raw} 或 null
+function parseRime(input) {
+  if(!input) return null;
+  const chars = [...input.trim()];
+  if(chars.length === 0) return null;
+
+  // 1 char: 介音單獨成韻 OR 基本韻母
+  if(chars.length === 1) {
+    const c = chars[0];
+    if(MEDIAL_AS_NUCLEUS[c]) {
+      return {medial:null, ...MEDIAL_AS_NUCLEUS[c], raw:input};
+    }
+    if(RIME_BASE_FEATURES[c]) {
+      return {medial:null, ...RIME_BASE_FEATURES[c], raw:input};
+    }
+    return null;
+  }
+
+  // 2 chars: 介音 + 基本韻母
+  if(chars.length === 2) {
+    const [a, b] = chars;
+    if(MEDIALS.has(a) && RIME_BASE_FEATURES[b]) {
+      return {medial:a, ...RIME_BASE_FEATURES[b], raw:input};
+    }
+    return null;
+  }
+
+  return null; // 不支援 3+ 字
+}
+
+// 韻母歷程偵測（基於結構特徵差異）
+// 設計原則：每個結構事件（介音變化、韻尾變化、核心元音變化）應獨立偵測，
+// 允許單一錯誤同時觸發多個歷程（如「窗」ㄨㄤ→ㄚ 應同時偵測「介音省略」與「末尾鼻音省略」）。
+function detectRimeProcesses(target, errorInput) {
+  const t = parseRime(target);
+  const e = parseRime(errorInput);
+  if(!t || !e) return [];
+  // 完全相同
+  if(t.medial===e.medial && t.nucleus===e.nucleus && t.coda===e.coda) return [];
+
+  const procs = [];
+
+  // ── 韻尾相關歷程（獨立偵測） ──
+
+  // 1. 末尾鼻音省略 (聲隨韻母末尾鼻音脫落)：ㄢ→ㄚ ㄣ→ㄜ ㄤ→ㄚ ㄥ→ㄜ
+  if((t.codaType==='nasal-alveolar' || t.codaType==='nasal-velar') && e.coda===null) {
+    procs.push('末尾鼻音省略');
+  }
+
+  // 2. 後鼻韻前置化 (Velar nasal fronting)：ㄤ→ㄢ ㄥ→ㄣ
+  if(t.codaType==='nasal-velar' && e.codaType==='nasal-alveolar') {
+    procs.push('後鼻韻前置化');
+  }
+
+  // 3. 前鼻韻後置化 (Alveolar nasal backing)：ㄢ→ㄤ ㄣ→ㄥ
+  if(t.codaType==='nasal-alveolar' && e.codaType==='nasal-velar') {
+    procs.push('前鼻韻後置化');
+  }
+
+  // 4. 複韻母單元化 (Diphthong reduction)：ㄞ→ㄚ ㄠ→ㄚ ㄟ→ㄝ ㄡ→ㄛ
+  if(t.codaType==='vocalic' && e.coda===null) {
+    procs.push('複韻母單元化');
+  }
+
+  // 5. 鼻韻添加 (Nasal coda insertion)：ㄚ→ㄢ ㄜ→ㄥ
+  if(t.coda===null && (e.codaType==='nasal-alveolar' || e.codaType==='nasal-velar')) {
+    procs.push('鼻韻添加');
+  }
+
+  // 6. 韻尾鼻音化（韻尾性質改變）：ㄞ→ㄢ（vocalic→nasal）
+  if(t.codaType==='vocalic' && (e.codaType==='nasal-alveolar' || e.codaType==='nasal-velar')) {
+    procs.push('韻尾鼻音化');
+  }
+
+  // 7. 韻尾去鼻音化（韻尾鼻→韻尾元音）：ㄢ→ㄞ ㄤ→ㄠ
+  if((t.codaType==='nasal-alveolar' || t.codaType==='nasal-velar') && e.codaType==='vocalic') {
+    procs.push('韻尾去鼻音化');
+  }
+
+  // ── 介音相關歷程（獨立偵測；不要求 nucleus/coda 不變） ──
+
+  // 8. 介音省略 (Medial / glide deletion)
+  if(t.medial!==null && e.medial===null) {
+    procs.push('介音省略');
+  }
+
+  // 9. 介音添加 (Medial / glide insertion)
+  if(t.medial===null && e.medial!==null) {
+    procs.push('介音添加');
+  }
+
+  // 10. 介音替代 (Medial substitution)
+  if(t.medial!==null && e.medial!==null && t.medial!==e.medial) {
+    procs.push('介音替代');
+  }
+
+  // ── 元音核心改變 ──
+  // 11. 韻母替代：核心元音改變且非由結構歷程「自然連帶」造成
+  // 例外：複韻母單元化 ㄟ→ㄝ 含 /e/→/ɛ/ 之自然連帶，不另計入韻母替代
+  const nucleusShiftIsInherent = (
+    procs.includes('複韻母單元化') && t.raw==='ㄟ' && e.raw==='ㄝ'
+  );
+  if(t.nucleus !== e.nucleus && !nucleusShiftIsInherent) {
+    procs.push('韻母替代');
+  }
+
+  return [...new Set(procs)];
+}
+
+// 韻母歷程資訊表（無常模數據；基於鄭靜宜 2011 與一般 SLP 文獻）
+const RIME_PROCESS_INFO = {
+  '末尾鼻音省略': {
+    eng:'Final Nasal Deletion',
+    type:'developmental', priority:'high',
+    suppressAge:3,
+    examples:'蛋 ㄉㄢ → 大 ㄉㄚ｜冰 ㄅㄧㄥ → 逼 ㄅㄧ｜紅 ㄏㄨㄥ → 呼 ㄏㄨ',
+    def:'聲隨韻母（ㄢㄣㄤㄥ）的末尾鼻音被省略，韻尾消失。屬鄭靜宜（2011）所述「音節結構歷程」中之末尾輔音省略。',
+    note:'鄭靜宜（2011）p. 138 明確指出此歷程為華語兒童音節結構歷程之主要型態。論文未提供此歷程之常模出現率，但音節結構歷程整體在 1;6–4;0 歲屬發展早期歷程；馬偕 w5 鑑別診斷課程講義依英語文獻指出「Final consonant deletion is usually suppressed around age 3」可作為臨床參考。明顯影響語音清晰度，3 歲後仍系統性出現需評估。',
+    source:'鄭靜宜（2011）p. 138；⚠ 馬偕 w5 課程講義（FCD 約 3 歲抑制）；無台灣常模出現率',
+  },
+  '後鼻韻前置化': {
+    eng:'Velar Nasal Fronting',
+    type:'developmental', priority:'med',
+    suppressAge:null,
+    examples:'幫 ㄅㄤ → ㄅㄢ｜冰 ㄅㄧㄥ → ㄅㄧㄣ｜紅 ㄏㄨㄥ → ㄏㄨㄣ',
+    def:'後鼻韻（ㄤㄥ）韻尾發成前鼻韻（ㄢㄣ），韻尾構音部位由舌根前移至齒槽。',
+    note:'⚠ 此歷程在台灣 SLP 文獻中尚未建立常模出現率。臨床上需區辨方言性變異（部分台語使用者前後鼻韻對立較弱）與真正的語音異常，建議結合家庭語境綜合判斷。',
+    source:'⚠ 無台灣常模；參照一般 SLP 臨床慣例',
+  },
+  '前鼻韻後置化': {
+    eng:'Alveolar Nasal Backing',
+    type:'rare', priority:'high',
+    suppressAge:null,
+    examples:'飯 ㄈㄢ → ㄈㄤ｜根 ㄍㄣ → ㄍㄥ',
+    def:'前鼻韻（ㄢㄣ）韻尾發成後鼻韻（ㄤㄥ），韻尾構音部位由齒槽後移至舌根。屬罕見方向歷程。',
+    note:'⚠ 無台灣常模資料。此方向之歷程相對罕見，若系統性出現需排除聽知覺、結構或方言因素。',
+    source:'⚠ 無台灣常模',
+  },
+  '介音省略': {
+    eng:'Medial (Glide) Deletion',
+    type:'rare', priority:'med',
+    suppressAge:null,
+    examples:'快 ㄎㄨㄞ → 開 ㄎㄞ｜小 ㄒㄧㄠ → 掃 ㄒㄠ｜月 ㄩㄝ → 餓 ㄜ／ㄝ',
+    def:'韻母中的介音（ㄧ／ㄨ／ㄩ）被省略，導致音節由 CGVC 簡化為 CVC。',
+    note:'鄭靜宜（2011）p. 141 將「介音省略」列為出現率不高之歷程，論文未列入正式統計。雖頻率低，但會明顯改變音節結構，影響語音清晰度。系統性出現時需評估個案音節結構掌握度。',
+    source:'鄭靜宜（2011）p. 141；⚠ 無台灣常模出現率',
+  },
+  '介音添加': {
+    eng:'Medial (Glide) Insertion',
+    type:'rare', priority:'med',
+    suppressAge:null,
+    examples:'卡 ㄎㄚ → ㄎㄧㄚ｜哥 ㄍㄜ → ㄍㄧㄜ',
+    def:'原本不含介音的韻母被加入介音，屬罕見方向歷程，可能反映韻母系統的過度類化。',
+    note:'⚠ 無台灣常模資料。建議結合更多語料評估是否為系統性歷程。',
+    source:'⚠ 無台灣常模',
+  },
+  '介音替代': {
+    eng:'Medial Substitution',
+    type:'rare', priority:'med',
+    suppressAge:null,
+    examples:'家 ㄐㄧㄚ → ㄐㄨㄚ｜雪 ㄒㄩㄝ → ㄒㄧㄝ',
+    def:'介音被另一個介音取代（ㄧ／ㄨ／ㄩ 三者之間的替代）。',
+    note:'⚠ 無台灣常模資料。需判斷是個案系統性歷程，或為單詞層次的偶發替代。',
+    source:'⚠ 無台灣常模',
+  },
+  '複韻母單元化': {
+    eng:'Diphthong Reduction',
+    type:'developmental', priority:'med',
+    suppressAge:null,
+    examples:'愛 ㄞ → ㄚ｜貓 ㄇㄠ → ㄇㄚ｜給 ㄍㄟ → ㄍㄝ',
+    def:'複韻母（ㄞㄟㄠㄡ）被簡化為單元音，韻尾元音脫落。屬音節結構簡化歷程。',
+    note:'⚠ 無台灣常模資料。常見於語音發展早期或音節結構動作協調未成熟之個案。若系統性出現於 3 歲後，建議納入評估。',
+    source:'⚠ 無台灣常模；參照一般 SLP 臨床慣例',
+  },
+  '鼻韻添加': {
+    eng:'Nasal Coda Insertion',
+    type:'rare', priority:'high',
+    suppressAge:null,
+    examples:'爸 ㄅㄚ → ㄅㄤ｜哥 ㄍㄜ → ㄍㄥ',
+    def:'原本不含鼻音韻尾的韻母被加入鼻音韻尾。罕見方向歷程。',
+    note:'⚠ 無台灣常模資料。若系統性出現，建議排除顎咽功能、聽知覺與方言因素。',
+    source:'⚠ 無台灣常模',
+  },
+  '韻尾鼻音化': {
+    eng:'Coda Nasalization',
+    type:'rare', priority:'high',
+    suppressAge:null,
+    examples:'愛 ㄞ → ㄢ｜高 ㄠ → ㄤ',
+    def:'複韻母的元音韻尾被鼻音韻尾取代，韻尾性質改變。',
+    note:'⚠ 無台灣常模資料。屬罕見歷程，建議排除顎咽功能與聽知覺因素。',
+    source:'⚠ 無台灣常模',
+  },
+  '韻尾去鼻音化': {
+    eng:'Coda Denasalization',
+    type:'rare', priority:'high',
+    suppressAge:null,
+    examples:'看 ㄎㄢ → ㄎㄞ｜高 (反例) ㄤ → ㄠ',
+    def:'聲隨韻母的鼻音韻尾被元音韻尾取代，韻尾鼻音性質消失。',
+    note:'⚠ 無台灣常模資料。可能與顎咽功能（鼻音共鳴不足）有關，建議排除顎咽功能異常。',
+    source:'⚠ 無台灣常模',
+  },
+  '韻母替代': {
+    eng:'Vowel Substitution',
+    type:'rare', priority:'med',
+    suppressAge:null,
+    examples:'爸 ㄚ → ㄛ｜哥 ㄜ → ㄚ',
+    def:'核心元音被另一個元音取代（無法歸入上述任一結構性歷程）。',
+    note:'⚠ 無台灣常模資料。鄭靜宜（2011）論文亦未統計韻母替代。若系統性出現需細查語料一致性與聽知覺能力。',
+    source:'⚠ 無台灣常模',
+  },
+};
+
+// 韻母歷程結果卡片（不顯示常模出現率／SSD 對比，但會根據年齡與 suppressAge 動態判定）
+function renderRimeResultCard(procName, age) {
+  const info = RIME_PROCESS_INFO[procName];
+  if(!info) return '';
+
+  // ── 年齡狀態判斷（age-aware verdict） ──
+  // 有 suppressAge → 比對案主年齡：未到→年齡內可預期；已到→應已抑制
+  // 無 suppressAge → 顯示「無台灣常模年齡參照」
+  let ageVerdict = null;       // {bg, color, label, longText}
+  let ageBeyondSuppress = false;
+  if(typeof info.suppressAge === 'number' && typeof age === 'number') {
+    if(age < info.suppressAge) {
+      ageVerdict = {
+        bg:'#dcfce7', color:'#166534',
+        label:`年齡內可預期（&lt; ${info.suppressAge} 歲）`,
+        longText:`案主目前 ${age} 歲，依參考文獻此歷程預期約於 ${info.suppressAge} 歲達抑制，目前出現屬發展期內合理現象。`
+      };
+    } else {
+      ageBeyondSuppress = true;
+      ageVerdict = {
+        bg:'#fee2e2', color:'#991b1b',
+        label:`應已抑制（≥ ${info.suppressAge} 歲）`,
+        longText:`案主目前 ${age} 歲，依參考文獻此歷程預期約於 ${info.suppressAge} 歲達抑制。仍系統性出現需評估介入。`
+      };
+    }
+  } else {
+    ageVerdict = {
+      bg:'#f0f0ee', color:'#6b7280',
+      label:'無台灣常模年齡參照',
+      longText:null
+    };
+  }
+
+  // ── 卡片優先順序顏色（年齡已超抑制 → 升級為 high）──
+  let cardClass = 'priority-low';
+  if(info.type==='rare' && info.priority==='high') cardClass='priority-high';
+  else if(ageBeyondSuppress) cardClass='priority-high';
+  else if(info.type==='developmental' && info.priority==='high' && ageVerdict.label.startsWith('無')) cardClass='priority-high';
+  else if(info.priority==='med') cardClass='priority-med';
+
+  // ── 結構分類 badge（保留：標示歷程屬性，與年齡無關） ──
+  const clsLabels = {
+    developmental: {bg:'#fef3c7', color:'#92400e', label:'發展性歷程'},
+    rare:          {bg:'#fee2e2', color:'#991b1b', label:'罕見歷程'},
+  };
+  const c = clsLabels[info.type] || {bg:'#f0f0ee', color:'#555', label:'─'};
+
+  // ── 介入建議（年齡 aware） ──
+  let priorityCls, priorityText;
+  if(ageBeyondSuppress) {
+    priorityCls='high';
+    priorityText=`🔴 案主已超過參考抑制年齡（${info.suppressAge} 歲）：建議優先納入評估與介入考量`;
+  } else if(info.type==='rare' && info.priority==='high') {
+    priorityCls='high';
+    priorityText='🔴 罕見方向歷程：建議優先評估，排除結構或聽知覺因素';
+  } else if(typeof info.suppressAge==='number' && typeof age==='number' && age < info.suppressAge) {
+    priorityCls='med';
+    priorityText=`🟢 年齡內可預期：持續觀察，於 ${info.suppressAge} 歲後仍系統性出現再評估介入`;
+  } else if(info.priority==='high') {
+    priorityCls='high';
+    priorityText='🔴 影響語音清晰度大：建議納入治療目標';
+  } else {
+    priorityCls='med';
+    priorityText='🟡 持續觀察：若系統性出現可列為次要目標，先處理高優先項';
+  }
+
+  // 治療取向：韻母歷程多屬音節結構或音韻層次，建議音韻取向＋構音輔助
+  const approachHTML = `<div class="anlz-approach">
+    <div style="margin-bottom:4px"><span class="anlz-approach-tag phonological">音韻取向為主</span>韻母歷程多屬音節結構或音韻系統層次問題，建議採${methodLink('minimal_pairs','最小配對詞彙訓練')}建立韻母對立概念，優先處理影響音節完整度的歷程（如末尾鼻音省略、複韻母單元化）。</div>
+    <div><span class="anlz-approach-tag phonetic">構音取向輔助</span>若個案無法誘發目標韻母（如鼻音共鳴不足），需先以${methodLink('phonetic_placement','語音位置治療法')}建立韻母動作基礎（含鼻音／非鼻音對比、口腔氣流控制），再進入音韻訓練。</div>
+  </div>`;
+
+  // ── 年齡狀態詳述（卡片內醒目區） ──
+  const ageDetailHTML = ageVerdict.longText
+    ? `<div style="font-size:10px;color:${ageVerdict.color};background:${ageVerdict.bg};padding:5px 8px;border-radius:6px;margin:4px 0 6px;line-height:1.6">📍 ${ageVerdict.longText}</div>`
+    : '';
+
+  return `<div class="anlz-result-card ${cardClass}">
+    <div class="anlz-proc-name">${procName}　<span style="font-size:10px;font-weight:400;color:#888">${info.eng}</span></div>
+    <div class="anlz-proc-def">${info.def}</div>
+    <div class="anlz-meta-row">
+      <span class="anlz-badge" style="background:${ageVerdict.bg};color:${ageVerdict.color}">${ageVerdict.label}</span>
+      <span class="anlz-badge" style="background:${c.bg};color:${c.color}">${c.label}</span>
+    </div>
+    ${ageDetailHTML}
+    <div style="font-size:10px;color:#6b7280;margin:4px 0 6px;line-height:1.6"><b>範例：</b>${info.examples}</div>
+    <div style="font-size:10px;color:#374151;line-height:1.6;padding:6px 8px;background:#fafaf8;border-radius:6px;margin-bottom:6px">${info.note}</div>
+    ${approachHTML}
+    <div class="anlz-priority ${priorityCls}" style="margin-top:6px">介入建議：${priorityText}</div>
+    <div class="anlz-rime-source">資料來源：${info.source}</div>
+  </div>`;
+}
+
+// 模式切換
+window._anlzMode = 'cons';
+function setAnlzMode(mode) {
+  if(mode === window._anlzMode) return;
+  window._anlzMode = mode;
+
+  const consBtn = document.getElementById('mode-cons');
+  const rimeBtn = document.getElementById('mode-rime');
+  const hint = document.getElementById('anlz-hint');
+  const warn = document.getElementById('anlz-rime-warn');
+  const tLabel = document.getElementById('anlz-target-label');
+  const eLabel = document.getElementById('anlz-error-label');
+  const tInput = document.getElementById('anlz-target');
+  const eInput = document.getElementById('anlz-error');
+  const empty = document.getElementById('anlz-empty-msg');
+
+  if(mode === 'rime') {
+    consBtn.classList.remove('on'); rimeBtn.classList.add('on');
+    hint.innerHTML = '輸入個案的目標韻母與實際說出的韻母，自動辨識韻母音韻歷程。可輸入單韻母（ㄚ）、複韻母（ㄞ）、聲隨韻母（ㄢㄤ）或含介音的韻母（ㄧㄠ、ㄨㄢ、ㄩㄝ）。';
+    warn.style.display = 'block';
+    tLabel.textContent = '目標韻母（正確）';
+    eLabel.textContent = '個案說出的韻母';
+    tInput.placeholder = 'ㄢ';
+    eInput.placeholder = 'ㄚ';
+  } else {
+    rimeBtn.classList.remove('on'); consBtn.classList.add('on');
+    hint.innerHTML = '輸入個案的目標聲母與實際說出的聲母，自動辨識音韻歷程並連動上方年齡滑桿判斷是否正常。若聲母被完全省略，「個案說出」欄位填入「省」。';
+    warn.style.display = 'none';
+    tLabel.textContent = '目標聲母（正確）';
+    eLabel.textContent = '個案說出的聲母';
+    tInput.placeholder = 'ㄊ';
+    eInput.placeholder = 'ㄉ';
+  }
+
+  // 清空現有結果與面板
+  tInput.value = ''; eInput.value = '';
+  tInput.classList.remove('error'); eInput.classList.remove('error');
+  document.getElementById('anlz-results').innerHTML =
+    `<div class="anlz-empty">${mode==='rime' ? '輸入韻母後點「分析」' : '輸入聲母後點「分析」'}</div>`;
+  document.getElementById('stim-panel').style.display = 'none';
+  document.getElementById('consist-panel').style.display = 'none';
+}
+
+// 韻母分析主流程
+function runRimeAnalysis() {
+  const target = document.getElementById('anlz-target').value.trim();
+  const errorInput = document.getElementById('anlz-error').value.trim();
+  const res = document.getElementById('anlz-results');
+
+  // 驗證
+  let valid = true;
+  const tParsed = parseRime(target);
+  const eParsed = parseRime(errorInput);
+  if(!tParsed) {
+    document.getElementById('anlz-target').classList.add('error');
+    valid = false;
+  }
+  if(!eParsed) {
+    document.getElementById('anlz-error').classList.add('error');
+    valid = false;
+  }
+  if(!valid) {
+    res.innerHTML = `<div style="font-size:11px;color:#991b1b;padding:8px 10px;background:#fce0e0;border-radius:7px">請輸入有效的注音韻母（單韻母 ㄚㄛㄜㄝ、複韻母 ㄞㄟㄠㄡ、聲隨韻母 ㄢㄣㄤㄥ、介音 ㄧㄨㄩ，或含介音的組合如 ㄧㄠ、ㄨㄢ、ㄩㄝ）</div>`;
+    document.getElementById('stim-panel').style.display = 'none';
+    document.getElementById('consist-panel').style.display = 'none';
+    return;
+  }
+
+  // 完全相同
+  if(target === errorInput) {
+    res.innerHTML = `<div class="anlz-correct">✓ 目標韻母與實際韻母相同，無音韻歷程</div>`;
+    document.getElementById('stim-panel').style.display = 'none';
+    document.getElementById('consist-panel').style.display = 'none';
+    return;
+  }
+
+  const procs = detectRimeProcesses(target, errorInput);
+
+  if(procs.length === 0) {
+    res.innerHTML = `<div style="font-size:11px;color:#92400e;padding:8px 10px;background:#fef3c7;border-radius:7px">⚠ 無法自動辨識韻母音韻歷程分類（可能為複合錯誤或同化歷程），建議人工判斷</div>`;
+    document.getElementById('stim-panel').style.display = 'none';
+    document.getElementById('consist-panel').style.display = 'none';
+    return;
+  }
+
+  // 排序：rare 優先於 developmental
+  const RTYPE_ORDER = {rare:0, developmental:1};
+  procs.sort((a,b)=>{
+    const ia = RIME_PROCESS_INFO[a], ib = RIME_PROCESS_INFO[b];
+    if(!ia||!ib) return 0;
+    return (RTYPE_ORDER[ia.type]??2) - (RTYPE_ORDER[ib.type]??2);
+  });
+
+  // 讀取當前年齡（用於 age-aware 卡片）
+  const age = +document.getElementById('pp-age-slider').value;
+  const ageLabel = age===Math.floor(age) ? age+'歲' : age+'歲半';
+
+  let html = `<div style="font-size:11px;color:#555;margin-bottom:8px">
+    <b>${target}</b>→<b>${errorInput}</b>　偵測到 <b>${procs.length}</b> 個韻母音韻歷程　<span style="color:#888">（依案主 ${ageLabel} 判定）</span>
+  </div>`;
+  procs.forEach(name => { html += renderRimeResultCard(name, age); });
+
+  // 摘要：高優先項（含「年齡已超 suppressAge」的情況）
+  const beyondSuppress = procs.filter(n => {
+    const i = RIME_PROCESS_INFO[n];
+    return typeof i?.suppressAge==='number' && age >= i.suppressAge;
+  });
+  const intrinsicHigh = procs.filter(n => RIME_PROCESS_INFO[n]?.priority==='high');
+  const allConcerns = [...new Set([...beyondSuppress, ...intrinsicHigh])];
+
+  if(allConcerns.length > 0) {
+    const reasons = [];
+    if(beyondSuppress.length) reasons.push(`<b>${beyondSuppress.join('、')}</b>已超過參考抑制年齡`);
+    if(intrinsicHigh.length) {
+      const onlyIntrinsic = intrinsicHigh.filter(n=>!beyondSuppress.includes(n));
+      if(onlyIntrinsic.length) reasons.push(`<b>${onlyIntrinsic.join('、')}</b>影響語音清晰度大`);
+    }
+    html += `<div class="anlz-summary">⚠ ${reasons.join('；')}，建議優先納入評估或介入考量。<br><span style="font-size:9px;opacity:.6">韻母歷程在台灣 SLP 文獻中無常模出現率資料，本分析僅供臨床參考。鄭靜宜（2011）p. 138, p. 141。</span></div>`;
+  } else {
+    html += `<div class="anlz-summary" style="background:#374151">偵測到的韻母歷程於 ${ageLabel} 屬可預期或非優先範圍，建議結合語音樣本一致性與其他歷程綜合判斷。<br><span style="font-size:9px;opacity:.6">韻母歷程在台灣 SLP 文獻中無常模出現率資料。鄭靜宜（2011）p. 138, p. 141。</span></div>`;
+  }
+
+  res.innerHTML = html;
+
+  // Stim & Consistency 面板（同樣可用於韻母）
+  window._lastDetectedProcs = procs;
+  window._lastDetectedMode = 'rime';
+  document.getElementById('stim-target-label').textContent = target;
+  document.getElementById('stim-panel').style.display = 'block';
+  ['stim-yes','stim-no','stim-unknown'].forEach(id=>{ document.getElementById(id).className='stim-btn'; });
+  document.getElementById('stim-result').style.display = 'none';
+  document.getElementById('consist-panel').style.display = 'block';
+  ['consist-yes','consist-no','consist-unknown'].forEach(id=>{ document.getElementById(id).className='consist-btn'; });
+  document.getElementById('consist-result').style.display = 'none';
+}
+
+
 // Needed because PROCESSES uses display names like '後置化（舌根音化）' while
 // detectProcesses pushes short names like '後置化'.
 function findProcess(procName) {
@@ -1352,7 +1858,10 @@ function anlzClearError(el) { el.classList.remove('error'); }
 function clearAnalysis() {
   document.getElementById('anlz-target').value = '';
   document.getElementById('anlz-error').value = '';
-  document.getElementById('anlz-results').innerHTML = '<div class="anlz-empty">輸入聲母後點「分析」</div>';
+  document.getElementById('anlz-target').classList.remove('error');
+  document.getElementById('anlz-error').classList.remove('error');
+  const emptyMsg = window._anlzMode === 'rime' ? '輸入韻母後點「分析」' : '輸入聲母後點「分析」';
+  document.getElementById('anlz-results').innerHTML = `<div class="anlz-empty">${emptyMsg}</div>`;
   document.getElementById('stim-panel').style.display = 'none';
   document.getElementById('stim-result').style.display = 'none';
   ['stim-yes','stim-no','stim-unknown'].forEach(id=>{
@@ -1372,12 +1881,53 @@ function selectStim(choice) {
   document.getElementById('stim-unknown').className = 'stim-btn' + (choice==='unknown' ? ' stim-selected-yes' : '');
 
   const target = document.getElementById('anlz-target').value.trim();
+  const res = document.getElementById('stim-result');
+  const procs = window._lastDetectedProcs || [];
+  const mode = window._lastDetectedMode || 'cons';
+
+  // ── Rime-mode branch (no age-based rate; uses RIME_PROCESS_INFO priority) ──
+  if(mode === 'rime') {
+    const hasHighPriority = procs.some(n => RIME_PROCESS_INFO[n]?.priority === 'high');
+    let html = '';
+    if(choice === 'yes') {
+      res.className = 'stim-result stim-yes';
+      if(hasHighPriority) {
+        html = `<b>✓ 可刺激 → 適合作為韻母治療起點</b><br>
+        個案能在引導下發出目標韻母，可刺激性高。可從 ${methodLink('auditory_stimulation','聽覺刺激模仿法')} 誘發單音節層次（Stage 2），逐步進入詞語、片語層次。
+        ${procs.length > 1 ? '<br><span style="color:#166534">⚠ 注意：同時偵測到多個韻母歷程，建議優先處理影響音節完整度大的歷程（如末尾鼻音省略、複韻母單元化）。</span>' : ''}`;
+      } else {
+        html = `<b>✓ 可刺激 → 可列為觀察名單</b><br>
+        可刺激性高表示個案具備基礎韻母動作能力。⚠ 韻母歷程在台灣 SLP 文獻中無常模出現率資料，建議結合語音清晰度與一致性綜合判斷是否需介入。`;
+      }
+    } else if(choice === 'no') {
+      res.className = 'stim-result stim-no';
+      if(hasHighPriority) {
+        html = `<b>✕ 不可刺激 → 需先建立可刺激性</b><br>
+        個案目前無法模仿發出目標韻母。建議：<br>
+        <b>① ${methodLink('phonetic_placement','語音位置治療法')}：</b>明確說明目標韻母的舌位、開口度、鼻腔氣流（針對聲隨韻母），搭配鏡子或視覺回饋。<br>
+        <b>② ${methodLink('sound_modification','語音改變法')}：</b>從相近韻母（如 ㄚ→ㄤ 加鼻音、ㄚ→ㄞ 加滑音）出發逐步塑形。<br>
+        若懷疑顎咽功能異常（鼻音共鳴問題），建議轉介耳鼻喉科或言語生理評估。`;
+      } else {
+        html = `<b>✕ 不可刺激 → 暫不宜列為治療起點</b><br>
+        建議持續觀察。若整體語音清晰度受影響，可考慮 ${methodLink('minimal_pairs','最小配對詞彙訓練')}（韻母對比，如 ㄚ／ㄤ、ㄞ／ㄢ）建立音韻概念。`;
+      }
+    } else {
+      res.className = 'stim-result';
+      res.style.background = '#f8f8f6';
+      res.style.color = '#555';
+      html = `<b>可刺激性未測試</b> — 建議於下次評估時加入韻母可刺激性測試。<br>
+      做法：呈現目標韻母聽覺刺激（搭配音節脈絡，如 ㄅㄚ／ㄅㄢ／ㄅㄤ 對比），請個案模仿（${methodLink('auditory_stimulation','聽覺刺激模仿法')}），觀察能否在音節或詞語層次正確發出。`;
+    }
+    res.innerHTML = html;
+    res.style.display = 'block';
+    return;
+  }
+
+  // ── Consonant-mode branch (existing logic) ──
   const age = +document.getElementById('pp-age-slider').value;
   const ageLabel = age===Math.floor(age) ? age+'歲' : age+'歲半';
-  const res = document.getElementById('stim-result');
 
   // Get detected processes from current analysis (stored globally)
-  const procs = window._lastDetectedProcs || [];
   const hasHighPriority = procs.some(n => {
     const info = PROCESS_INFO[n];
     if(!info) return false;
@@ -1423,6 +1973,10 @@ function selectStim(choice) {
 }
 
 function runAnalysis() {
+  // Dispatch by mode
+  if(window._anlzMode === 'rime') {
+    return runRimeAnalysis();
+  }
   const target = document.getElementById('anlz-target').value.trim();
   const errorInput = document.getElementById('anlz-error').value.trim();
   const age = +document.getElementById('pp-age-slider').value;
@@ -1491,6 +2045,7 @@ function runAnalysis() {
       </div>`;
     // Show stim panel for omission too
     window._lastDetectedProcs = ['聲母省略'];
+    window._lastDetectedMode = 'cons';
     document.getElementById('stim-target-label').textContent = target;
     document.getElementById('stim-panel').style.display = 'block';
     ['stim-yes','stim-no','stim-unknown'].forEach(id=>{ document.getElementById(id).className='stim-btn'; });
@@ -1573,6 +2128,7 @@ function runAnalysis() {
 
   // Store procs for stimulability follow-up and show the panel
   window._lastDetectedProcs = procs;
+  window._lastDetectedMode = 'cons';
   const stimPanel = document.getElementById('stim-panel');
   const stimTargetLabel = document.getElementById('stim-target-label');
   stimTargetLabel.textContent = target;
@@ -1596,11 +2152,66 @@ function selectConsistency(choice) {
   document.getElementById('consist-no').className      = 'consist-btn' + (choice==='inconsistent' ? ' consist-selected-no'  : '');
   document.getElementById('consist-unknown').className = 'consist-btn' + (choice==='unknown'       ? ' consist-selected-yes' : '');
 
-  const age   = +document.getElementById('pp-age-slider').value;
   const procs = window._lastDetectedProcs || [];
+  const mode  = window._lastDetectedMode  || 'cons';
   const res   = document.getElementById('consist-result');
   res.style.background = '';
   res.style.color = '';
+
+  // ── Rime-mode branch ──
+  // Dodd (2014) 分類框架原針對音韻系統整體（含聲母與韻母歷程），但文獻中之
+  // SSD 分布百分比（21% / 57% / 9%）主要基於聲母歷程資料。韻母歷程缺乏
+  // Taiwan 常模，無法做「年齡內出現率 <10%」之判斷，故本分支以歷程類型
+  // （rare vs developmental）與優先順序代替年齡判準。
+  if(mode === 'rime') {
+    const hasRare = procs.some(n => RIME_PROCESS_INFO[n]?.type === 'rare');
+    const hasHighPriority = procs.some(n => RIME_PROCESS_INFO[n]?.priority === 'high');
+    let html = '';
+
+    if(choice === 'consistent') {
+      res.className = 'consist-result consist-consistent';
+      if(hasRare) {
+        html = `<b>✓ 錯誤一致 + 罕見韻母歷程</b><br>
+個案的韻母錯誤具規則性與一致性，且包含罕見方向歷程（如前鼻韻後置化、鼻韻添加、韻尾去鼻音化等）。此型態與 Dodd（2014）分類中「錯誤一致的音韻異常」相近，可能反映韻母音韻系統或言語生理（顎咽功能、鼻音共鳴）層面的缺陷。<br>
+<b>介入方向：</b>採音韻取向為主，以${methodLink('minimal_pairs','最小配對詞彙訓練')}建立韻母對立概念（如 ㄚ／ㄤ、ㄞ／ㄢ）；若懷疑顎咽功能問題，建議轉介評估。
+<br><span style="font-size:9px;opacity:.65">⚠ Dodd (2014) 分類框架原以聲母歷程為主要驗證資料，韻母歷程套用此架構為臨床推論。</span>`;
+      } else if(hasHighPriority) {
+        html = `<b>✓ 錯誤一致 + 高影響發展性韻母歷程</b><br>
+個案的韻母錯誤具規則性，使用的歷程屬發展性類型（如末尾鼻音省略、複韻母單元化）但對語音清晰度影響大。⚠ 韻母歷程無台灣常模出現率資料，無法以年齡判準直接套用 Dodd（2014）「音韻發展遲緩」之分類，但若年齡 ≥ 3.5–4 歲仍系統性出現，可參考馬偕 w5 課程講義所述「末尾輔音省略約於 3 歲達抑制」作為臨床參考。<br>
+<b>介入方向：</b>音韻取向為主（${methodLink('minimal_pairs','最小配對詞彙訓練')}），輔以${methodLink('phonetic_placement','語音位置治療法')}建立韻母動作基礎。
+<br><span style="font-size:9px;opacity:.65">⚠ 鄭靜宜（2011）p. 138；⚠ 馬偕 w5 課程講義；無台灣常模</span>`;
+      } else {
+        html = `<b>✓ 錯誤一致 → 系統性韻母錯誤型態</b><br>
+個案韻母錯誤具一致性，但偵測到的歷程多屬一般發展範圍。建議結合語音清晰度、其他歷程與整體音韻系統綜合判斷。
+<br><span style="font-size:9px;opacity:.65">⚠ 韻母歷程無台灣常模資料</span>`;
+      }
+    } else if(choice === 'inconsistent') {
+      res.className = 'consist-result consist-inconsistent';
+      html = `<b>✕ 錯誤不一致 → 錯誤不一致的音韻異常（Inconsistent Phonological Disorder）</b><br>
+個案說同一個詞時韻母產出不同（≥40% 詞彙有不同型態）。Dodd（2014）此型態（佔 SSD 約 9%）反映音韻計畫（phonological planning）層次缺陷。<br><br>
+<b>建議介入：Core Vocabulary Approach（Dodd &amp; Bradford, 2000）</b><br>
+① 與家長共同選定 50–70 個核心詞彙（含目標韻母、功能性高）<br>
+② 每週選 5–10 個目標詞，訂出每個詞的「最佳產出」<br>
+③ 大量集中練習，<b>先求一致，不急於求正確</b><br>
+④ 每天家中練習，建立動作記憶<br><br>
+<span style="color:#78350f">⚠ ${methodLink('minimal_pairs','最小配對詞彙訓練')}對此類型效果有限——需先以 Core Vocabulary 建立產出穩定性後再切換音韻取向。</span>
+<br><span style="font-size:9px;opacity:.65">Dodd, B. &amp; Bradford, A. (2000). Int. J. Lang. Comm. Dis., 35(2), 189–209.</span>`;
+    } else {
+      res.className = 'consist-result';
+      res.style.background = '#f8f8f6';
+      res.style.color = '#555';
+      html = `<b>尚未評估韻母產出一致性</b> — 建議蒐集多次產出樣本後再判斷。<br>
+做法：選定約 25 個含目標韻母的詞，請個案於三個不同時間點命名，計算不同次有不同產出的比例。≥40% → 判定「不一致」（Dodd, 2014）。
+<br><span style="font-size:9px;opacity:.65">Dodd (2014); Dodd &amp; Bradford (2000)</span>`;
+    }
+
+    res.innerHTML = html;
+    res.style.display = 'block';
+    return;
+  }
+
+  // ── Consonant-mode branch (existing logic) ──
+  const age = +document.getElementById('pp-age-slider').value;
 
   const hasDeviant = procs.some(n => {
     const info = PROCESS_INFO[n];
